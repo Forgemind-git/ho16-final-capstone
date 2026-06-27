@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Production Engine</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --card: #1e2130; --border: #2a2d3e;
+      --accent: #f59e0b; --accent-light: #fbbf24;
+      --green: #10b981; --blue: #3b82f6; --purple: #8b5cf6; --red: #ef4444;
+      --text: #e2e8f0; --text-muted: #64748b; --radius: 10px; --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
+    header h1 { font-size: 1.2rem; font-weight: 700; color: var(--accent-light); }
+    .badge { background: var(--accent); color: #000; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+    nav { display: flex; gap: 4px; margin-left: auto; }
+    nav button { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    nav button.active, nav button:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+    main { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--accent-light); }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+    input, select, textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; color: var(--text); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-green { background: var(--green); color: white; }
+    .btn-blue { background: var(--blue); color: white; }
+    .btn-purple { background: var(--purple); color: white; }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-msg { color: var(--red); font-size: 0.85rem; margin-top: 8px; }
+    .success-msg { color: var(--green); font-size: 0.85rem; margin-top: 8px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Brief display */
+    .brief-section { display: none; }
+    .brief-section.visible { display: block; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .tag { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px; font-size: 0.78rem; color: var(--text-muted); }
+    .hook-box { background: var(--surface); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 6px 6px 0; font-size: 0.95rem; font-style: italic; margin-bottom: 16px; }
+
+    /* Content area */
+    .content-area { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; font-size: 0.9rem; line-height: 1.8; white-space: pre-wrap; max-height: 500px; overflow-y: auto; display: none; }
+    .content-area.visible { display: block; }
+
+    /* Variants */
+    .variant-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+    .vtab { padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; background: none; color: var(--text-muted); cursor: pointer; font-size: 0.82rem; }
+    .vtab.active { background: var(--blue); color: white; border-color: var(--blue); }
+    .variant-content { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-size: 0.88rem; line-height: 1.7; white-space: pre-wrap; min-height: 120px; display: none; }
+    .variant-content.visible { display: block; }
+    .variants-section { display: none; margin-top: 16px; }
+    .variants-section.visible { display: block; }
+
+    /* Dashboard */
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
+    .stat-box .num { font-size: 2rem; font-weight: 800; color: var(--accent-light); }
+    .stat-box .lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
+    /* Post list */
+    .post-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .post-row:last-child { border-bottom: none; }
+    .status-pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+    .status-draft { background: rgba(100,116,139,0.2); color: var(--text-muted); }
+    .status-review { background: rgba(245,158,11,0.2); color: var(--accent); }
+    .status-published { background: rgba(16,185,129,0.2); color: var(--green); }
+  </style>
+</head>
+<body>
+<header>
+  <span style="font-size:1.5rem;">✍️</span>
+  <h1>Content Production Engine</h1>
+  <span class="badge">HO16 Sample 03</span>
+  <nav>
+    <button class="active" onclick="showPage('dashboard', this)">Dashboard</button>
+    <button onclick="showPage('create', this)">Create Content</button>
+  </nav>
+</header>
+
+<main>
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="stats-bar">
+      <div class="stat-box"><div class="num" id="stat-total">—</div><div class="lbl">Total Posts</div></div>
+      <div class="stat-box"><div class="num" id="stat-draft">—</div><div class="lbl">In Draft</div></div>
+      <div class="stat-box"><div class="num" id="stat-review">—</div><div class="lbl">In Review</div></div>
+      <div class="stat-box"><div class="num" id="stat-published">—</div><div class="lbl">Published</div></div>
+    </div>
+    <div class="card">
+      <h2>📝 All Posts</h2>
+      <div id="post-list"><p style="color:var(--text-muted);font-size:0.85rem;">No posts yet. Create your first one.</p></div>
+    </div>
+  </div>
+
+  <!-- CREATE -->
+  <div class="page" id="page-create">
+    <div class="card">
+      <h2>🔬 Step 1: Research Brief</h2>
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Content Topic</label>
+          <input type="text" id="topic-input" placeholder="e.g. Why most startups fail at content marketing" />
+        </div>
+        <div class="form-group">
+          <label>Content Format</label>
+          <select id="type-select">
+            <option value="blog">Blog Post</option>
+            <option value="linkedin">LinkedIn Article</option>
+            <option value="email">Email Newsletter</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="doResearch()" id="research-btn">🔬 Generate Research Brief</button>
+      <div id="research-msg"></div>
+
+      <div class="brief-section" id="brief-section" style="margin-top:20px;">
+        <div class="hook-box" id="brief-hook"></div>
+        <div class="grid-2" style="margin-bottom:12px;">
+          <div>
+            <label>Audience</label>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin-top:4px;" id="brief-audience"></p>
+          </div>
+          <div>
+            <label>Content Angles</label>
+            <div class="tag-list" id="brief-angles"></div>
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label>Key Insights</label>
+          <div class="tag-list" id="brief-insights"></div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label>Outline</label>
+          <div class="tag-list" id="brief-outline"></div>
+        </div>
+        <button class="btn btn-green" onclick="doDraft()" id="draft-btn">✍️ Draft Full Post</button>
+      </div>
+    </div>
+
+    <div class="card" id="content-card" style="display:none;">
+      <h2>📄 Step 2: Generated Post</h2>
+      <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">
+        <span id="word-count-badge" style="font-size:0.8rem;color:var(--text-muted);"></span>
+        <div style="margin-left:auto;display:flex;gap:8px;">
+          <select id="status-select" style="width:auto;padding:6px 10px;font-size:0.82rem;">
+            <option value="draft">Draft</option>
+            <option value="review">In Review</option>
+            <option value="published">Published</option>
+          </select>
+          <button class="btn btn-green" onclick="updateStatus()" style="font-size:0.8rem;">Save Status</button>
+          <button class="btn btn-purple" onclick="doRepurpose()" id="repurpose-btn">♻️ Repurpose (3 variants)</button>
+        </div>
+      </div>
+      <div class="content-area visible" id="content-display"></div>
+
+      <div class="variants-section" id="variants-section">
+        <h3 style="font-size:0.9rem;color:var(--accent-light);margin:16px 0 10px;">🔀 Repurposed Variants</h3>
+        <div class="variant-tabs">
+          <button class="vtab active" onclick="showVariant('linkedin', this)">LinkedIn Teaser</button>
+          <button class="vtab" onclick="showVariant('email', this)">Email Snippet</button>
+          <button class="vtab" onclick="showVariant('twitter', this)">Twitter Thread</button>
+        </div>
+        <div class="variant-content visible" id="variant-linkedin"></div>
+        <div class="variant-content" id="variant-email"></div>
+        <div class="variant-content" id="variant-twitter"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const API = '';
+  let currentPostId = null;
+
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'dashboard') loadDashboard();
+  }
+
+  async function loadDashboard() {
+    try {
+      const r = await fetch(API + '/api/dashboard');
+      const d = await r.json();
+      document.getElementById('stat-total').textContent = d.total;
+      const statusMap = {};
+      (d.by_status || []).forEach(s => statusMap[s.status] = s.count);
+      document.getElementById('stat-draft').textContent = statusMap.draft || 0;
+      document.getElementById('stat-review').textContent = statusMap.review || 0;
+      document.getElementById('stat-published').textContent = statusMap.published || 0;
+
+      const list = document.getElementById('post-list');
+      if (d.recent && d.recent.length > 0) {
+        list.innerHTML = d.recent.map(p => `
+          <div class="post-row">
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:0.9rem;">${escHtml(p.topic)}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">${p.content_type} · ${p.word_count || 0} words · ${new Date(p.updated_at).toLocaleDateString()}</div>
+            </div>
+            <span class="status-pill status-${p.status}">${p.status}</span>
+          </div>
+        `).join('');
+      } else {
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No posts yet.</p>';
+      }
+    } catch (err) { console.error(err); }
+  }
+
+  async function doResearch() {
+    const topic = document.getElementById('topic-input').value.trim();
+    const type = document.getElementById('type-select').value;
+    const msg = document.getElementById('research-msg');
+    const btn = document.getElementById('research-btn');
+    if (!topic) { msg.innerHTML = '<p class="error-msg">Please enter a topic.</p>'; return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Researching...';
+    msg.innerHTML = '';
+
+    try {
+      const r = await fetch(API + '/api/research', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic, content_type: type })
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error);
+      currentPostId = d.id;
+      showBrief(d.brief_data);
+      msg.innerHTML = '<p class="success-msg">Research brief generated!</p>';
+    } catch (err) {
+      msg.innerHTML = `<p class="error-msg">Error: ${err.message}</p>`;
+    }
+    btn.disabled = false;
+    btn.innerHTML = '🔬 Generate Research Brief';
+  }
+
+  function showBrief(b) {
+    document.getElementById('brief-hook').textContent = b.hook || '';
+    document.getElementById('brief-audience').textContent = b.audience || '';
+    document.getElementById('brief-angles').innerHTML = (b.angles || []).map(a => `<span class="tag">${escHtml(a)}</span>`).join('');
+    document.getElementById('brief-insights').innerHTML = (b.key_insights || []).map(i => `<span class="tag">${escHtml(i)}</span>`).join('');
+    document.getElementById('brief-outline').innerHTML = (b.outline || []).map((o,i) => `<span class="tag" style="border-color:var(--accent);">${i+1}. ${escHtml(o)}</span>`).join('');
+    document.getElementById('brief-section').classList.add('visible');
+  }
+
+  async function doDraft() {
+    if (!currentPostId) return;
+    const btn = document.getElementById('draft-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Writing...';
+
+    try {
+      const r = await fetch(API + '/api/posts/' + currentPostId + '/draft', { method: 'POST' });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error);
+      document.getElementById('content-display').textContent = d.content;
+      document.getElementById('word-count-badge').textContent = `${d.word_count} words`;
+      document.getElementById('content-card').style.display = 'block';
+      document.getElementById('content-card').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+    btn.disabled = false;
+    btn.innerHTML = '✍️ Draft Full Post';
+  }
+
+  async function doRepurpose() {
+    if (!currentPostId) return;
+    const btn = document.getElementById('repurpose-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Repurposing...';
+
+    try {
+      const r = await fetch(API + '/api/posts/' + currentPostId + '/repurpose', { method: 'POST' });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error);
+      document.getElementById('variant-linkedin').textContent = d.variants.linkedin_teaser || '';
+      document.getElementById('variant-email').textContent = d.variants.email_snippet || '';
+      document.getElementById('variant-twitter').textContent = d.variants.twitter_thread || '';
+      document.getElementById('variants-section').classList.add('visible');
+    } catch (err) {
+      alert('Error: ' + err.message);
+    }
+    btn.disabled = false;
+    btn.innerHTML = '♻️ Repurpose (3 variants)';
+  }
+
+  async function updateStatus() {
+    if (!currentPostId) return;
+    const status = document.getElementById('status-select').value;
+    await fetch(API + '/api/posts/' + currentPostId, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status })
+    });
+    alert('Status saved: ' + status);
+  }
+
+  function showVariant(name, btn) {
+    document.querySelectorAll('.vtab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.variant-content').forEach(v => v.classList.remove('visible'));
+    btn.classList.add('active');
+    const idMap = { linkedin: 'variant-linkedin', email: 'variant-email', twitter: 'variant-twitter' };
+    document.getElementById(idMap[name]).classList.add('visible');
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  loadDashboard();
+</script>
+</body>
+</html>

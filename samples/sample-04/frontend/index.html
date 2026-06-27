@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personal Finance Copilot</title>
+  <style>
+    :root {
+      --bg: #0f1117; --surface: #1a1d27; --card: #1e2130; --border: #2a2d3e;
+      --accent: #22c55e; --accent-light: #4ade80;
+      --red: #ef4444; --blue: #3b82f6; --yellow: #f59e0b; --purple: #8b5cf6;
+      --text: #e2e8f0; --text-muted: #64748b; --radius: 10px; --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
+    header h1 { font-size: 1.2rem; font-weight: 700; color: var(--accent-light); }
+    .badge { background: var(--accent); color: #000; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+    nav { display: flex; gap: 4px; margin-left: auto; }
+    nav button { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    nav button.active, nav button:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+    main { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--accent-light); }
+    .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-blue { background: var(--blue); color: white; }
+    .btn:hover { opacity: 0.85; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(0,0,0,0.3); border-top-color: #000; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    .spinner-w { border-top-color: white; border-color: rgba(255,255,255,0.3); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .error-msg { color: var(--red); font-size: 0.85rem; margin-top: 8px; }
+    .success-msg { color: var(--accent); font-size: 0.85rem; margin-top: 8px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+    .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; text-align: center; }
+    .stat-box .num { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
+    .stat-box .lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
+
+    /* Bar chart */
+    .bar-chart { width: 100%; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .bar-label { width: 160px; font-size: 0.8rem; color: var(--text-muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bar-track { flex: 1; background: var(--surface); border-radius: 4px; height: 20px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.5s ease; display: flex; align-items: center; padding: 0 8px; }
+    .bar-amount { font-size: 0.75rem; font-weight: 600; color: #000; white-space: nowrap; }
+
+    /* File upload */
+    .upload-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); }
+    .upload-zone input { display: none; }
+    .upload-zone p { color: var(--text-muted); font-size: 0.9rem; margin-top: 8px; }
+
+    /* TX table */
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { text-align: left; padding: 8px 10px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border); font-weight: 600; }
+    td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    .cat-pill { font-size: 0.7rem; padding: 2px 7px; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); }
+    .income { color: var(--accent); }
+    .expense { color: var(--red); }
+
+    /* Insight */
+    .insight-box { background: var(--surface); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 0 8px 8px 0; font-size: 0.9rem; line-height: 1.7; }
+
+    /* Chat */
+    .chat-window { height: 360px; overflow-y: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .msg { margin-bottom: 14px; }
+    .msg.user .bubble { background: var(--accent); color: #000; border-radius: 12px 12px 2px 12px; padding: 10px 14px; max-width: 80%; margin-left: auto; width: fit-content; font-size: 0.9rem; font-weight: 500; }
+    .msg.assistant .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 12px 12px 12px 2px; padding: 12px 14px; max-width: 90%; font-size: 0.88rem; line-height: 1.6; white-space: pre-wrap; }
+    .chat-row { display: flex; gap: 8px; }
+    .chat-row input { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; color: var(--text); font-size: 0.9rem; outline: none; }
+    .chat-row input:focus { border-color: var(--accent); }
+  </style>
+</head>
+<body>
+<header>
+  <span style="font-size:1.5rem;">💰</span>
+  <h1>Personal Finance Copilot</h1>
+  <span class="badge">HO16 Sample 04</span>
+  <nav>
+    <button class="active" onclick="showPage('dashboard', this)">Dashboard</button>
+    <button onclick="showPage('upload', this)">Upload Statement</button>
+    <button onclick="showPage('chat', this)">Chat</button>
+  </nav>
+</header>
+
+<main>
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div class="grid-3">
+      <div class="stat-box">
+        <div class="num" id="stat-income">—</div>
+        <div class="lbl">Total Income</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="stat-expenses" style="color:var(--red);">—</div>
+        <div class="lbl">Total Expenses</div>
+      </div>
+      <div class="stat-box">
+        <div class="num" id="stat-txcount">—</div>
+        <div class="lbl">Transactions</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>💡 AI Spending Insight</h2>
+      <div class="insight-box" id="insight-box">Upload a bank statement to get personalised insights.</div>
+    </div>
+
+    <div class="card">
+      <h2>📊 Spending by Category</h2>
+      <div id="bar-chart-container"><p style="color:var(--text-muted);font-size:0.85rem;">No data yet.</p></div>
+    </div>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="page" id="page-upload">
+    <div class="card">
+      <h2>📂 Upload Bank Statement</h2>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;">
+        Upload a CSV with columns: <code style="background:var(--surface);padding:2px 6px;border-radius:3px;">date, description, amount</code>. Claude will categorise every transaction automatically.
+      </p>
+      <div class="upload-zone" onclick="document.getElementById('csv-file').click()" id="upload-zone">
+        <input type="file" id="csv-file" accept=".csv" onchange="handleFileSelect(this)" />
+        <div style="font-size:2rem;">📄</div>
+        <p><strong>Click to upload</strong> or drag and drop a CSV file</p>
+        <p style="font-size:0.75rem;margin-top:4px;">Max 5MB · CSV format only</p>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-primary" onclick="uploadCSV()" id="upload-btn" disabled>⬆️ Upload &amp; Categorise</button>
+      </div>
+      <div id="upload-msg"></div>
+    </div>
+
+    <div class="card" id="tx-card" style="display:none;">
+      <h2>✅ Categorised Transactions (preview — first 20)</h2>
+      <div style="overflow-x:auto;">
+        <table id="tx-table">
+          <thead><tr><th>Date</th><th>Description</th><th>Amount</th><th>Category</th></tr></thead>
+          <tbody id="tx-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="page" id="page-chat">
+    <div class="card">
+      <h2>💬 Ask About Your Spending</h2>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;">
+        Claude has access to all your categorised transactions. Ask anything about your spending.
+      </p>
+      <div class="chat-window" id="chat-window">
+        <div class="msg assistant">
+          <div class="bubble">Hi! I can answer questions about your spending data. Try asking:
+• "How much did I spend on food?"
+• "What is my biggest expense category?"
+• "Am I spending more than I earn?"</div>
+        </div>
+      </div>
+      <div class="chat-row">
+        <input type="text" id="chat-input" placeholder="Ask about your spending..." onkeydown="if(event.key==='Enter') sendChat()" />
+        <button class="btn btn-blue" onclick="sendChat()" id="chat-btn">Ask</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const API = '';
+  let selectedFile = null;
+
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'dashboard') loadDashboard();
+  }
+
+  async function loadDashboard() {
+    try {
+      const r = await fetch(API + '/api/insights');
+      const d = await r.json();
+      document.getElementById('stat-income').textContent = '$' + (d.total_income || 0).toFixed(2);
+      document.getElementById('stat-expenses').textContent = '$' + (d.total_expenses || 0).toFixed(2);
+      document.getElementById('stat-txcount').textContent = d.tx_count || 0;
+
+      if (d.insight) {
+        document.getElementById('insight-box').textContent = d.insight;
+      }
+
+      const chartEl = document.getElementById('bar-chart-container');
+      if (d.category_totals && d.category_totals.length > 0) {
+        const max = d.category_totals[0].total;
+        chartEl.innerHTML = `<div class="bar-chart">${d.category_totals.map(c => `
+          <div class="bar-row">
+            <div class="bar-label" title="${escHtml(c.category)}">${escHtml(c.category)}</div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width:${Math.max(8, (c.total / max * 100)).toFixed(1)}%">
+                <span class="bar-amount">$${c.total.toFixed(0)}</span>
+              </div>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-muted);min-width:32px;">${c.count}x</div>
+          </div>
+        `).join('')}</div>`;
+      } else {
+        chartEl.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">No expense data yet.</p>';
+      }
+    } catch (err) { console.error(err); }
+  }
+
+  function handleFileSelect(input) {
+    selectedFile = input.files[0];
+    document.getElementById('upload-zone').style.borderColor = 'var(--accent)';
+    document.getElementById('upload-zone').querySelector('p').textContent = '✓ ' + selectedFile.name;
+    document.getElementById('upload-btn').disabled = false;
+  }
+
+  async function uploadCSV() {
+    if (!selectedFile) return;
+    const msg = document.getElementById('upload-msg');
+    const btn = document.getElementById('upload-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Categorising with Claude...';
+    msg.innerHTML = '';
+
+    const fd = new FormData();
+    fd.append('file', selectedFile);
+
+    try {
+      const r = await fetch(API + '/api/statements/upload', { method: 'POST', body: fd });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error);
+
+      msg.innerHTML = `<p class="success-msg">✓ ${d.count} transactions categorised successfully!</p>`;
+      showTransactions(d.transactions);
+    } catch (err) {
+      msg.innerHTML = `<p class="error-msg">Error: ${err.message}</p>`;
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '⬆️ Upload &amp; Categorise';
+  }
+
+  function showTransactions(txs) {
+    const card = document.getElementById('tx-card');
+    const body = document.getElementById('tx-body');
+    card.style.display = 'block';
+    body.innerHTML = txs.map(t => `
+      <tr>
+        <td>${escHtml(t.date)}</td>
+        <td>${escHtml(t.description)}</td>
+        <td class="${t.amount > 0 ? 'income' : 'expense'}">${t.amount > 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}</td>
+        <td><span class="cat-pill">${escHtml(t.category)}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const question = input.value.trim();
+    if (!question) return;
+
+    const window_ = document.getElementById('chat-window');
+    const btn = document.getElementById('chat-btn');
+
+    appendMsg('user', question);
+    input.value = '';
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    const typingId = 'typing-' + Date.now();
+    window_.insertAdjacentHTML('beforeend', `<div class="msg assistant" id="${typingId}"><div class="bubble" style="color:var(--text-muted);"><span class="spinner spinner-w" style="border-top-color:var(--text-muted);border-color:var(--border);"></span> Thinking...</div></div>`);
+    window_.scrollTop = window_.scrollHeight;
+
+    try {
+      const r = await fetch(API + '/api/chat', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+      const d = await r.json();
+      document.getElementById(typingId)?.remove();
+      appendMsg('assistant', d.answer || d.error);
+    } catch (err) {
+      document.getElementById(typingId)?.remove();
+      appendMsg('assistant', 'Error: ' + err.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Ask';
+  }
+
+  function appendMsg(role, text) {
+    const w = document.getElementById('chat-window');
+    w.insertAdjacentHTML('beforeend', `<div class="msg ${role}"><div class="bubble">${escHtml(text)}</div></div>`);
+    w.scrollTop = w.scrollHeight;
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Setup drag and drop
+  const zone = document.getElementById('upload-zone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      selectedFile = file;
+      zone.style.borderColor = 'var(--accent)';
+      zone.querySelector('p').textContent = '✓ ' + file.name;
+      document.getElementById('upload-btn').disabled = false;
+    }
+  });
+
+  loadDashboard();
+</script>
+</body>
+</html>

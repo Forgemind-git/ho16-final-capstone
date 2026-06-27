@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Ops Command Center</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #1e2130;
+      --border: #2a2d3e;
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --text: #e2e8f0;
+      --text-muted: #64748b;
+      --radius: 10px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
+    header h1 { font-size: 1.2rem; font-weight: 700; color: var(--accent-light); }
+    header .badge { background: var(--accent); color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; }
+    nav { display: flex; gap: 4px; margin-left: auto; }
+    nav button { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+    nav button.active, nav button:hover { background: var(--accent); color: white; border-color: var(--accent); }
+    main { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* Cards */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .card h2 { font-size: 1rem; font-weight: 600; margin-bottom: 16px; color: var(--accent-light); display: flex; align-items: center; gap: 8px; }
+
+    /* Metrics grid */
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; }
+    .metric-card .value { font-size: 2.5rem; font-weight: 800; color: var(--accent-light); }
+    .metric-card .label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Forms */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; }
+    input, textarea { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 14px; color: var(--text); font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color 0.2s; }
+    input:focus, textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; min-height: 120px; }
+    .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-light); }
+    .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+    .btn-secondary:hover { border-color: var(--accent); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Doc list */
+    .doc-item { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .doc-item h3 { font-size: 0.95rem; margin-bottom: 6px; }
+    .doc-item .summary { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; color: var(--text-muted); }
+    .tag.action { border-color: var(--warning); color: var(--warning); }
+    .date { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+
+    /* Chat */
+    .chat-window { height: 420px; overflow-y: auto; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .msg { margin-bottom: 16px; }
+    .msg.user .bubble { background: var(--accent); color: white; border-radius: 12px 12px 2px 12px; padding: 10px 14px; max-width: 80%; margin-left: auto; width: fit-content; font-size: 0.9rem; }
+    .msg.assistant .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 12px 12px 12px 2px; padding: 12px 14px; max-width: 90%; width: fit-content; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; }
+    .chat-input-row { display: flex; gap: 8px; }
+    .chat-input-row input { flex: 1; }
+
+    /* Digest */
+    .digest-box { background: var(--surface); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 16px; font-size: 0.9rem; line-height: 1.7; white-space: pre-wrap; color: var(--text); }
+
+    /* Recent activity */
+    .activity-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .activity-item:last-child { border-bottom: none; }
+    .activity-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .activity-text { font-size: 0.85rem; }
+    .activity-time { font-size: 0.75rem; color: var(--text-muted); }
+
+    .loading { color: var(--text-muted); font-style: italic; font-size: 0.85rem; }
+    .error-msg { color: #ef4444; font-size: 0.85rem; margin-top: 8px; }
+    .success-msg { color: var(--success); font-size: 0.85rem; margin-top: 8px; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .row { display: flex; gap: 12px; align-items: flex-end; }
+    .row .btn { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <span style="font-size:1.5rem;">⚡</span>
+  </div>
+  <h1>AI Ops Command Center</h1>
+  <span class="badge">HO16 Sample 01</span>
+  <nav>
+    <button class="active" onclick="showPage('dashboard')">Dashboard</button>
+    <button onclick="showPage('documents')">Documents</button>
+    <button onclick="showPage('chat')">Q&amp;A</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- DASHBOARD PAGE -->
+  <div class="page active" id="page-dashboard">
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="value" id="metric-docs">—</div>
+        <div class="label">Documents</div>
+      </div>
+      <div class="metric-card">
+        <div class="value" id="metric-chats">—</div>
+        <div class="label">Queries</div>
+      </div>
+      <div class="metric-card">
+        <div class="value" id="metric-refresh" style="font-size:1.1rem;padding-top:10px;">—</div>
+        <div class="label">Last Refresh</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📰 Latest Ops Digest</h2>
+      <div id="digest-content" class="digest-box loading">Click "Refresh" to generate a digest from your documents.</div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-primary" onclick="runRefresh()" id="refresh-btn">🔄 Refresh Now</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🕒 Recent Documents</h2>
+      <div id="recent-docs">
+        <p class="loading">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCUMENTS PAGE -->
+  <div class="page" id="page-documents">
+    <div class="card">
+      <h2>📄 Upload Document</h2>
+      <div class="form-group">
+        <label>Document Title</label>
+        <input type="text" id="doc-title" placeholder="e.g. Q2 Operations Review" />
+      </div>
+      <div class="form-group">
+        <label>Document Content (paste text)</label>
+        <textarea id="doc-content" rows="8" placeholder="Paste your document content here. Claude will summarise it and extract key points and action items."></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="uploadDoc()" id="upload-btn">✨ Summarise &amp; Save</button>
+      <div id="upload-msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>📚 All Documents</h2>
+      <div id="doc-list"><p class="loading">Loading documents...</p></div>
+    </div>
+  </div>
+
+  <!-- CHAT PAGE -->
+  <div class="page" id="page-chat">
+    <div class="card">
+      <h2>💬 Grounded Q&amp;A Assistant</h2>
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;">
+        Ask any question about your uploaded documents. Claude will answer using the documents as its only source.
+      </p>
+      <div class="chat-window" id="chat-window">
+        <div class="msg assistant">
+          <div class="bubble">Hello! I'm your ops assistant. Ask me anything about the documents you've uploaded, and I'll answer using only that information.</div>
+        </div>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="Ask a question about your documents..." onkeydown="if(event.key==='Enter') sendChat()" />
+        <button class="btn btn-primary" onclick="sendChat()" id="chat-btn">Send</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  const API = '';
+
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    event.target.classList.add('active');
+    if (name === 'dashboard') loadDashboard();
+    if (name === 'documents') loadDocuments();
+  }
+
+  // ── Dashboard ─────────────────────────────────────────────────────────────
+  async function loadDashboard() {
+    try {
+      const r = await fetch(API + '/api/metrics');
+      const d = await r.json();
+      document.getElementById('metric-docs').textContent = d.doc_count;
+      document.getElementById('metric-chats').textContent = d.chat_count;
+      document.getElementById('metric-refresh').textContent = d.last_refresh
+        ? new Date(d.last_refresh).toLocaleTimeString() : 'Never';
+
+      const recentEl = document.getElementById('recent-docs');
+      if (d.recent_docs && d.recent_docs.length > 0) {
+        recentEl.innerHTML = d.recent_docs.map(doc => `
+          <div class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <div class="activity-text">${escHtml(doc.title)}</div>
+              <div class="activity-time">${new Date(doc.created_at).toLocaleString()}</div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        recentEl.innerHTML = '<p class="loading">No documents yet. Upload some documents to get started.</p>';
+      }
+
+      // Load digest
+      const dr = await fetch(API + '/api/digest');
+      const dd = await dr.json();
+      const digestEl = document.getElementById('digest-content');
+      if (dd.digest) {
+        digestEl.textContent = dd.digest;
+        digestEl.classList.remove('loading');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function runRefresh() {
+    const btn = document.getElementById('refresh-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Refreshing...';
+    try {
+      const r = await fetch(API + '/api/refresh', { method: 'POST' });
+      const d = await r.json();
+      if (d.digest) {
+        const digestEl = document.getElementById('digest-content');
+        digestEl.textContent = d.digest;
+        digestEl.classList.remove('loading');
+      }
+      await loadDashboard();
+    } catch (err) {
+      console.error(err);
+    }
+    btn.disabled = false;
+    btn.innerHTML = '🔄 Refresh Now';
+  }
+
+  // ── Documents ─────────────────────────────────────────────────────────────
+  async function loadDocuments() {
+    const el = document.getElementById('doc-list');
+    try {
+      const r = await fetch(API + '/api/docs');
+      const docs = await r.json();
+      if (docs.length === 0) {
+        el.innerHTML = '<p class="loading">No documents yet. Upload one above.</p>';
+        return;
+      }
+      el.innerHTML = docs.map(doc => `
+        <div class="doc-item">
+          <h3>${escHtml(doc.title)}</h3>
+          <p class="summary">${escHtml(doc.summary || 'No summary available')}</p>
+          ${doc.key_points && doc.key_points.length > 0 ? `
+            <div style="margin-bottom:8px;">
+              <small style="color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;font-size:0.7rem;">Key Points</small>
+              <div class="tags" style="margin-top:4px;">
+                ${doc.key_points.map(p => `<span class="tag">${escHtml(p)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+          ${doc.action_items && doc.action_items.length > 0 ? `
+            <div>
+              <small style="color:var(--warning);text-transform:uppercase;letter-spacing:0.05em;font-size:0.7rem;">Action Items</small>
+              <div class="tags" style="margin-top:4px;">
+                ${doc.action_items.map(a => `<span class="tag action">${escHtml(a)}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+          <div class="date">${new Date(doc.created_at).toLocaleString()}</div>
+        </div>
+      `).join('');
+    } catch (err) {
+      el.innerHTML = `<p class="error-msg">Failed to load documents: ${err.message}</p>`;
+    }
+  }
+
+  async function uploadDoc() {
+    const title = document.getElementById('doc-title').value.trim();
+    const content = document.getElementById('doc-content').value.trim();
+    const msgEl = document.getElementById('upload-msg');
+    const btn = document.getElementById('upload-btn');
+
+    if (!title || !content) {
+      msgEl.innerHTML = '<p class="error-msg">Please enter both a title and content.</p>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Summarising...';
+    msgEl.innerHTML = '';
+
+    try {
+      const r = await fetch(API + '/api/docs/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content })
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error);
+
+      msgEl.innerHTML = '<p class="success-msg">Document summarised and saved!</p>';
+      document.getElementById('doc-title').value = '';
+      document.getElementById('doc-content').value = '';
+      loadDocuments();
+    } catch (err) {
+      msgEl.innerHTML = `<p class="error-msg">Error: ${err.message}</p>`;
+    }
+    btn.disabled = false;
+    btn.innerHTML = '✨ Summarise &amp; Save';
+  }
+
+  // ── Chat ──────────────────────────────────────────────────────────────────
+  async function sendChat() {
+    const input = document.getElementById('chat-input');
+    const question = input.value.trim();
+    if (!question) return;
+
+    const window_ = document.getElementById('chat-window');
+    const btn = document.getElementById('chat-btn');
+
+    appendMsg('user', question);
+    input.value = '';
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    // Typing indicator
+    const typingId = 'typing-' + Date.now();
+    window_.insertAdjacentHTML('beforeend', `<div class="msg assistant" id="${typingId}"><div class="bubble loading"><span class="spinner"></span>Thinking...</div></div>`);
+    window_.scrollTop = window_.scrollHeight;
+
+    try {
+      const r = await fetch(API + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+      const d = await r.json();
+      document.getElementById(typingId)?.remove();
+      if (!r.ok) throw new Error(d.error);
+      appendMsg('assistant', d.answer);
+    } catch (err) {
+      document.getElementById(typingId)?.remove();
+      appendMsg('assistant', 'Error: ' + err.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Send';
+  }
+
+  function appendMsg(role, text) {
+    const window_ = document.getElementById('chat-window');
+    window_.insertAdjacentHTML('beforeend', `
+      <div class="msg ${role}">
+        <div class="bubble">${escHtml(text)}</div>
+      </div>
+    `);
+    window_.scrollTop = window_.scrollHeight;
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // Initial load
+  loadDashboard();
+</script>
+</body>
+</html>
