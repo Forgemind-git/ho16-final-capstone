@@ -1,5 +1,7 @@
 # Concepts Used — Sample 01: AI Ops Command Center
 
+> **Primary build:** This project is built on the **Claude.ai subscription** path using **Projects** (to ground Claude on your ops documents) and **Artifacts** (to generate the dashboard) — no API key required. The API integration described below is the **optional, advanced** path for running it as a deployed web app.
+
 ## Course Modules Covered
 
 - [x] **Module 1 — Claude API Basics:** Direct Anthropic SDK calls in claude.js

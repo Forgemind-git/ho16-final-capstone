@@ -1,5 +1,7 @@
 # Concepts Used — Sample 04: Personal Finance Copilot
 
+> **Note:** The primary way to build this project is with your **Claude.ai subscription** (a Claude Project grounded on a bank-statement CSV, plus Cowork agents, Skills, and Artifacts) — no coding and no API key. See the README's "Use it with your Claude.ai subscription" section. The API integration described below is an **optional, advanced** path for running it as a real web app, and the app also runs in demo mode with no API key.
+
 ## Course Modules Covered
 
 - [x] **Module 1 — Claude API Basics:** SDK calls for batch categorisation and Q&A

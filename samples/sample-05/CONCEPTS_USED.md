@@ -1,5 +1,7 @@
 # Concepts Used — Sample 05: Customer Support Co-Pilot
 
+> **Note:** The primary way to build this project is inside your **Claude.ai subscription** (a Claude Project grounded on your product docs, saved triage + reply prompts, a weekly-summary Skill, and a heatmap Artifact) — no API key or code required. See the README. The API integration described below is an **optional, advanced** path for learners who also want to run the full-stack app against the live API.
+
 ## Course Modules Covered
 
 - [x] **Module 1 — Claude API Basics:** SDK calls for triage, reply drafting, and trend summary

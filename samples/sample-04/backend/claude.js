@@ -1,6 +1,9 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// The app runs WITH NO API KEY by default (demo mode). It only connects to the
+// live Anthropic API when ANTHROPIC_API_KEY is set — see README "Optional" section.
+const HAS_KEY = !!process.env.ANTHROPIC_API_KEY;
+const client = HAS_KEY ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }) : null;
 const MODEL = 'claude-3-5-haiku-20241022';
 
 const CATEGORIES = [
@@ -9,12 +12,47 @@ const CATEGORIES = [
   'Housing & Rent', 'Insurance', 'ATM & Cash', 'Transfers', 'Other'
 ];
 
+// ─── Demo-mode helpers (used when there is no API key) ────────────────────────
+
+// Pick a plausible category for a transaction using simple keyword matching.
+// Falls back to cycling through CATEGORIES so every transaction still gets one.
+function demoCategoryFor(tx, index) {
+  const desc = (tx.description || '').toLowerCase();
+  const rules = [
+    [/starbucks|coffee|cafe|restaurant|mcdonald|pizza|dining|burger/, 'Food & Dining'],
+    [/grocer|supermarket|whole foods|aldi|tesco|walmart|costco/, 'Groceries'],
+    [/uber|lyft|taxi|metro|transit|fuel|gas station|shell|parking/, 'Transport'],
+    [/netflix|spotify|hulu|disney|subscription|prime/, 'Subscriptions'],
+    [/cinema|movie|game|concert|entertain/, 'Entertainment'],
+    [/amazon|store|shop|mall|clothing|nike|target/, 'Shopping'],
+    [/electric|water|internet|phone|utility|bill|comcast/, 'Utilities & Bills'],
+    [/pharmacy|doctor|clinic|hospital|health|dental/, 'Healthcare'],
+    [/school|tuition|course|udemy|book/, 'Education'],
+    [/flight|hotel|airbnb|airline|travel/, 'Travel'],
+    [/rent|mortgage|landlord|housing/, 'Housing & Rent'],
+    [/insurance|geico|allstate/, 'Insurance'],
+    [/atm|cash withdrawal/, 'ATM & Cash'],
+    [/salary|deposit|transfer|payroll|refund/, 'Transfers'],
+  ];
+  for (const [re, cat] of rules) {
+    if (re.test(desc)) return cat;
+  }
+  // No keyword matched — cycle through the list so we always return something.
+  return CATEGORIES[index % CATEGORIES.length];
+}
+
 /**
  * Batch-categorise a list of transactions using a single Claude call.
  * Returns an array of { id, category } objects.
  */
 async function categoriseTransactions(transactions) {
   if (transactions.length === 0) return [];
+
+  // DEMO MODE (no API key): assign a plausible category per transaction by
+  // keyword. Same shape as the real call — one { id, category } per input tx.
+  if (!HAS_KEY) {
+    return transactions.map((tx, i) => ({ id: tx.id, category: demoCategoryFor(tx, i) }));
+  }
 
   // Process in batches of 50 to stay within token limits
   const BATCH_SIZE = 50;
@@ -73,6 +111,20 @@ Respond with ONLY a JSON array of {"index": N, "category": "Category Name"} obje
  * Answer a spending question using transaction data as context.
  */
 async function answerSpendingQuestion(question, categoryTotals, recentTransactions) {
+  // DEMO MODE (no API key): return a realistic, grounded-looking answer string
+  // built from the actual data so the chat UI keeps working.
+  if (!HAS_KEY) {
+    const top = [...categoryTotals].sort((a, b) => b.total - a.total)[0];
+    const totalSpent = categoryTotals.reduce((s, c) => s + (c.total || 0), 0);
+    if (!top) {
+      return '[Sample answer — demo mode] I don\'t have any transaction data to answer that yet. Upload a bank statement CSV first.';
+    }
+    return `[Sample answer — demo mode] Based on your data, your biggest category is ` +
+      `${top.category} at $${top.total.toFixed(2)} across ${top.count} transaction(s), out of ` +
+      `$${totalSpent.toFixed(2)} in total spending. Add an ANTHROPIC_API_KEY to get real, ` +
+      `AI-generated answers to "${question}".`;
+  }
+
   const categoryContext = categoryTotals.map(c =>
     `${c.category}: $${c.total.toFixed(2)} (${c.count} transactions)`
   ).join('\n');
@@ -109,6 +161,18 @@ My question: ${question}`
  */
 async function generateInsight(categoryTotals, totalExpenses, totalIncome) {
   if (categoryTotals.length === 0) return 'No transaction data available yet.';
+
+  // DEMO MODE (no API key): return a realistic one-paragraph insight string
+  // computed from the real totals — same shape (string) as the live call.
+  if (!HAS_KEY) {
+    const top = [...categoryTotals].sort((a, b) => b.total - a.total)[0];
+    const pct = totalExpenses > 0 ? ((top.total / totalExpenses) * 100).toFixed(0) : '0';
+    const net = (totalIncome - totalExpenses).toFixed(2);
+    return `[Sample insight — demo mode] Your largest expense is ${top.category} at ` +
+      `$${top.total.toFixed(2)} (${pct}% of spending), against $${totalIncome.toFixed(2)} income ` +
+      `and $${totalExpenses.toFixed(2)} expenses (net $${net}). Tip: review your ${top.category} ` +
+      `spending for quick savings. Add an ANTHROPIC_API_KEY for live AI-written insights.`;
+  }
 
   const top3 = categoryTotals.slice(0, 3);
   const context = top3.map(c => `${c.category}: $${c.total.toFixed(2)} (${((c.total / totalExpenses) * 100).toFixed(0)}%)`).join(', ');

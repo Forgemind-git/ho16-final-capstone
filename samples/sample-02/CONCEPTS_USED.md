@@ -1,5 +1,9 @@
 # Concepts Used — Sample 02: Sales Intelligence Platform
 
+> **Primary build = your Claude.ai subscription.** The recommended way to build this solution is inside Claude.ai using **Projects** (to ground Claude on your ICP and product docs) and **Artifacts** (to generate the live deal-health dashboard) — no code and no API key required. See the README for step-by-step instructions.
+>
+> The API integration described below is an **optional, advanced path** for hosting the app and connecting it to the live developer API (a separate, paid key). The checklist that follows maps the code in this sample to course concepts.
+
 ## Course Modules Covered
 
 - [x] **Module 1 — Claude API Basics:** Direct Anthropic SDK calls for lead enrichment and email drafting

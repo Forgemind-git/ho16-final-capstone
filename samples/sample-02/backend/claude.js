@@ -1,6 +1,10 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// The app runs fine with NO API key — that's "demo mode".
+// It returns realistic sample data so you can see everything work.
+// Add an ANTHROPIC_API_KEY later (optional/advanced) to get live AI answers.
+const HAS_KEY = !!process.env.ANTHROPIC_API_KEY;
+const client = HAS_KEY ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }) : null;
 const MODEL = 'claude-3-5-haiku-20241022';
 
 /**
@@ -8,6 +12,26 @@ const MODEL = 'claude-3-5-haiku-20241022';
  * Claude infers industry, size, pain points, and value propositions.
  */
 async function enrichCompany(companyName, contactName, contactEmail) {
+  // Demo mode: no API key → return a realistic sample profile (same shape).
+  if (!HAS_KEY) {
+    return {
+      industry: 'SaaS / B2B Software (sample)',
+      company_size: 'SMB 50-500',
+      pain_points: [
+        'Sales reps spend hours on manual company research (sample)',
+        'Outreach emails are generic and convert poorly',
+        'No single view of deals by pipeline stage'
+      ],
+      value_props: [
+        'Auto-enrich every lead in seconds (sample)',
+        'Personalised emails drafted from real company context',
+        'Live pipeline dashboard the whole team can see'
+      ],
+      lead_score: 7,
+      enrichment_notes: `Sample enrichment for "${companyName}". This is demo data shown because no ANTHROPIC_API_KEY is set. Add a key (optional/advanced) to get a real, live AI-generated profile.`
+    };
+  }
+
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 1024,
@@ -56,6 +80,27 @@ Respond in this exact JSON format:
  * Draft a personalised outreach email based on enriched company data.
  */
 async function draftEmail(lead) {
+  // Demo mode: no API key → return a realistic sample email (same shape).
+  if (!HAS_KEY) {
+    const company = lead.company || 'your company';
+    const contact = lead.contact_name || 'there';
+    return {
+      subject: `A quicker way to research & reach prospects, ${company}`,
+      body: `Hi ${contact},
+
+I noticed ${company} is growing fast in ${lead.industry || 'your space'} — which usually means the sales team is stretched thin on research and follow-up.
+
+We help teams like yours auto-enrich every lead and draft personalised outreach in seconds, so reps spend time talking to prospects instead of digging through websites.
+
+Worth a 15-minute look next week?
+
+Best,
+Your Sales Team
+
+— (Sample email shown in demo mode. Add an ANTHROPIC_API_KEY, optional/advanced, for a live AI-written email.)`
+    };
+  }
+
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 1024,
@@ -104,6 +149,14 @@ Provide the response in this exact JSON format:
  * Score a lead from 1-10 based on enrichment data.
  */
 async function scoreLead(lead) {
+  // Demo mode: no API key → return a realistic sample score (same shape).
+  if (!HAS_KEY) {
+    return {
+      score: 7,
+      reason: `Sample score: ${lead.company || 'this lead'} looks like a solid mid-market fit (demo data — add an ANTHROPIC_API_KEY for a live AI score).`
+    };
+  }
+
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 256,

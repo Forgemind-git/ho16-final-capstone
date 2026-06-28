@@ -1,5 +1,7 @@
 # Concepts Used — Sample 03: Content Production Engine
 
+> **Note:** The primary way to build this project is inside your **Claude.ai subscription** (Cowork agent, saved Prompt Library prompts, a Skill, and a content-calendar Artifact) — **no API key needed**. The API integration and deployment concepts listed below are an **optional, advanced** path for learners who also want to run it as a deployed web app.
+
 ## Course Modules Covered
 
 - [x] **Module 1 — Claude API Basics:** SDK calls for brief generation, drafting, and repurposing

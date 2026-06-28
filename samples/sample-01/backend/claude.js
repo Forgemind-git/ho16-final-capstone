@@ -1,12 +1,35 @@
 const Anthropic = require('@anthropic-ai/sdk');
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+// The course build runs on the Claude.ai subscription path and needs NO API key.
+// Without a key the module still loads and every function returns a realistic
+// sample response of the same shape, so the app works end-to-end in demo mode.
+const HAS_KEY = !!process.env.ANTHROPIC_API_KEY;
+const client = HAS_KEY ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }) : null;
 const MODEL = 'claude-3-5-haiku-20241022';
 
 /**
  * Summarise an operations document, extracting key points and action items.
  */
 async function summariseDocument(title, content) {
+  if (!HAS_KEY) {
+    // Demo mode — no API key. Same shape as the real response.
+    const preview = (content || '').trim().slice(0, 120);
+    return {
+      summary: `Sample summary of "${title}": this document covers the key operational details${preview ? ` (starting "${preview}…")` : ''}. (demo mode — add an API key for live Claude responses)`,
+      key_points: [
+        'Main topic and current status identified',
+        'Owners and stakeholders noted',
+        'Relevant dates and deadlines flagged',
+        'Risks or blockers highlighted'
+      ],
+      action_items: [
+        'Review the document with the responsible owner',
+        'Confirm any deadlines mentioned',
+        'Follow up on open questions'
+      ]
+    };
+  }
+
   const response = await client.messages.create({
     model: MODEL,
     max_tokens: 1024,
@@ -60,11 +83,19 @@ async function groundedAnswer(question, documents) {
     };
   }
 
+  const docTitles = documents.map((d, i) => `${i + 1}. ${d.title}`);
+
+  if (!HAS_KEY) {
+    // Demo mode — no API key. Same shape as the real response.
+    return {
+      answer: `Based on the ${documents.length} uploaded document(s), here is a sample grounded answer to "${question}". In live mode Claude would cite the exact documents it used. (demo mode — add an API key for live Claude responses)`,
+      doc_refs: docTitles
+    };
+  }
+
   const context = documents.map((d, i) =>
     `[Document ${i + 1}: ${d.title}]\n${d.content.slice(0, 3000)}`
   ).join('\n\n---\n\n');
-
-  const docTitles = documents.map((d, i) => `${i + 1}. ${d.title}`);
 
   const response = await client.messages.create({
     model: MODEL,
@@ -105,6 +136,12 @@ async function generateDigest(documents) {
   const summaries = documents.slice(0, 10).map((d, i) =>
     `Document ${i + 1} — ${d.title}:\n${d.summary || 'No summary available'}`
   ).join('\n\n');
+
+  if (!HAS_KEY) {
+    // Demo mode — no API key. Same shape (a string) as the real response.
+    const titles = documents.slice(0, 10).map((d) => d.title).join(', ');
+    return `Daily ops digest (sample): ${documents.length} document(s) on file — ${titles}. Most items are on track; review any flagged risks and confirm upcoming deadlines. (demo mode — add an API key for live Claude responses)`;
+  }
 
   const response = await client.messages.create({
     model: MODEL,
