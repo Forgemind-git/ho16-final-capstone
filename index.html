@@ -1,107 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HO16 — Final Capstone: AI Solution | Forgemind AI Claude Course</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#F8F9FA; color:#1a1a2e; }
-:root { --color: #1E40AF; }
-header { background: var(--color); color:#fff; padding:40px 32px 32px; }
-header .badge { font-size:13px; font-weight:700; letter-spacing:.08em; opacity:.8; text-transform:uppercase; margin-bottom:8px; }
-header h1 { font-size:28px; font-weight:800; margin-bottom:8px; }
-header p { font-size:15px; opacity:.85; max-width:640px; line-height:1.6; }
-.sub-bar { background:#fff; border-left:4px solid var(--color); padding:14px 20px; margin:24px 32px; border-radius:4px; font-size:14px; color:#374151; line-height:1.6; box-shadow:0 1px 4px rgba(0,0,0,.07); }
-.sub-bar strong { color:var(--color); }
-.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; padding:0 32px 40px; }
-.card { background:#fff; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,.08); overflow:hidden; }
-.card:hover { box-shadow:0 4px 16px rgba(0,0,0,.13); }
-.card-top { background:var(--color); padding:14px 18px; display:flex; align-items:center; gap:10px; }
-.card-num { background:rgba(255,255,255,.25); color:#fff; font-weight:800; font-size:12px; border-radius:20px; padding:2px 9px; }
-.card-top h3 { color:#fff; font-size:14.5px; font-weight:700; }
-.card-body { padding:16px 18px; }
-.card-body p { font-size:13px; color:#4B5563; line-height:1.6; margin-bottom:14px; }
-.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:var(--color); color:#fff; text-decoration:none; border-radius:6px; font-size:13px; font-weight:600; }
-.btn:hover { opacity:.88; }
-footer { text-align:center; padding:24px; color:#9CA3AF; font-size:13px; border-top:1px solid #E5E7EB; margin-top:8px; }
-@media(max-width:580px){ .grid{ grid-template-columns:1fr; padding:0 14px 28px; } header{ padding:24px 16px; } .sub-bar{ margin:14px 14px; } }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HO16: Final Capstone — Deployed AI Solution — Starter</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; background:#F8F9FA; color:#1a1a2e; }
+    header { background:#1E40AF; color:#fff; padding:40px 32px 32px; }
+    .badge { font-size:12px; font-weight:700; letter-spacing:.08em; opacity:.75; text-transform:uppercase; margin-bottom:8px; }
+    h1 { font-size:26px; font-weight:800; margin-bottom:6px; }
+    header p { font-size:14px; opacity:.85; max-width:600px; line-height:1.6; }
+    .starter-bar { background:#FEF3C7; border-left:4px solid #D97706; padding:14px 20px; margin:24px 32px; border-radius:4px; font-size:14px; color:#92400E; line-height:1.6; }
+    .starter-bar strong { color:#92400E; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; padding:0 32px 40px; }
+    .card { background:#fff; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,.08); overflow:hidden; }
+    .card-top { background:#1E40AF; padding:12px 16px; display:flex; align-items:center; gap:10px; }
+    .num { background:rgba(255,255,255,.25); color:#fff; font-weight:800; font-size:12px; border-radius:20px; padding:2px 9px; }
+    .card-top h3 { color:#fff; font-size:14px; font-weight:700; }
+    .card-body { padding:16px; }
+    .card-body p { font-size:13px; color:#4B5563; line-height:1.6; margin-bottom:14px; }
+    .todo-badge { display:inline-block; background:#FEF3C7; color:#92400E; font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; margin-bottom:12px; }
+    .btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:#1E40AF; color:#fff; text-decoration:none; border-radius:6px; font-size:13px; font-weight:600; }
+    footer { text-align:center; padding:24px; color:#9CA3AF; font-size:13px; border-top:1px solid #E5E7EB; }
+  </style>
 </head>
 <body>
-
-<header>
-  <div class="badge">HO16</div>
-  <h1>Final Capstone — AI Solution</h1>
-  <p>Deployed AI solution architectures using Claude.ai subscription features — Projects, Cowork, Skills, MCP, Artifacts.</p>
-</header>
-
-<div class="sub-bar">
-  <strong>Claude.ai subscription required</strong> — Requires Claude.ai Pro or Team subscription. Each sample shows the full architecture using Claude.ai features. No API key needed — Claude.ai is your AI engine.
-</div>
-
-<div class="grid">
-
-  <div class="card">
-    <div class="card-top">
-      <span class="card-num">01</span>
-      <h3>AI Ops Command Center</h3>
-    </div>
-    <div class="card-body">
-      <p>Operations teams waste hours reviewing scattered documents and status updates. Build an AI-powered ops hub that summarises uploaded docs, answers grounded questions, and tracks key metrics — all inside Claude.ai Projects.</p>
-      <a href="./samples/sample-01/" class="btn">View Sample →</a>
-    </div>
+  <header>
+    <div class="badge">HO16 &middot; Forgemind AI Claude Course &middot; Starter Template</div>
+    <h1>Final Capstone &mdash; Deployed AI Solution</h1>
+    <p>Your starting point. Pick ONE sample below, read the problem statement, and build it using Claude.ai.</p>
+  </header>
+  <div class="starter-bar">
+    <strong>This is the starter branch.</strong> It gives you the structure &mdash; you supply the thinking and the Claude.ai work.
+    To see a complete reference, switch to the <code>main</code> branch or visit the GitHub Pages site.
   </div>
+  <div class="grid">
 
-  <div class="card">
-    <div class="card-top">
-      <span class="card-num">02</span>
-      <h3>Sales Intelligence Platform</h3>
+    <div class="card">
+      <div class="card-top"><span class="num">Sample 1</span><h3>ops command center</h3></div>
+      <div class="card-body">
+        <span class="todo-badge">&#x2B1C; Not started</span>
+        <p>Your operations are run from memory. Build and deploy an AI ops command centre.</p>
+        <a href="./samples/sample-01/" class="btn">Start here &rarr;</a>
+      </div>
     </div>
-    <div class="card-body">
-      <p>Sales teams waste hours researching companies and writing personalised emails from scratch. Build an AI-powered sales hub that enriches leads, scores them, drafts outreach, and tracks a deal pipeline via Claude.ai Artifacts.</p>
-      <a href="./samples/sample-02/" class="btn">View Sample →</a>
+
+    <div class="card">
+      <div class="card-top"><span class="num">Sample 2</span><h3>sales intelligence</h3></div>
+      <div class="card-body">
+        <span class="todo-badge">&#x2B1C; Not started</span>
+        <p>Your sales team flies blind with no view of the pipeline. Build and deploy a sales intelligence platform.</p>
+        <a href="./samples/sample-02/" class="btn">Start here &rarr;</a>
+      </div>
     </div>
+
+    <div class="card">
+      <div class="card-top"><span class="num">Sample 3</span><h3>content engine</h3></div>
+      <div class="card-body">
+        <span class="todo-badge">&#x2B1C; Not started</span>
+        <p>You want to produce content at scale but research, drafting and tracking are disconnected. Build and deploy a content engine.</p>
+        <a href="./samples/sample-03/" class="btn">Start here &rarr;</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><span class="num">Sample 4</span><h3>finance copilot</h3></div>
+      <div class="card-body">
+        <span class="todo-badge">&#x2B1C; Not started</span>
+        <p>You never know where your money goes. Build and deploy a personal-finance copilot.</p>
+        <a href="./samples/sample-04/" class="btn">Start here &rarr;</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-top"><span class="num">Sample 5</span><h3>support copilot</h3></div>
+      <div class="card-body">
+        <span class="todo-badge">&#x2B1C; Not started</span>
+        <p>Your support is slow and reactive. Build and deploy a customer-support co-pilot.</p>
+        <a href="./samples/sample-05/" class="btn">Start here &rarr;</a>
+      </div>
+    </div>
+
   </div>
-
-  <div class="card">
-    <div class="card-top">
-      <span class="card-num">03</span>
-      <h3>Content Production Engine</h3>
-    </div>
-    <div class="card-body">
-      <p>Content teams spend days researching, writing, and reformatting the same content for every channel. Automate the full pipeline — research brief to long-form post to three social variants — inside one Claude.ai Project.</p>
-      <a href="./samples/sample-03/" class="btn">View Sample →</a>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-top">
-      <span class="card-num">04</span>
-      <h3>Personal Finance Copilot</h3>
-    </div>
-    <div class="card-body">
-      <p>People upload bank statements and still don't know where their money goes. Upload a CSV, have Claude categorise every transaction automatically, generate an interactive spending dashboard, and chat naturally about your finances.</p>
-      <a href="./samples/sample-04/" class="btn">View Sample →</a>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-top">
-      <span class="card-num">05</span>
-      <h3>Customer Support Co-Pilot</h3>
-    </div>
-    <div class="card-body">
-      <p>Support agents write replies from scratch while missing relevant KB articles. Build an AI support hub that triages tickets, drafts grounded replies citing your knowledge base, and shows a manager trends dashboard — all in Claude.ai.</p>
-      <a href="./samples/sample-05/" class="btn">View Sample →</a>
-    </div>
-  </div>
-
-</div>
-
-<footer>
-  Forgemind AI · Claude Course · HO16 · <a href="https://github.com/Forgemind-git/ho16-final-capstone" style="color:var(--color)">github.com/Forgemind-git/ho16-final-capstone</a>
-</footer>
-
+  <footer>Forgemind AI &middot; Claude Course &middot; HO16 &middot; <a href="https://github.com/Forgemind-git/ho16-final-capstone" style="color:#1E40AF">github.com/Forgemind-git/ho16-final-capstone</a></footer>
 </body>
 </html>

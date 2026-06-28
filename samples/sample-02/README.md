@@ -1,65 +1,70 @@
 # Sample 02 — Sales Intelligence Platform
 
-> **Problem Statement:** Sales teams waste hours manually researching companies before outreach and writing personalised emails from scratch. This project builds an AI-powered sales intelligence hub where Claude enriches company data, drafts personalised outreach emails, and a pipeline dashboard tracks every deal by stage — all logged to SQLite.
+> **Problem Statement:** Your sales team flies blind with no view of the pipeline. Build and deploy a sales intelligence platform.
 
-## Architecture Overview
+## Your Mission
+
+Design and deploy a solution that solves this problem using Claude.ai subscription features.
+You do NOT need to write code — use Claude Projects, Cowork agents, Skills, and Artifacts.
+
+## Components to Build
+
+Work through each component below. Check it off when done.
+
+- [ ] **Claude Project: grounded on ICP + product docs**
+  - Upload your Ideal Customer Profile (ICP) and product documentation to a Claude Project
+  - Write a system prompt that makes Claude an expert on your product and ideal buyers
+  - Test: can Claude identify whether a lead fits your ICP?
+
+- [ ] **MCP server: CRM data tools**
+  - Identify what CRM data Claude needs (lead lists, deal stages, contact info, etc.)
+  - Plan which MCP tools would surface that data to Claude
+  - Document the tool signatures you would build
+
+- [ ] **Cowork: pipeline analysis agent**
+  - Design a Cowork agent that reviews your pipeline and flags risks or opportunities
+  - What data does it need? What questions should it answer?
+  - Write the agent instructions
+
+- [ ] **Artifact: deal-health dashboard**
+  - Ask Claude to generate a deal-health dashboard Artifact
+  - It should show pipeline stages, lead scores, and next actions at a glance
+  - Iterate until it matches your sales team's needs
+
+## Architecture Plan
+
+Fill this in as you design your solution:
 
 ```
-┌────────────────────────────────────────────────────────┐
-│               Sales Intelligence Platform               │
-├────────────────────────────────────────────────────────┤
-│  Frontend (index.html)                                  │
-│  ┌──────────────┐ ┌───────────────┐ ┌───────────────┐ │
-│  │   Pipeline   │ │ Lead Enricher │ │ Email Drafter │ │
-│  │ Kanban Board │ │ + Company Data│ │ (Personalised)│ │
-│  └──────────────┘ └───────────────┘ └───────────────┘ │
-├────────────────────────────────────────────────────────┤
-│  Backend (Express.js)                                   │
-│  POST /api/leads/enrich      — Claude extracts info     │
-│  POST /api/leads/email       — Claude writes email      │
-│  GET  /api/leads             — list all leads           │
-│  POST /api/leads             — create lead              │
-│  PATCH /api/leads/:id        — update stage             │
-│  GET  /api/pipeline          — pipeline summary         │
-├────────────────────────────────────────────────────────┤
-│  AI Layer (claude.js)                                   │
-│  enrichCompany()   — infer company profile from name    │
-│  draftEmail()      — write personalised outreach        │
-│  scoreLead()       — rate lead quality 1-10             │
-├────────────────────────────────────────────────────────┤
-│  Data Layer (SQLite)                                    │
-│  leads    — id, company, contact, stage, enrichment     │
-│  emails   — id, lead_id, subject, body, created_at      │
-│  crm_log  — id, lead_id, action, note, created_at       │
-└────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│       Sales Intelligence Platform        │
+├──────────────────────────────────────────┤
+│  [TODO: describe your Claude Project]    │
+├──────────────────────────────────────────┤
+│  [TODO: describe your MCP tools]         │
+├──────────────────────────────────────────┤
+│  [TODO: describe your Cowork agent]      │
+├──────────────────────────────────────────┤
+│  [TODO: describe your Artifact]          │
+└──────────────────────────────────────────┘
 ```
 
-## Course Concepts Demonstrated
+## Deployment Checklist
 
-- **Lead Enrichment:** Claude extracts company profile (industry, size, pain points) from a company name
-- **AI Drafting:** Claude writes personalised emails using enriched company data
-- **Pipeline Dashboard:** Kanban view of deals by stage (Prospect/Qualified/Proposal/Closed)
-- **CRM Log:** Every action (enrich, email, stage change) logged to SQLite
-- **Full-Stack:** Single Express server + vanilla HTML single-page app
+- [ ] Claude Project created with ICP and product docs uploaded
+- [ ] System prompt tested with real lead examples
+- [ ] Cowork agent runs a complete pipeline analysis
+- [ ] Deal-health Artifact renders and updates correctly
+- [ ] Shared with at least one sales team member
 
-## Setup Instructions
+## Your Deployed URL
 
-```bash
-cd samples/sample-02/backend
-npm install
-cp ../.env.example .env
-# Edit .env — add your ANTHROPIC_API_KEY
-node server.js
-# Open http://localhost:3002
-```
+> TODO: Add the link to your deployed solution here once it is live.
 
-## Live URL
+## Reflection
 
-http://localhost:3002 (replace with your deployed URL after deployment)
+Answer these after you finish:
 
-## What You Can Do
-
-1. Enter a company name → Claude enriches it with industry, size, pain points, and lead score
-2. View enriched profile → Click "Draft Email" for a personalised outreach email
-3. Move deals through the pipeline (Prospect → Qualified → Proposal → Closed Won/Lost)
-4. View CRM log of all actions taken on a lead
+1. What problem does your solution actually solve?
+2. Which Claude.ai feature was most useful and why?
+3. What would you add next?

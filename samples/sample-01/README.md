@@ -1,73 +1,70 @@
 # Sample 01 — AI Ops Command Center
 
-> **Problem Statement:** Operations teams waste hours manually reviewing documents, status updates, and scattered data sources. This project builds an intelligent ops hub where Claude summarises uploaded documents, answers grounded questions about them, and a dashboard tracks key metrics — all backed by a scheduled data refresh.
+> **Problem Statement:** Your operations are run from memory. Build and deploy an AI ops command centre.
 
-## Architecture Overview
+## Your Mission
 
-```
-┌─────────────────────────────────────────────────────┐
-│                  AI Ops Command Center               │
-├─────────────────────────────────────────────────────┤
-│  Frontend (index.html)                               │
-│  ┌──────────┐ ┌────────────┐ ┌──────────────────┐  │
-│  │ Dashboard│ │ Doc Upload │ │  Q&A Assistant   │  │
-│  │ Metrics  │ │ + Summaries│ │  (Grounded Chat) │  │
-│  └──────────┘ └────────────┘ └──────────────────┘  │
-├─────────────────────────────────────────────────────┤
-│  Backend (Express.js)                                │
-│  POST /api/docs/upload     — ingest + Claude summary │
-│  GET  /api/docs            — list documents          │
-│  POST /api/chat            — grounded Q&A via Claude │
-│  GET  /api/metrics         — dashboard stats         │
-│  POST /api/refresh         — manual data refresh     │
-├─────────────────────────────────────────────────────┤
-│  AI Layer (claude.js)                                │
-│  summariseDocument()  — extract key points + actions │
-│  groundedAnswer()     — answer using doc context     │
-│  generateDigest()     — daily ops digest             │
-├─────────────────────────────────────────────────────┤
-│  Data Layer (SQLite)                                 │
-│  documents  — id, title, content, summary, created   │
-│  chat_logs  — id, question, answer, doc_refs, ts     │
-│  metrics    — id, key, value, refreshed_at           │
-└─────────────────────────────────────────────────────┘
-```
+Design and deploy a solution that solves this problem using Claude.ai subscription features.
+You do NOT need to write code — use Claude Projects, Cowork agents, Skills, and Artifacts.
 
-## Course Concepts Demonstrated
+## Components to Build
 
-- **Research + Grounding:** Claude summarises real document content; Q&A is grounded in stored docs
-- **Claude AI Integration:** Anthropic SDK with claude-3-5-haiku-20241022 for speed + cost
-- **Dashboard:** Live metrics panel with document count, query count, last refresh time
-- **Automation:** /api/refresh endpoint simulates a scheduled data refresh (pair with cron)
-- **Persistent Storage:** SQLite stores all documents, summaries, and conversation logs
-- **Full-Stack:** Single Express server + vanilla HTML single-page app
+Work through each component below. Check it off when done.
 
-## Setup Instructions
+- [ ] **Claude Project: grounded on runbooks + SOPs**
+  - Upload your ops runbooks and SOPs to a Claude Project
+  - Write a system prompt that grounds Claude in those documents
+  - Test: can Claude answer operational questions accurately?
 
-```bash
-cd samples/sample-01/backend
-npm install
-cp ../.env.example .env
-# Edit .env — add your ANTHROPIC_API_KEY
-node server.js
-# Open http://localhost:3001
-```
+- [ ] **MCP server: real-time status tools**
+  - Identify what real-time data your ops team needs (server status, ticket queues, etc.)
+  - Plan which MCP tools would expose that data to Claude
+  - Document the tool signatures you would build
 
-## Live URL
+- [ ] **Cowork: daily ops briefing agent**
+  - Design a Cowork agent that runs a daily ops briefing
+  - What inputs does it need? What should the output look like?
+  - Write the agent instructions
 
-http://localhost:3001 (replace with your deployed URL after deployment)
+- [ ] **Artifact: live status dashboard**
+  - Ask Claude to generate an HTML/JS dashboard Artifact
+  - It should display key ops metrics at a glance
+  - Iterate until it matches your ops team's needs
 
-## Scheduled Refresh
+## Architecture Plan
 
-Add this to your crontab to auto-refresh metrics every hour:
+Fill this in as you design your solution:
 
 ```
-0 * * * * curl -X POST http://localhost:3001/api/refresh
+┌──────────────────────────────────────────┐
+│         AI Ops Command Center            │
+├──────────────────────────────────────────┤
+│  [TODO: describe your Claude Project]    │
+├──────────────────────────────────────────┤
+│  [TODO: describe your MCP tools]         │
+├──────────────────────────────────────────┤
+│  [TODO: describe your Cowork agent]      │
+├──────────────────────────────────────────┤
+│  [TODO: describe your Artifact]          │
+└──────────────────────────────────────────┘
 ```
 
-## What You Can Do
+## Deployment Checklist
 
-1. Upload a document (paste text) — Claude produces a structured summary with key points and action items
-2. Ask questions — the assistant answers using all uploaded documents as context
-3. View dashboard — see total docs, queries, and last refresh timestamp
-4. Trigger refresh — simulates fetching fresh data from external sources
+- [ ] Claude Project created and documents uploaded
+- [ ] System prompt tested and refined
+- [ ] Cowork agent runs without errors
+- [ ] Dashboard Artifact renders correctly
+- [ ] Shared with at least one team member
+
+## Your Deployed URL
+
+> TODO: Add the link to your deployed solution here once it is live.
+
+## Reflection
+
+Answer these after you finish:
+
+1. What problem does your solution actually solve?
+2. Which Claude.ai feature was most useful and why?
+3. What would you add next?

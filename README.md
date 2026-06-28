@@ -1,34 +1,56 @@
 # HO16 — Final Capstone — Deployed AI Solution
 
-> Hands-on portfolio project · **Week 6** · **Peer-reviewed** · module M19. Part of the **ForgeMind AI — AI Productivity Essentials** course.
+> **Starter branch** — Hands-on portfolio project · Week 6 · Peer-reviewed · module M19
+> Part of the **ForgeMind AI — AI Productivity Essentials** course.
 
-## Goal
+> This is the **starter (skeleton) branch**. It gives you structure — you supply the thinking and the Claude.ai work.
+> To see a complete reference solution, switch to the `main` branch.
 
-**Done when:** A deployed full-stack AI solution using the whole course · your final project
+## Your Goal
 
-## What to ship
+Pick ONE problem statement below. Design and deploy an AI solution for it using Claude.ai subscription features — Projects, Cowork agents, Skills, MCP, and Artifacts. No code required.
 
-The deployed solution + a story-driven README (problem→approach→tools used across the course→result) + a 3–5 min demo + a 'concepts used' checklist.
+**Done when:** Your solution is deployed and shared, with a completed README describing what you built, the problem it solves, and the Claude.ai features you used.
 
-## Pick a problem statement
+## What to Ship
 
-Choose **one** of these real use-cases — or bring your own (get it approved first):
+- A working deployed solution (shared Claude Project, Artifact, or similar)
+- A story-driven README: problem → approach → tools used → result
+- A 3–5 min demo recording or live walkthrough
+- A completed reflection in your chosen sample's README
 
-1. Your operations are run from memory and you want one place to see and act on everything. Build and deploy an AI ops command center combining a research agent, a grounded assistant over your docs, a scheduled automation, and a live dashboard. Success: a deployed URL where research, grounded answers, automation and the dashboard all work, with a README listing the course pieces used.
+## Pick a Problem Statement
 
-2. Your sales team flies blind with no view of the pipeline or who to chase. Build and deploy a sales intelligence platform combining lead enrichment (an MCP or agent), a grounded prompting toolkit for outreach, and a pipeline dashboard on real data. Success: a deployed URL that enriches leads, drafts outreach and shows the pipeline, with a README naming the course concepts combined.
+Choose **one** of the 5 samples below — or bring your own (get it approved first):
 
-3. You want to produce content at scale but research, drafting and tracking are disconnected. Build and deploy a content engine combining trend research, a prompt toolkit for drafts, a repurposing automation, and a performance dashboard. Success: a deployed URL taking a topic from research to posted variants with a metrics view, and a README listing the course pieces used.
+| # | Problem | Starter Folder |
+|---|---------|----------------|
+| 1 | Your operations are run from memory. Build and deploy an AI ops command centre. | [samples/sample-01/](./samples/sample-01/) |
+| 2 | Your sales team flies blind with no view of the pipeline. Build and deploy a sales intelligence platform. | [samples/sample-02/](./samples/sample-02/) |
+| 3 | You want to produce content at scale but research, drafting and tracking are disconnected. Build and deploy a content engine. | [samples/sample-03/](./samples/sample-03/) |
+| 4 | You never know where your money goes. Build and deploy a personal-finance copilot. | [samples/sample-04/](./samples/sample-04/) |
+| 5 | Your support is slow and reactive. Build and deploy a customer-support co-pilot. | [samples/sample-05/](./samples/sample-05/) |
 
-4. You never know where your money goes and want a copilot that actually tracks it. Build and deploy a personal-finance copilot combining statement ingest, a categorisation automation, a grounded Q&A assistant, and an insight dashboard. Success: a deployed URL where you upload statements, ask sourced questions and see spending insights, with a README naming the course concepts combined.
+## How to Use This Repo
 
-5. Your support is slow and reactive and leadership has no visibility. Build and deploy a customer-support co-pilot combining a grounded knowledge-base assistant, a ticket-triage automation, and a trends dashboard. Success: a deployed URL where agents get cited answers, tickets auto-triage and trends are visible, with a README listing the research, grounding, prompting, dashboard and automation pieces used.
+1. Fork or clone this repo (you are on the `starter` branch — stay here).
+2. Open `index.html` in a browser to see the landing page.
+3. Pick your sample and read the `README.md` inside its folder.
+4. Fill in the `architecture.md` with your design before you start building.
+5. Work through the `components/` folder — each file has a TODO template.
+6. Deploy your solution and update this README with your live URL and reflection.
 
-## How to use this repo
+## My Solution (fill this in when done)
 
-1. Click **Use this template** to create your own copy.
-2. Build your chosen project in your copy.
-3. Replace this section of the README with: what you built, the problem it solves, and how to run it.
+**Problem I chose:** TODO
+
+**What I built:** TODO
+
+**Claude.ai features used:** TODO
+
+**Live URL:** TODO
+
+**Demo link:** TODO
 
 ---
 
