@@ -87,3 +87,25 @@ keep a mistake from burning your whole session:
   automatically, and `SKILL.md` is a reusable "token-wise" skill.
 
 If you do hit the limit, it resets after a few hours — nothing you've saved is lost.
+
+## Run it locally
+
+This is a full-stack AI solution (frontend + backend + database + AI calls). It runs on
+**localhost** — the GitHub Pages page is static and can't run the backend or the AI calls.
+To run it on your own machine:
+
+```bash
+# clone your copy of this repo, then:
+cp .env.example .env      # database connection + your Claude/AI credentials
+npm install
+npm run dev               # starts the backend + frontend locally
+```
+
+Open the local URL it prints (e.g. `http://localhost:3000`). Each `samples/sample-0X/`
+folder has its own README, architecture notes, and a `concepts used` checklist.
+
+## Deploying to a server
+
+Getting the final solution to a live public URL is covered once in the course: **See the
+Week-6 deploy walkthrough**. Build and demo it locally first, then follow that one video to
+deploy.
