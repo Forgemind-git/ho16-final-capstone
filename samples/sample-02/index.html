@@ -1,61 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sample 02 — Sales Intelligence Platform | HO16</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#F8F9FA; color:#1a1a2e; }
-:root { --color: #1E40AF; }
-header { background: var(--color); color:#fff; padding:40px 32px 32px; }
-header .badge { font-size:12px; font-weight:700; letter-spacing:.1em; opacity:.75; text-transform:uppercase; margin-bottom:10px; }
-header h1 { font-size:32px; font-weight:800; margin-bottom:10px; }
-header .sub { font-size:16px; opacity:.85; max-width:680px; line-height:1.7; }
-.no-key { background:#fff3cd; border-left:4px solid #ffc107; padding:12px 20px; margin:24px 32px 0; border-radius:4px; font-size:13.5px; color:#856404; }
-.no-key strong { color:#1E40AF; }
-main { max-width:860px; margin:0 auto; padding:32px 24px 60px; }
-h2 { font-size:20px; font-weight:700; color:var(--color); margin:36px 0 14px; border-bottom:2px solid #E5E7EB; padding-bottom:8px; }
-h3 { font-size:15px; font-weight:700; color:#1a1a2e; margin:20px 0 8px; }
-p { font-size:14.5px; color:#374151; line-height:1.7; margin-bottom:12px; }
-ul, ol { padding-left:20px; margin-bottom:14px; }
-li { font-size:14.5px; color:#374151; line-height:1.8; }
-.arch-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin:16px 0; }
-.arch-card { background:#fff; border:1px solid #E5E7EB; border-radius:8px; padding:16px; }
-.arch-card .feature { display:inline-block; background:var(--color); color:#fff; font-size:11px; font-weight:700; border-radius:20px; padding:2px 10px; margin-bottom:8px; letter-spacing:.05em; }
-.arch-card h4 { font-size:13.5px; font-weight:700; margin-bottom:6px; color:#1a1a2e; }
-.arch-card p { font-size:13px; color:#6B7280; margin:0; line-height:1.6; }
-.steps ol { counter-reset: step; list-style:none; padding:0; }
-.steps ol li { counter-increment:step; display:flex; gap:16px; margin-bottom:20px; }
-.steps ol li::before { content:counter(step); min-width:32px; height:32px; background:var(--color); color:#fff; font-weight:800; font-size:13px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
-.steps ol li .content { flex:1; }
-.steps ol li .content strong { display:block; font-size:14.5px; font-weight:700; margin-bottom:4px; color:#1a1a2e; }
-.steps ol li .content span { font-size:13.5px; color:#4B5563; line-height:1.7; }
-pre { background:#1e1e2e; color:#cdd6f4; border-radius:8px; padding:18px 20px; font-size:13px; line-height:1.7; overflow-x:auto; margin:12px 0 20px; white-space:pre-wrap; word-break:break-word; }
-code { font-family: 'Fira Code', 'Courier New', monospace; }
-.prompt-label { font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:.07em; margin-bottom:4px; }
-.checklist { list-style:none; padding:0; }
-.checklist li { display:flex; gap:10px; align-items:flex-start; font-size:14px; color:#374151; line-height:1.7; padding:6px 0; border-bottom:1px solid #F3F4F6; }
-.checklist li::before { content:"☐"; font-size:16px; color:var(--color); flex-shrink:0; }
-footer { text-align:center; padding:28px 16px; color:#9CA3AF; font-size:13px; border-top:1px solid #E5E7EB; margin-top:20px; }
-footer strong { color:var(--color); }
+  :root{
+    --pageBg:#F7F7F3; --headerBg:#0F0F10; --headerText:#F5F5F2; --headerMuted:#A1A1AA;
+    --headerBorder:rgba(255,255,255,.12); --cardBg:#fff; --border:#E5E5E0;
+    --text:#111; --textSec:#6B7280; --textMuted:#999; --primary:#dc2626; --primaryHover:#b91c1c;
+    --hover:#EFEEE6; --green:#0F6E56; --purple:#534AB7; --amber:#854F0B;
+    --shadowSm:0 1px 2px rgba(0,0,0,.08); --shadowMd:0 8px 24px rgba(0,0,0,.06);
+    --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
+  a{color:inherit;}
+  /* dark header */
+  header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
+    padding:0 20px;position:sticky;top:0;z-index:10;border-bottom:1px solid var(--headerBorder);}
+  .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
+  .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
+  .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
+  .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  /* layout */
+  .wrap{max-width:960px;margin:0 auto;padding:32px 24px 64px;}
+  /* hero */
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);}
+  h1{font-size:30px;font-weight:700;margin:8px 0 14px;letter-spacing:-.01em;}
+  .pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+  .pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:99px;font-family:var(--mono);}
+  .pill.wk{background:#E7F0FE;color:#1877F2;} .pill.mod{background:#EEEDFE;color:#3C3489;}
+  .pill.fmt{background:#E1F5EE;color:#0F6E56;} .pill.kind{background:#FAEEDA;color:#854F0B;}
+  /* card */
+  .card{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:20px;}
+  .done{display:flex;align-items:flex-start;gap:12px;margin-bottom:28px;}
+  .done .ic{width:34px;height:34px;border-radius:8px;background:#FCEBEB;color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .done .cap{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--textMuted);}
+  .done .val{font-size:15px;font-weight:600;margin-top:3px;}
+  .section-h{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:600;margin:34px 0 14px;}
+  .section-h svg{color:var(--primary);}
+  .sub{font-size:13px;color:var(--textSec);margin:-8px 0 16px;}
+  /* sample grid */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .sample{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);
+    padding:16px;display:flex;flex-direction:column;gap:8px;transition:box-shadow .15s,transform .15s;}
+  .sample:hover{box-shadow:var(--shadowMd);transform:translateY(-1px);}
+  .sample .num{font-family:var(--mono);font-size:11px;font-weight:500;color:#fff;background:var(--primary);
+    width:22px;height:22px;border-radius:99px;display:flex;align-items:center;justify-content:center;}
+  .sample p{font-size:13px;line-height:1.5;color:var(--text);margin:0;}
+  .sample .succ{font-size:12px;color:var(--green);font-weight:500;}
+  /* steps */
+  .steps{counter-reset:s;display:flex;flex-direction:column;gap:10px;}
+  .step{display:flex;gap:12px;align-items:flex-start;}
+  .step .n{counter-increment:s;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--primary);
+    border:1.5px solid var(--border);border-radius:99px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .step .n::before{content:counter(s);}
+  .step p{font-size:13.5px;line-height:1.5;margin:2px 0;}
+  /* tip */
+  .tip{background:#FDF6F6;border:1px solid #F3C6C6;border-radius:8px;padding:16px 18px;margin-top:22px;}
+  .tip .th{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--primary);margin-bottom:6px;}
+  .tip ul{margin:6px 0 0;padding-left:18px;font-size:13px;color:var(--textSec);line-height:1.6;}
+  code{font-family:var(--mono);font-size:12px;background:#F1F0EA;padding:1px 5px;border-radius:4px;}
+  footer{border-top:1px solid var(--border);margin-top:40px;padding-top:18px;font-size:12px;color:var(--textMuted);font-family:var(--mono);text-align:center;}
+  @media(max-width:680px){.grid{grid-template-columns:1fr;} h1{font-size:24px;}}
+
+  /* content pages (sample deep-dives) */
+  main{max-width:none;margin:0;padding:0;display:block;}
+  main h2{font-size:18px;font-weight:600;color:var(--text);margin:38px 0 14px;display:flex;align-items:center;gap:8px;padding-bottom:9px;border-bottom:1px solid var(--border);}
+  main h2 svg{color:var(--primary);width:19px;height:19px;flex-shrink:0;}
+  main h3{font-size:15px;font-weight:700;color:var(--text);margin:20px 0 8px;}
+  main p{font-size:14px;color:var(--textSec);line-height:1.7;margin-bottom:12px;}
+  main ul,main ol{padding-left:20px;margin-bottom:14px;}
+  main li{font-size:14px;color:var(--textSec);line-height:1.8;}
+  main a{color:var(--primary);font-weight:500;text-decoration:none;}
+  main a:hover{color:var(--primaryHover);}
+  .arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0;}
+  .arch-card{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px;transition:box-shadow .15s,transform .15s;}
+  .arch-card:hover{box-shadow:var(--shadowMd);transform:translateY(-1px);}
+  .arch-card .feature{display:inline-block;background:var(--primary);color:#fff;font-size:10px;font-weight:600;font-family:var(--mono);border-radius:99px;padding:2px 10px;margin-bottom:8px;letter-spacing:.05em;text-transform:uppercase;}
+  .arch-card h4{font-size:13.5px;font-weight:700;margin-bottom:6px;color:var(--text);}
+  .arch-card p{font-size:13px;color:var(--textSec);margin:0;line-height:1.6;}
+  .steps ol{counter-reset:step;list-style:none;padding:0;margin:0;}
+  .steps ol li{counter-increment:step;display:flex;gap:14px;margin-bottom:18px;font-size:14px;}
+  .steps ol li::before{content:counter(step);min-width:26px;height:26px;background:#FCEBEB;color:var(--primary);font-family:var(--mono);font-weight:500;font-size:12px;border:1.5px solid var(--border);border-radius:99px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+  .steps ol li .content{flex:1;}
+  .steps ol li .content strong{display:block;font-size:14px;font-weight:700;margin-bottom:4px;color:var(--text);}
+  .steps ol li .content span{font-size:13.5px;color:var(--textSec);line-height:1.7;}
+  .prompt-label{font-size:11px;font-weight:600;font-family:var(--mono);color:var(--textMuted);text-transform:uppercase;letter-spacing:.1em;margin:18px 0 4px;}
+  pre{background:#0F0F10;color:#E5E5E0;border:1px solid #26262b;border-radius:8px;padding:18px 20px;font-family:var(--mono);font-size:12.5px;line-height:1.7;overflow-x:auto;margin:8px 0 20px;white-space:pre-wrap;word-break:break-word;}
+  pre code{background:none;padding:0;color:inherit;font-size:inherit;font-family:var(--mono);}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--textSec);line-height:1.7;padding:8px 0;border-bottom:1px solid var(--border);}
+  .checklist li::before{content:"";width:16px;height:16px;margin-top:3px;border:1.5px solid var(--primary);border-radius:4px;flex-shrink:0;}
+  .privacy-note{background:#FDF6F6;border:1px solid #F3C6C6;border-radius:8px;padding:14px 18px;margin:16px 0;font-size:13.5px;color:var(--textSec);line-height:1.7;}
+  .privacy-note strong{display:block;margin-bottom:4px;color:var(--primary);}
 </style>
 </head>
 <body>
+  <header>
+    <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
+    <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
+  </header>
 
-<header>
-  <div class="badge">HO16 · Sample 02</div>
-  <h1>Sales Intelligence Platform</h1>
-  <p class="sub">Sales teams waste hours manually researching companies and writing personalised emails from scratch. This capstone builds an AI-powered sales intelligence hub that enriches leads, scores them, drafts personalised outreach, and tracks a deal pipeline — all using Claude.ai subscription features with no API key.</p>
-</header>
+  <div class="wrap">
+    <div class="eyebrow">Hands-On 16 · Week 6 · Module M19 — Deployed AI Solution</div>
+    <h1>Sales Intelligence Platform</h1>
+    <div class="pills">
+      <span class="pill wk">Week 6</span>
+      <span class="pill mod">M19 · Deployed AI Solution</span>
+      <span class="pill fmt">Peer-reviewed</span>
+      <span class="pill kind">Capstone · Sample 02</span>
+    </div>
+    <div class="sub" style="margin-top:0;margin-bottom:20px;">Sales teams waste hours manually researching companies and writing personalised emails from scratch. This capstone builds an AI-powered sales intelligence hub that enriches leads, scores them, drafts personalised outreach, and tracks a deal pipeline — all using Claude.ai subscription features with no API key.</div>
 
-<div class="no-key">
-  <strong>No API key required.</strong> This solution is built entirely on your <strong>Claude.ai Pro or Team subscription</strong> — using Projects, Artifacts, Skills, and MCP integrations.
-</div>
+    <div class="tip">
+      <div class="th"><i data-lucide="key-round"></i> No API key required</div>
+      <ul><li><strong>No API key required.</strong> This solution is built entirely on your <strong>Claude.ai Pro or Team subscription</strong> — using Projects, Artifacts, Skills, and MCP integrations.</li></ul>
+    </div>
 
-<main>
+    <main>
 
-  <h2>Architecture — Claude.ai Features Map</h2>
+  <h2><i data-lucide="network"></i> Architecture — Claude.ai Features Map</h2>
   <p>Every component of the Sales Intelligence Platform maps to a Claude.ai feature. No CRM subscription, no API bills — just your Claude.ai account.</p>
 
   <div class="arch-grid">
@@ -91,7 +160,7 @@ footer strong { color:var(--color); }
     </div>
   </div>
 
-  <h2>Build It Step by Step</h2>
+  <h2><i data-lucide="git-branch"></i> Build It Step by Step</h2>
   <div class="steps">
     <ol>
       <li>
@@ -145,7 +214,7 @@ footer strong { color:var(--color); }
     </ol>
   </div>
 
-  <h2>Prompts &amp; Configs</h2>
+  <h2><i data-lucide="terminal"></i> Prompts &amp; Configs</h2>
 
   <div class="prompt-label">Project Instructions (System Prompt)</div>
   <pre><code>You are a Senior Sales Intelligence Analyst for this team.
@@ -227,7 +296,7 @@ Return as a markdown table, then a JSON array below the table.
 
 Prioritise by score (highest first).</code></pre>
 
-  <h2>Done When</h2>
+  <h2><i data-lucide="check-circle-2"></i> Done When</h2>
   <ul class="checklist">
     <li>Project created in Claude.ai with the Sales Intelligence Analyst system prompt active</li>
     <li>Lead list uploaded (CSV or pasted) and accessible to all Project conversations</li>
@@ -242,10 +311,8 @@ Prioritise by score (highest first).</code></pre>
 
 </main>
 
-<footer>
-  <strong>Built entirely on Claude.ai subscription — no API key required.</strong><br>
-  Forgemind AI · Claude Course · HO16 · <a href="https://github.com/Forgemind-git/ho16-final-capstone" style="color:var(--color)">github.com/Forgemind-git/ho16-final-capstone</a>
-</footer>
-
+    <footer>HO16 · Peer-reviewed · ForgeMind AI — AI Productivity Essentials · Module M19 (Week 6)</footer>
+  </div>
+  <script>lucide.createIcons();</script>
 </body>
 </html>
