@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Ops Command Center — Live Preview | HO16 Sample 01</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --pageBg:#F7F7F3; --headerBg:#0F0F10; --headerText:#F5F5F2; --headerMuted:#A1A1AA;
+    --headerBorder:rgba(255,255,255,.12); --cardBg:#fff; --border:#E5E5E0;
+    --text:#111; --textSec:#6B7280; --textMuted:#999; --primary:#dc2626; --primaryHover:#b91c1c;
+    --hover:#EFEEE6; --green:#0F6E56; --purple:#534AB7; --amber:#854F0B;
+    --shadowSm:0 1px 2px rgba(0,0,0,.08); --shadowMd:0 8px 24px rgba(0,0,0,.06);
+    --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
+  a{color:inherit;}
+  header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
+    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+  .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
+  .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
+  .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
+  .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  .demo-banner{background:#FDF6F6;border-bottom:1px solid #F3C6C6;color:var(--primary);font-size:12.5px;font-weight:500;
+    padding:9px 48px;display:flex;align-items:center;gap:9px;font-family:var(--mono);}
+  .demo-banner .back{margin-left:auto;color:var(--textSec);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;}
+  .demo-banner .back:hover{color:var(--primary);}
+  .wrap{max-width:none;margin:0;padding:26px 48px 64px;}
+  .top{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);}
+  h1{font-size:26px;font-weight:700;margin:6px 0 2px;letter-spacing:-.01em;}
+  .co{font-size:13px;color:var(--textSec);}
+  .co b{color:var(--text);font-weight:600;}
+  .refreshed{font-family:var(--mono);font-size:11.5px;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .refreshed .g{width:7px;height:7px;border-radius:99px;background:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.15);}
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
+  .kpi .lab{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .kpi .lab svg{width:14px;height:14px;}
+  .kpi .val{font-family:var(--mono);font-size:28px;font-weight:500;margin-top:9px;letter-spacing:-.02em;}
+  .kpi .delta{font-size:11.5px;font-weight:600;margin-top:5px;display:flex;align-items:center;gap:4px;font-family:var(--mono);}
+  .kpi .delta.up{color:var(--green);} .kpi .delta.down{color:var(--primary);}
+  .kpi .delta svg{width:13px;height:13px;}
+  /* layout cols */
+  .cols{display:grid;grid-template-columns:1.55fr 1fr;gap:18px;align-items:start;}
+  .card{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:18px 20px;margin-bottom:18px;}
+  .card-h{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin-bottom:2px;}
+  .card-h svg{color:var(--primary);width:17px;height:17px;}
+  .card-h .r{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--textMuted);font-weight:400;}
+  .card-sub{font-size:12.5px;color:var(--textSec);margin-bottom:14px;}
+  /* chart */
+  .chart-tabs{display:flex;gap:6px;margin-bottom:12px;}
+  .chart-tabs button{font-family:var(--mono);font-size:11px;font-weight:500;padding:5px 12px;border-radius:99px;border:1px solid var(--border);
+    background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .chart-tabs button.on{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .chart-wrap{position:relative;}
+  svg .grid-l{stroke:var(--border);stroke-width:1;}
+  svg .axis-t{fill:var(--textMuted);font-family:'DM Mono',monospace;font-size:10px;}
+  /* alerts / activity list */
+  .tabs{display:flex;gap:4px;margin-bottom:12px;border-bottom:1px solid var(--border);}
+  .tabs button{font-size:12.5px;font-weight:600;padding:8px 12px;border:none;background:none;color:var(--textSec);cursor:pointer;
+    border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .12s;}
+  .tabs button.on{color:var(--primary);border-bottom-color:var(--primary);}
+  .row{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--border);}
+  .row:last-child{border-bottom:none;}
+  .row .ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .row .ico svg{width:16px;height:16px;}
+  .ico.red{background:#FCEBEB;color:var(--primary);} .ico.amber{background:#FBF0DC;color:var(--amber);}
+  .ico.green{background:#E1F5EE;color:var(--green);} .ico.blue{background:#E7F0FE;color:#1877F2;}
+  .ico.purple{background:#EEEDFE;color:var(--purple);}
+  .row .body{flex:1;min-width:0;}
+  .row .t{font-size:13.5px;font-weight:600;line-height:1.4;}
+  .row .m{font-size:12.5px;color:var(--textSec);margin-top:2px;line-height:1.5;}
+  .row .time{font-family:var(--mono);font-size:11px;color:var(--textMuted);white-space:nowrap;flex-shrink:0;}
+  .sev{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:99px;text-transform:uppercase;letter-spacing:.05em;}
+  .sev.high{background:#FCEBEB;color:var(--primary);} .sev.med{background:#FBF0DC;color:var(--amber);}
+  .sev.low{background:#E1F5EE;color:var(--green);}
+  .filters{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
+  .filters button{font-family:var(--mono);font-size:10.5px;font-weight:500;padding:4px 10px;border-radius:99px;border:1px solid var(--border);
+    background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .filters button.on{background:#111;border-color:#111;color:#fff;}
+  /* assistant */
+  .assistant{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;position:sticky;top:74px;}
+  .as-head{background:#0F0F10;color:#fff;padding:14px 18px;display:flex;align-items:center;gap:9px;}
+  .as-head .av{width:30px;height:30px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
+  .as-head .av svg{width:17px;height:17px;color:#fff;}
+  .as-head .nm{font-size:14px;font-weight:600;}
+  .as-head .st{font-size:11px;color:#8BE0C4;font-family:var(--mono);display:flex;align-items:center;gap:5px;margin-top:1px;}
+  .as-head .st .d{width:6px;height:6px;border-radius:99px;background:#22c55e;}
+  .as-body{padding:16px 18px;max-height:360px;overflow-y:auto;}
+  .msg{margin-bottom:14px;}
+  .msg .who{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);margin-bottom:4px;}
+  .msg.user .bubble{background:#F1F0EA;border-radius:10px 10px 10px 3px;padding:9px 12px;font-size:13px;line-height:1.5;display:inline-block;}
+  .msg.ai .bubble{background:#FBFBF9;border:1px solid var(--border);border-radius:10px 10px 3px 10px;padding:11px 13px;font-size:13px;line-height:1.6;}
+  .msg.ai .bubble b{color:var(--text);}
+  .msg.ai .cite{font-family:var(--mono);font-size:10.5px;color:var(--green);margin-top:8px;display:flex;align-items:center;gap:5px;}
+  .msg.ai .cite svg{width:12px;height:12px;}
+  .canned-tag{font-family:var(--mono);font-size:9px;font-weight:600;background:#FBF0DC;color:var(--amber);padding:1px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;margin-left:6px;}
+  .as-suggest{padding:12px 18px 16px;border-top:1px solid var(--border);}
+  .as-suggest .lb{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);margin-bottom:8px;}
+  .chip{display:block;width:100%;text-align:left;font-size:12.5px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;
+    color:var(--text);cursor:pointer;margin-bottom:7px;transition:all .12s;line-height:1.4;}
+  .chip:hover{border-color:var(--primary);background:#FDF6F6;}
+  footer{border-top:1px solid var(--border);margin-top:30px;padding-top:18px;font-size:12px;color:var(--textMuted);font-family:var(--mono);text-align:center;}
+  @media(max-width:1050px){.kpis{grid-template-columns:repeat(2,1fr);}.cols{grid-template-columns:1fr;}.assistant{position:static;}}
+  @media(max-width:680px){.wrap,.demo-banner{padding-left:20px;padding-right:20px;}.kpis{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+  <header>
+    <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
+    <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
+  </header>
+  <div class="demo-banner">
+    <i data-lucide="flask-conical" style="width:15px;height:15px;"></i>
+    Front-end preview · demo data · the real full-stack + AI backend is your build
+    <a class="back" href="index.html"><i data-lucide="arrow-left" style="width:13px;height:13px;"></i> Back to build guide</a>
+  </div>
+
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="eyebrow">HO16 · Sample 01 · Live Dashboard Preview</div>
+        <h1>AI Ops Command Center</h1>
+        <div class="co"><b>Northwind Logistics</b> · parcel delivery &amp; warehousing · 6 depots · demo workspace</div>
+      </div>
+      <div class="refreshed"><span class="g"></span>Live · last refreshed 2 min ago</div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="cols">
+      <div>
+        <div class="card">
+          <div class="card-h"><i data-lucide="trending-up"></i> Operations Trend <span class="r">last 14 days</span></div>
+          <div class="card-sub">Daily volume against on-time performance, pulled live via the MCP data connection.</div>
+          <div class="chart-tabs">
+            <button data-metric="shipments" class="on">Shipments</button>
+            <button data-metric="ontime">On-Time %</button>
+            <button data-metric="tickets">Open Tickets</button>
+          </div>
+          <div class="chart-wrap" id="chart"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><i data-lucide="activity"></i> Alerts &amp; Activity</div>
+          <div class="tabs" id="feedTabs">
+            <button data-feed="alerts" class="on">Alerts</button>
+            <button data-feed="activity">Activity</button>
+          </div>
+          <div class="filters" id="feedFilters"></div>
+          <div id="feed"></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="assistant">
+          <div class="as-head">
+            <div class="av"><i data-lucide="bot"></i></div>
+            <div>
+              <div class="nm">Ops Assistant</div>
+              <div class="st"><span class="d"></span>Grounded on 24 uploaded docs</div>
+            </div>
+          </div>
+          <div class="as-body" id="chat"></div>
+          <div class="as-suggest">
+            <div class="lb">Ask a grounded question</div>
+            <div id="suggest"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>HO16 · Sample 01 · Front-end preview with demo data — the deployed full-stack + AI backend is your capstone build</footer>
+  </div>
+
+<script>
+// ---------- KPI data ----------
+const KPIS = [
+  {lab:"Open Tickets", icon:"ticket", val:"38", delta:"-12%", dir:"up"},
+  {lab:"Late Shipments", icon:"package-x", val:"14", delta:"+3", dir:"down"},
+  {lab:"On-Time Rate", icon:"timer", val:"94.2%", delta:"+1.8%", dir:"up"},
+  {lab:"Depots Online", icon:"warehouse", val:"6/6", delta:"all up", dir:"up"},
+  {lab:"Avg Response", icon:"gauge", val:"2.4h", delta:"-22m", dir:"up"},
+];
+document.getElementById('kpis').innerHTML = KPIS.map(k=>`
+  <div class="kpi">
+    <div class="lab"><i data-lucide="${k.icon}"></i>${k.lab}</div>
+    <div class="val">${k.val}</div>
+    <div class="delta ${k.dir}"><i data-lucide="${k.dir==='up'?'arrow-up-right':'arrow-down-right'}"></i>${k.delta}</div>
+  </div>`).join('');
+
+// ---------- Chart ----------
+const SERIES = {
+  shipments:[820,910,880,1020,1180,760,540,970,1090,1140,1210,1180,880,620],
+  ontime:[92,91,93,94,95,96,94,93,95,94,96,95,94,94],
+  tickets:[52,48,55,44,39,33,36,47,42,38,35,40,44,38],
+};
+const CFG = {
+  shipments:{unit:"", min:400, max:1300, fmt:v=>v},
+  ontime:{unit:"%", min:88, max:100, fmt:v=>v+"%"},
+  tickets:{unit:"", min:20, max:60, fmt:v=>v},
+};
+function drawChart(metric){
+  const data = SERIES[metric], cfg = CFG[metric];
+  const W=560,H=210,pl=38,pr=14,pt=14,pb=26;
+  const iw=W-pl-pr, ih=H-pt-pb;
+  const min=cfg.min,max=cfg.max;
+  const x=i=>pl+(i/(data.length-1))*iw;
+  const y=v=>pt+ih-((v-min)/(max-min))*ih;
+  let grid='',ax='';
+  for(let g=0;g<=4;g++){
+    const gy=pt+(g/4)*ih, val=Math.round(max-(g/4)*(max-min));
+    grid+=`<line class="grid-l" x1="${pl}" y1="${gy}" x2="${W-pr}" y2="${gy}"/>`;
+    ax+=`<text class="axis-t" x="${pl-7}" y="${gy+3}" text-anchor="end">${cfg.fmt(val)}</text>`;
+  }
+  const days=['','','','','','','','','','','','','',''];
+  const lbl=['13d','','','','9d','','','6d','','','3d','','','now'];
+  lbl.forEach((d,i)=>{ if(d) ax+=`<text class="axis-t" x="${x(i)}" y="${H-8}" text-anchor="middle">${d}</text>`; });
+  const line=data.map((v,i)=>`${i===0?'M':'L'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const area=`M${x(0)},${y(data[0])} `+data.map((v,i)=>`L${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ')+` L${x(data.length-1)},${pt+ih} L${pl},${pt+ih} Z`;
+  const dots=data.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>`).join('');
+  document.getElementById('chart').innerHTML=`
+    <svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:100%;height:auto;display:block;">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#dc2626" stop-opacity="0.16"/>
+        <stop offset="1" stop-color="#dc2626" stop-opacity="0"/></linearGradient></defs>
+      ${grid}
+      <path d="${area}" fill="url(#g1)"/>
+      <path d="${line}" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}${ax}
+    </svg>`;
+}
+document.querySelectorAll('.chart-tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.chart-tabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); drawChart(b.dataset.metric);
+});
+drawChart('shipments');
+
+// ---------- Alerts + Activity feed ----------
+const ALERTS = [
+  {sev:"high", ico:"red", icon:"zap", t:"Depot BLR-2 power fluctuation", m:"UPS on backup — 40 min runtime remaining. Runbook OPS-014 triggered.", time:"4m", cat:"depot"},
+  {sev:"high", ico:"red", icon:"package-x", t:"Route NH-7 SLA breach risk", m:"12 shipments will miss 6pm cutoff if not re-routed. Suggested reroute via DEL hub.", time:"11m", cat:"shipment"},
+  {sev:"med", ico:"amber", icon:"thermometer", t:"Cold-chain temp warning · WH-Mumbai", m:"Bay 3 reading 9.2°C (limit 8°C) for 6 min.", time:"23m", cat:"depot"},
+  {sev:"med", ico:"amber", icon:"users", t:"Staffing gap · Chennai night shift", m:"2 sorters short vs forecast for tonight's 2,400-parcel wave.", time:"38m", cat:"staffing"},
+  {sev:"high", ico:"red", icon:"truck", t:"Vehicle KA-05-3391 breakdown", m:"Stranded on ORR. 84 parcels aboard. Backup dispatched.", time:"51m", cat:"shipment"},
+  {sev:"low", ico:"green", icon:"check-circle-2", t:"Pune backlog cleared", m:"Yesterday's 320-parcel backlog fully processed by 9am.", time:"1h", cat:"shipment"},
+  {sev:"med", ico:"amber", icon:"clock", t:"Ticket #4471 aging", m:"Customer escalation open 26h without owner assignment.", time:"1h", cat:"ticket"},
+  {sev:"low", ico:"green", icon:"shield-check", t:"Nightly backup verified", m:"All 6 depot data feeds synced to warehouse.", time:"2h", cat:"depot"},
+  {sev:"med", ico:"amber", icon:"map-pin", t:"Address exceptions spike · Hyderabad", m:"18 undeliverable-address flags in last hour (avg 5).", time:"2h", cat:"shipment"},
+  {sev:"high", ico:"red", icon:"alert-triangle", t:"Reconciliation mismatch · WH-Delhi", m:"7 parcels scanned-in but not in manifest.", time:"3h", cat:"ticket"},
+];
+const ACTIVITY = [
+  {ico:"purple", icon:"bot", t:"Ops Assistant generated Daily Briefing", m:"Morning digest posted to #ops-standup · 4 action items flagged.", time:"6m", cat:"assistant"},
+  {ico:"blue", icon:"user", t:"Priya M. asked a grounded question", m:'"What is our SOP when a depot loses power?" → answered from OPS-014.', time:"18m", cat:"assistant"},
+  {ico:"green", icon:"upload", t:"New document ingested", m:"Q2-Warehouse-SOP-v3.pdf added to Ops Project (24 docs total).", time:"34m", cat:"doc"},
+  {ico:"blue", icon:"user", t:"Arjun K. resolved ticket #4468", m:"Late-delivery refund processed · customer notified.", time:"47m", cat:"ticket"},
+  {ico:"purple", icon:"refresh-cw", t:"MCP live-data refresh", m:"Pulled 6 depot metrics from Sheets connector.", time:"1h", cat:"assistant"},
+  {ico:"green", icon:"upload", t:"Runbook updated", m:"Cold-chain-escalation.md revised by Warehouse lead.", time:"1h", cat:"doc"},
+  {ico:"blue", icon:"user", t:"Sana R. invited to Ops Project", m:"Cowork member added — read access to all docs.", time:"2h", cat:"assistant"},
+  {ico:"blue", icon:"user", t:"Vikram assigned ticket #4471", m:"Escalation routed to Chennai ops lead.", time:"2h", cat:"ticket"},
+  {ico:"green", icon:"upload", t:"Weekly incident log ingested", m:"incidents-wk26.csv summarised into Project memory.", time:"3h", cat:"doc"},
+  {ico:"purple", icon:"bot", t:"Ops Assistant flagged anomaly", m:"Hyderabad address-exception rate 3.6× baseline.", time:"3h", cat:"assistant"},
+];
+const FILTERS = {
+  alerts:[["all","All"],["shipment","Shipments"],["depot","Depots"],["ticket","Tickets"],["staffing","Staffing"]],
+  activity:[["all","All"],["assistant","Assistant"],["doc","Docs"],["ticket","Tickets"]],
+};
+let feed="alerts", filter="all";
+function renderFilters(){
+  document.getElementById('feedFilters').innerHTML = FILTERS[feed].map(([k,l])=>
+    `<button data-f="${k}" class="${filter===k?'on':''}">${l}</button>`).join('');
+  document.querySelectorAll('#feedFilters button').forEach(b=>b.onclick=()=>{filter=b.dataset.f;renderFeed();});
+}
+function renderFeed(){
+  renderFilters();
+  const data = (feed==="alerts"?ALERTS:ACTIVITY).filter(r=>filter==="all"||r.cat===filter);
+  document.getElementById('feed').innerHTML = data.map(r=>`
+    <div class="row">
+      <div class="ico ${r.ico}"><i data-lucide="${r.icon}"></i></div>
+      <div class="body">
+        <div class="t">${r.t} ${r.sev?`<span class="sev ${r.sev}">${r.sev}</span>`:''}</div>
+        <div class="m">${r.m}</div>
+      </div>
+      <div class="time">${r.time}</div>
+    </div>`).join('') || `<div class="m" style="padding:14px 0;color:var(--textMuted)">No items for this filter.</div>`;
+  lucide.createIcons();
+}
+document.querySelectorAll('#feedTabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#feedTabs button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on'); feed=b.dataset.feed; filter="all"; renderFeed();
+});
+
+// ---------- Ops Assistant (canned answers) ----------
+const QA = [
+  {q:"What are the top 3 action items right now?",
+   a:"Based on the live feed and today's docs, the <b>top 3 action items</b> are:<br>1. Reroute the 12 at-risk shipments on <b>Route NH-7</b> via the DEL hub before the 6pm cutoff.<br>2. Confirm backup power for <b>Depot BLR-2</b> — UPS runtime is under 40 min.<br>3. Assign an owner to escalation <b>ticket #4471</b> (open 26h).",
+   cite:"Grounded on: alerts feed, OPS-014 Runbook, tickets export"},
+  {q:"What's our SOP when a depot loses power?",
+   a:"Per <b>Runbook OPS-014</b>: (1) confirm UPS engaged and note runtime, (2) notify the regional ops lead within 10 min, (3) hold inbound sorting, (4) if runtime &lt; 30 min, divert live routes to the nearest online depot, (5) log the incident for the daily briefing.",
+   cite:"Grounded on: OPS-014 — Depot Power Loss.pdf"},
+  {q:"Which depot needs attention today?",
+   a:"<b>Depot BLR-2</b> is highest priority — an active power fluctuation with limited backup runtime. <b>WH-Mumbai</b> is second (cold-chain Bay 3 at 9.2°C vs 8°C limit). All other depots are green.",
+   cite:"Grounded on: live MCP depot feed, alerts"},
+  {q:"Summarise on-time performance this week.",
+   a:"On-time rate is <b>94.2%</b>, up <b>1.8%</b> week-on-week and above the 93% SLA. The main drag was Saturday's low-volume day where late shipments rose to 14. Trend is stable and improving.",
+   cite:"Grounded on: shipments trend, incidents-wk26.csv"},
+];
+const chat = document.getElementById('chat');
+function seed(){
+  chat.innerHTML = `
+    <div class="msg ai"><div class="who">Ops Assistant</div>
+      <div class="bubble">Good morning. I've read all <b>24 uploaded documents</b> and pulled live depot metrics via MCP. Ask me anything grounded in your ops docs — or tap a suggested question below.
+      <div class="cite"><i data-lucide="check-circle-2"></i>Ready · sources cited on every answer</div></div></div>`;
+  lucide.createIcons();
+}
+seed();
+function ask(item){
+  chat.insertAdjacentHTML('beforeend', `
+    <div class="msg user"><div class="who">You</div><div class="bubble">${item.q}</div></div>`);
+  const wait = document.createElement('div');
+  wait.className='msg ai'; wait.innerHTML=`<div class="who">Ops Assistant</div><div class="bubble" style="color:var(--textMuted)">Thinking…</div>`;
+  chat.appendChild(wait); chat.scrollTop=chat.scrollHeight;
+  setTimeout(()=>{
+    wait.innerHTML = `<div class="who">Ops Assistant <span class="canned-tag">demo answer</span></div>
+      <div class="bubble">${item.a}<div class="cite"><i data-lucide="book-open"></i>${item.cite}</div></div>`;
+    lucide.createIcons(); chat.scrollTop=chat.scrollHeight;
+  }, 550);
+}
+document.getElementById('suggest').innerHTML = QA.map((x,i)=>`<button class="chip" data-i="${i}">${x.q}</button>`).join('');
+document.querySelectorAll('#suggest .chip').forEach(b=>b.onclick=()=>ask(QA[b.dataset.i]));
+
+renderFeed();
+lucide.createIcons();
+</script>
+</body>
+</html>

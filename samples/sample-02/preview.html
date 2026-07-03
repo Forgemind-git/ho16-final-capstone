@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Intelligence Platform — Live Preview | HO16 Sample 02</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --pageBg:#F7F7F3; --headerBg:#0F0F10; --headerText:#F5F5F2; --headerMuted:#A1A1AA;
+    --headerBorder:rgba(255,255,255,.12); --cardBg:#fff; --border:#E5E5E0;
+    --text:#111; --textSec:#6B7280; --textMuted:#999; --primary:#dc2626; --primaryHover:#b91c1c;
+    --hover:#EFEEE6; --green:#0F6E56; --purple:#534AB7; --amber:#854F0B;
+    --shadowSm:0 1px 2px rgba(0,0,0,.08); --shadowMd:0 8px 24px rgba(0,0,0,.06);
+    --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
+  a{color:inherit;}
+  header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
+    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+  .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
+  .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
+  .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
+  .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  .demo-banner{background:#FDF6F6;border-bottom:1px solid #F3C6C6;color:var(--primary);font-size:12.5px;font-weight:500;
+    padding:9px 48px;display:flex;align-items:center;gap:9px;font-family:var(--mono);}
+  .demo-banner .back{margin-left:auto;color:var(--textSec);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;}
+  .demo-banner .back:hover{color:var(--primary);}
+  .wrap{max-width:none;margin:0;padding:26px 48px 64px;}
+  .top{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
+  .eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);}
+  h1{font-size:26px;font-weight:700;margin:6px 0 2px;letter-spacing:-.01em;}
+  .co{font-size:13px;color:var(--textSec);}
+  .co b{color:var(--text);font-weight:600;}
+  .refreshed{font-family:var(--mono);font-size:11.5px;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .refreshed .g{width:7px;height:7px;border-radius:99px;background:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.15);}
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
+  .kpi .lab{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .kpi .lab svg{width:14px;height:14px;}
+  .kpi .val{font-family:var(--mono);font-size:26px;font-weight:500;margin-top:9px;letter-spacing:-.02em;}
+  .kpi .delta{font-size:11.5px;font-weight:600;margin-top:5px;display:flex;align-items:center;gap:4px;font-family:var(--mono);}
+  .kpi .delta.up{color:var(--green);} .kpi .delta.down{color:var(--primary);}
+  .kpi .delta svg{width:13px;height:13px;}
+  .card{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:18px 20px;margin-bottom:18px;}
+  .card-h{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin-bottom:2px;}
+  .card-h svg{color:var(--primary);width:17px;height:17px;}
+  .card-h .r{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--textMuted);font-weight:400;}
+  .card-sub{font-size:12.5px;color:var(--textSec);margin-bottom:14px;}
+  /* pipeline */
+  .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  .stage{background:#FBFBF9;border:1px solid var(--border);border-radius:8px;padding:10px;min-height:120px;}
+  .stage-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;padding:0 2px;}
+  .stage-h .nm{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text);}
+  .stage-h .ct{font-family:var(--mono);font-size:10px;color:#fff;background:var(--textMuted);border-radius:99px;padding:1px 7px;}
+  .stage.s0 .ct{background:#8791A0;} .stage.s1 .ct{background:#1877F2;} .stage.s2 .ct{background:var(--purple);}
+  .stage.s3 .ct{background:var(--amber);} .stage.s4 .ct{background:var(--green);}
+  .stage .total{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--textSec);margin-bottom:9px;padding:0 2px;}
+  .deal{background:#fff;border:1px solid var(--border);border-radius:7px;padding:9px 10px;margin-bottom:8px;cursor:pointer;transition:all .12s;}
+  .deal:hover{box-shadow:var(--shadowMd);transform:translateY(-1px);border-color:#d4d4cc;}
+  .deal .dn{font-size:12.5px;font-weight:600;line-height:1.3;}
+  .deal .dm{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+  .deal .dv{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);}
+  .deal .score{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:1px 6px;border-radius:99px;}
+  .score.hot{background:#FCEBEB;color:var(--primary);} .score.warm{background:#FBF0DC;color:var(--amber);} .score.cold{background:#EEF0F2;color:#6B7280;}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+  /* leaderboard */
+  .lb-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+  .lb-row:last-child{border-bottom:none;}
+  .lb-rank{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--textMuted);width:20px;text-align:center;}
+  .lb-row.top .lb-rank{color:var(--primary);}
+  .lb-av{width:32px;height:32px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
+  .lb-body{flex:1;min-width:0;}
+  .lb-nm{font-size:13.5px;font-weight:600;}
+  .lb-meta{font-size:11.5px;color:var(--textSec);font-family:var(--mono);margin-top:1px;}
+  .lb-bar{height:6px;background:#EEF0F2;border-radius:99px;margin-top:5px;overflow:hidden;}
+  .lb-bar span{display:block;height:100%;background:var(--green);border-radius:99px;}
+  .lb-val{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right;white-space:nowrap;}
+  .lb-val small{display:block;font-size:10px;color:var(--textMuted);font-weight:400;margin-top:1px;}
+  /* leads table */
+  .filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+  .filters button{font-family:var(--mono);font-size:10.5px;font-weight:500;padding:4px 10px;border-radius:99px;border:1px solid var(--border);
+    background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .filters button.on{background:#111;border-color:#111;color:#fff;}
+  .lead{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
+  .lead:last-child{border-bottom:none;}
+  .lead .lav{width:34px;height:34px;border-radius:8px;background:#F1F0EA;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--textSec);flex-shrink:0;}
+  .lead .lb2{flex:1;min-width:0;}
+  .lead .lnm{font-size:13px;font-weight:600;}
+  .lead .lco{font-size:11.5px;color:var(--textSec);}
+  .lead .lright{text-align:right;flex-shrink:0;}
+  .lead .lval{font-family:var(--mono);font-size:12.5px;font-weight:600;}
+  /* AI panel */
+  .ai-panel{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;}
+  .ai-head{background:#0F0F10;color:#fff;padding:14px 18px;display:flex;align-items:center;gap:9px;}
+  .ai-head .av{width:30px;height:30px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
+  .ai-head .av svg{width:17px;height:17px;color:#fff;}
+  .ai-head .nm{font-size:14px;font-weight:600;}
+  .ai-head .st{font-size:11px;color:#8BE0C4;font-family:var(--mono);display:flex;align-items:center;gap:5px;margin-top:1px;}
+  .ai-head .st .d{width:6px;height:6px;border-radius:99px;background:#22c55e;}
+  .ai-body{padding:16px 18px;}
+  .ai-pick{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);margin-bottom:8px;}
+  .lead-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .lead-tabs button{font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .lead-tabs button.on{background:#FDF6F6;border-color:var(--primary);color:var(--primary);}
+  .draft{background:#FBFBF9;border:1px solid var(--border);border-radius:8px;padding:15px 16px;font-size:13px;line-height:1.65;}
+  .draft .subj{font-weight:700;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .draft .subj span{font-family:var(--mono);font-size:10px;color:var(--textMuted);font-weight:400;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;}
+  .draft p{margin:0 0 9px;}
+  .canned-tag{font-family:var(--mono);font-size:9px;font-weight:600;background:#FBF0DC;color:var(--amber);padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;}
+  .draft-foot{display:flex;align-items:center;gap:8px;margin-top:12px;}
+  .draft-foot button{font-size:11.5px;font-weight:600;padding:7px 13px;border-radius:7px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .draft-foot button.primary{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .draft-foot button svg{width:13px;height:13px;}
+  .draft-foot .cite{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--green);display:flex;align-items:center;gap:5px;}
+  .draft-foot .cite svg{width:12px;height:12px;}
+  footer{border-top:1px solid var(--border);margin-top:30px;padding-top:18px;font-size:12px;color:var(--textMuted);font-family:var(--mono);text-align:center;}
+  @media(max-width:1050px){.kpis{grid-template-columns:repeat(2,1fr);}.pipe{grid-template-columns:1fr 1fr;}.cols{grid-template-columns:1fr;}}
+  @media(max-width:680px){.wrap,.demo-banner{padding-left:20px;padding-right:20px;}.kpis{grid-template-columns:1fr 1fr;}.pipe{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+  <header>
+    <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
+    <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
+  </header>
+  <div class="demo-banner">
+    <i data-lucide="flask-conical" style="width:15px;height:15px;"></i>
+    Front-end preview · demo data · the real full-stack + AI backend is your build
+    <a class="back" href="index.html"><i data-lucide="arrow-left" style="width:13px;height:13px;"></i> Back to build guide</a>
+  </div>
+
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="eyebrow">HO16 · Sample 02 · Live Dashboard Preview</div>
+        <h1>Sales Intelligence Platform</h1>
+        <div class="co"><b>Meridian SaaS</b> · B2B revenue platform · Q3 pipeline · demo workspace</div>
+      </div>
+      <div class="refreshed"><span class="g"></span>Live · synced 5 min ago</div>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+      <div class="card-h"><i data-lucide="kanban"></i> Pipeline by Stage <span class="r">18 open deals · click a card</span></div>
+      <div class="card-sub">Enriched and scored automatically by the lead agent. Hot = fit score 80+, engaged in last 7 days.</div>
+      <div class="pipe" id="pipe"></div>
+    </div>
+
+    <div class="cols">
+      <div class="card">
+        <div class="card-h"><i data-lucide="trophy"></i> Rep Leaderboard <span class="r">closed this quarter</span></div>
+        <div id="leaderboard"></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><i data-lucide="sparkles"></i> Fresh Leads <span class="r">enriched by MCP</span></div>
+        <div class="filters" id="leadFilters"></div>
+        <div id="leads"></div>
+      </div>
+    </div>
+
+    <div class="ai-panel">
+      <div class="ai-head">
+        <div class="av"><i data-lucide="bot"></i></div>
+        <div>
+          <div class="nm">AI Outreach Assistant</div>
+          <div class="st"><span class="d"></span>Grounded on ICP, case studies &amp; deal notes</div>
+        </div>
+      </div>
+      <div class="ai-body">
+        <div class="ai-pick">Pick a lead — the assistant drafts a grounded first-touch email</div>
+        <div class="lead-tabs" id="draftTabs"></div>
+        <div id="draft"></div>
+      </div>
+    </div>
+
+    <footer>HO16 · Sample 02 · Front-end preview with demo data — the deployed full-stack + AI backend is your capstone build</footer>
+  </div>
+
+<script>
+// ---------- KPIs ----------
+const KPIS = [
+  {lab:"Pipeline Value", icon:"dollar-sign", val:"$1.84M", delta:"+14%", dir:"up"},
+  {lab:"Open Deals", icon:"kanban", val:"18", delta:"+3", dir:"up"},
+  {lab:"Win Rate", icon:"target", val:"27%", delta:"+4pt", dir:"up"},
+  {lab:"Avg Deal Size", icon:"receipt", val:"$102K", delta:"-6%", dir:"down"},
+  {lab:"New Leads / wk", icon:"user-plus", val:"46", delta:"+11", dir:"up"},
+];
+document.getElementById('kpis').innerHTML = KPIS.map(k=>`
+  <div class="kpi">
+    <div class="lab"><i data-lucide="${k.icon}"></i>${k.lab}</div>
+    <div class="val">${k.val}</div>
+    <div class="delta ${k.dir}"><i data-lucide="${k.dir==='up'?'arrow-up-right':'arrow-down-right'}"></i>${k.delta}</div>
+  </div>`).join('');
+
+// ---------- Pipeline ----------
+const STAGES = [
+  {key:"new", nm:"New", cls:"s0"},
+  {key:"qualified", nm:"Qualified", cls:"s1"},
+  {key:"demo", nm:"Demo", cls:"s2"},
+  {key:"proposal", nm:"Proposal", cls:"s3"},
+  {key:"closing", nm:"Closing", cls:"s4"},
+];
+const DEALS = [
+  {co:"Aperture Data", v:145, stage:"closing", score:"hot"},
+  {co:"Volt Robotics", v:88, stage:"closing", score:"warm"},
+  {co:"Nimbus Retail", v:210, stage:"proposal", score:"hot"},
+  {co:"Kestrel Bank", v:320, stage:"proposal", score:"hot"},
+  {co:"Fable Media", v:54, stage:"proposal", score:"cold"},
+  {co:"Orbit Health", v:126, stage:"demo", score:"warm"},
+  {co:"Tidewater Co", v:72, stage:"demo", score:"warm"},
+  {co:"Pine & Cedar", v:41, stage:"demo", score:"cold"},
+  {co:"Halcyon Labs", v:98, stage:"demo", score:"hot"},
+  {co:"Redwood Ins", v:180, stage:"qualified", score:"warm"},
+  {co:"Beacon Freight", v:66, stage:"qualified", score:"warm"},
+  {co:"Sunder Foods", v:35, stage:"qualified", score:"cold"},
+  {co:"Vantage Cloud", v:154, stage:"qualified", score:"hot"},
+  {co:"Marlow Group", v:48, stage:"new", score:"cold"},
+  {co:"Ironwood Mfg", v:112, stage:"new", score:"warm"},
+  {co:"Quill & Co", v:29, stage:"new", score:"cold"},
+  {co:"Solace Energy", v:203, stage:"new", score:"hot"},
+  {co:"Bright Ledger", v:57, stage:"new", score:"warm"},
+];
+function money(k){ return k>=1000?"$"+(k/1000).toFixed(1)+"M":"$"+k+"K"; }
+document.getElementById('pipe').innerHTML = STAGES.map(s=>{
+  const d = DEALS.filter(x=>x.stage===s.key);
+  const total = d.reduce((a,b)=>a+b.v,0);
+  return `<div class="stage ${s.cls}">
+    <div class="stage-h"><span class="nm">${s.nm}</span><span class="ct">${d.length}</span></div>
+    <div class="total">${money(total)}</div>
+    ${d.map(x=>`<div class="deal">
+      <div class="dn">${x.co}</div>
+      <div class="dm"><span class="dv">${money(x.v)}</span><span class="score ${x.score}">${x.score}</span></div>
+    </div>`).join('')}
+  </div>`;
+}).join('');
+// click a deal card -> load its draft
+document.querySelectorAll('.deal').forEach(el=>el.onclick=()=>{
+  const co = el.querySelector('.dn').textContent;
+  const idx = DRAFTS.findIndex(d=>d.co===co);
+  loadDraft(idx>=0?idx:0);
+  document.querySelector('.ai-panel').scrollIntoView({behavior:'smooth',block:'center'});
+});
+
+// ---------- Leaderboard ----------
+const REPS = [
+  {nm:"Priya Nair", closed:6, val:512, deals:6, color:"#dc2626", ini:"PN"},
+  {nm:"Daniel Cho", closed:5, val:438, deals:5, color:"#534AB7", ini:"DC"},
+  {nm:"Ayesha Khan", closed:4, val:361, deals:4, color:"#0F6E56", ini:"AK"},
+  {nm:"Marco Ruiz", closed:4, val:298, deals:4, color:"#1877F2", ini:"MR"},
+  {nm:"Lena Ford", closed:3, val:214, deals:3, color:"#854F0B", ini:"LF"},
+  {nm:"Tom Weller", closed:2, val:151, deals:2, color:"#8791A0", ini:"TW"},
+];
+const maxV = Math.max(...REPS.map(r=>r.val));
+document.getElementById('leaderboard').innerHTML = REPS.map((r,i)=>`
+  <div class="lb-row ${i===0?'top':''}">
+    <div class="lb-rank">${i+1}</div>
+    <div class="lb-av" style="background:${r.color}">${r.ini}</div>
+    <div class="lb-body">
+      <div class="lb-nm">${r.nm}</div>
+      <div class="lb-meta">${r.deals} deals · ${r.closed} won</div>
+      <div class="lb-bar"><span style="width:${(r.val/maxV*100).toFixed(0)}%"></span></div>
+    </div>
+    <div class="lb-val">${money(r.val)}<small>closed</small></div>
+  </div>`).join('');
+
+// ---------- Leads ----------
+const LEADS = [
+  {nm:"Sarah Lindqvist", role:"VP Eng", co:"Nimbus Retail", tier:"hot", fit:91, ini:"NR"},
+  {nm:"Raj Patel", role:"CFO", co:"Kestrel Bank", tier:"hot", fit:88, ini:"KB"},
+  {nm:"Elena Vas", role:"Head of Ops", co:"Solace Energy", tier:"hot", fit:86, ini:"SE"},
+  {nm:"Mark True", role:"Director IT", co:"Vantage Cloud", tier:"hot", fit:84, ini:"VC"},
+  {nm:"Jill Somner", role:"COO", co:"Orbit Health", tier:"warm", fit:74, ini:"OH"},
+  {nm:"Owen Reed", role:"Proc Lead", co:"Beacon Freight", tier:"warm", fit:71, ini:"BF"},
+  {nm:"Nadia Bloom", role:"VP Sales", co:"Redwood Ins", tier:"warm", fit:69, ini:"RI"},
+  {nm:"Kai Mensah", role:"Founder", co:"Ironwood Mfg", tier:"warm", fit:66, ini:"IM"},
+  {nm:"Greg Hollis", role:"Buyer", co:"Sunder Foods", tier:"cold", fit:52, ini:"SF"},
+  {nm:"Petra Vogel", role:"Analyst", co:"Quill & Co", tier:"cold", fit:47, ini:"QC"},
+  {nm:"Sam Okoro", role:"Ops Mgr", co:"Marlow Group", tier:"cold", fit:44, ini:"MG"},
+  {nm:"Dana Frost", role:"CTO", co:"Bright Ledger", tier:"warm", fit:72, ini:"BL"},
+];
+let leadFilter="all";
+const LF = [["all","All"],["hot","Hot"],["warm","Warm"],["cold","Cold"]];
+function renderLeadFilters(){
+  document.getElementById('leadFilters').innerHTML = LF.map(([k,l])=>
+    `<button data-f="${k}" class="${leadFilter===k?'on':''}">${l}</button>`).join('');
+  document.querySelectorAll('#leadFilters button').forEach(b=>b.onclick=()=>{leadFilter=b.dataset.f;renderLeads();});
+}
+function renderLeads(){
+  renderLeadFilters();
+  const rows = LEADS.filter(l=>leadFilter==="all"||l.tier===leadFilter);
+  document.getElementById('leads').innerHTML = rows.map(l=>`
+    <div class="lead">
+      <div class="lav">${l.ini}</div>
+      <div class="lb2"><div class="lnm">${l.nm}</div><div class="lco">${l.role} · ${l.co}</div></div>
+      <div class="lright">
+        <div class="lval">Fit ${l.fit}</div>
+        <span class="score ${l.tier}" style="font-size:9px">${l.tier}</span>
+      </div>
+    </div>`).join('') || `<div class="lco" style="padding:14px 0;color:var(--textMuted)">No leads in this tier.</div>`;
+  lucide.createIcons();
+}
+
+// ---------- AI Outreach drafts (canned) ----------
+const DRAFTS = [
+  {co:"Kestrel Bank", to:"Raj Patel, CFO",
+   subj:"Cutting Kestrel's reconciliation close from 9 days to 3",
+   body:`<p>Hi Raj,</p><p>Noticed Kestrel Bank is scaling into three new regions this year — usually that's when month-end close starts to strain. We helped <b>Redwood Insurance</b> (similar size, regulated) shrink their reconciliation cycle from <b>9 days to 3</b> and cut manual review by 60%.</p><p>Worth a 20-minute look at whether the same fits Kestrel's Q3 plan?</p><p>— Priya, Meridian SaaS</p>`,
+   cite:"Grounded on: ICP.md, Redwood case study, Kestrel enrichment"},
+  {co:"Nimbus Retail", to:"Sarah Lindqvist, VP Eng",
+   subj:"How Nimbus can ship personalisation without a data team",
+   body:`<p>Hi Sarah,</p><p>Your recent hiring spree in platform eng caught my eye — you're clearly investing in real-time customer data. Retailers like <b>Tidewater</b> hit the same wall and used Meridian to launch personalisation in <b>6 weeks, no new data hires</b>.</p><p>Open to swapping notes on what that stack looked like?</p><p>— Priya, Meridian SaaS</p>`,
+   cite:"Grounded on: ICP.md, Tidewater case study, Nimbus enrichment"},
+  {co:"Solace Energy", to:"Elena Vas, Head of Ops",
+   subj:"A faster path to Solace's field-ops reporting goals",
+   body:`<p>Hi Elena,</p><p>Congrats on the new field-service rollout. Ops leaders at <b>Orbit Health</b> told us the hardest part was unifying reporting across regions — Meridian gave them a single live view in under a month.</p><p>Happy to share the exact playbook if it's useful for Solace this quarter.</p><p>— Priya, Meridian SaaS</p>`,
+   cite:"Grounded on: ICP.md, Orbit Health notes, Solace enrichment"},
+];
+function loadDraft(i){
+  const d = DRAFTS[i];
+  document.querySelectorAll('#draftTabs button').forEach((b,j)=>b.classList.toggle('on',j===i));
+  const el = document.getElementById('draft');
+  el.innerHTML = `<div class="draft" style="opacity:.4">Drafting…</div>`;
+  setTimeout(()=>{
+    el.innerHTML = `
+      <div class="draft">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="canned-tag">demo draft</span>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--textSec)">To: ${d.to}</span>
+        </div>
+        <div class="subj"><span>Subject</span>${d.subj}</div>
+        ${d.body}
+        <div class="draft-foot">
+          <button class="primary"><i data-lucide="send"></i> Send</button>
+          <button><i data-lucide="refresh-cw"></i> Regenerate</button>
+          <span class="cite"><i data-lucide="book-open"></i>${d.cite}</span>
+        </div>
+      </div>`;
+    lucide.createIcons();
+  }, 400);
+}
+document.getElementById('draftTabs').innerHTML = DRAFTS.map((d,i)=>
+  `<button data-i="${i}" class="${i===0?'on':''}">${d.co}</button>`).join('');
+document.querySelectorAll('#draftTabs button').forEach(b=>b.onclick=()=>loadDraft(+b.dataset.i));
+
+renderLeads();
+loadDraft(0);
+lucide.createIcons();
+</script>
+</body>
+</html>
