@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Co-Pilot — Live Dashboard Preview (demo data) | HO16 Sample 05</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --pageBg:#F7F7F3; --headerBg:#0F0F10; --headerText:#F5F5F2; --headerMuted:#A1A1AA;
+    --headerBorder:rgba(255,255,255,.12); --cardBg:#fff; --border:#E5E5E0;
+    --text:#111; --textSec:#6B7280; --textMuted:#999; --primary:#dc2626; --primaryHover:#b91c1c;
+    --hover:#EFEEE6; --green:#0F6E56; --amber:#854F0B; --blue:#1877F2;
+    --shadowSm:0 1px 2px rgba(0,0,0,.08); --shadowMd:0 8px 24px rgba(0,0,0,.06);
+    --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
+  header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
+    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+  .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
+  .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
+  .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
+  .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  .wrap{max-width:none;margin:0;padding:26px 40px 64px;}
+  .back{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-family:var(--mono);color:var(--textSec);
+    text-decoration:none;margin-bottom:16px;font-weight:500;}
+  .back:hover{color:var(--primary);}
+  .back svg{width:14px;height:14px;}
+  /* demo banner */
+  .banner{display:flex;align-items:center;gap:11px;background:#FDF6F6;border:1px solid #F3C6C6;border-radius:8px;
+    padding:12px 18px;margin-bottom:22px;font-size:13px;color:var(--textSec);line-height:1.5;}
+  .banner svg{width:18px;height:18px;color:var(--primary);flex-shrink:0;}
+  .banner strong{color:var(--primary);font-weight:600;}
+  /* title row */
+  .titlerow{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
+  h1{font-size:24px;font-weight:700;margin:0;letter-spacing:-.01em;}
+  .titlerow .meta{font-size:12.5px;color:var(--textSec);font-family:var(--mono);}
+  /* KPI cards */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
+  .kpi .top{display:flex;align-items:center;justify-content:space-between;}
+  .kpi .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--textMuted);}
+  .kpi .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .kpi .ic svg{width:16px;height:16px;}
+  .kpi .val{font-family:var(--mono);font-size:27px;font-weight:500;margin-top:10px;letter-spacing:-.02em;}
+  .kpi .delta{font-size:11.5px;font-weight:500;margin-top:3px;display:flex;align-items:center;gap:4px;}
+  .kpi .delta svg{width:13px;height:13px;}
+  .up{color:var(--green);} .down{color:var(--primary);}
+  /* main layout */
+  .cols{display:grid;grid-template-columns:minmax(360px,1.15fr) 1.35fr;gap:18px;align-items:start;}
+  .panel{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;}
+  .panel-h{display:flex;align-items:center;gap:9px;padding:15px 18px;border-bottom:1px solid var(--border);}
+  .panel-h svg{width:18px;height:18px;color:var(--primary);}
+  .panel-h h2{font-size:14.5px;font-weight:600;margin:0;}
+  .panel-h .count{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--textMuted);}
+  /* filter chips */
+  .filters{display:flex;gap:7px;padding:12px 18px 4px;flex-wrap:wrap;}
+  .fchip{font-size:11.5px;font-weight:600;font-family:var(--mono);padding:4px 12px;border-radius:99px;cursor:pointer;
+    border:1px solid var(--border);background:#fff;color:var(--textSec);transition:all .12s;}
+  .fchip:hover{background:var(--hover);}
+  .fchip.active{background:#111;color:#fff;border-color:#111;}
+  /* ticket list */
+  .tlist{max-height:560px;overflow-y:auto;padding:8px;}
+  .ticket{display:flex;flex-direction:column;gap:6px;padding:12px 13px;border-radius:8px;cursor:pointer;
+    border:1px solid transparent;transition:background .12s,border-color .12s;}
+  .ticket:hover{background:var(--hover);}
+  .ticket.sel{background:#FCEBEB;border-color:#F3C6C6;}
+  .ticket .r1{display:flex;align-items:center;gap:8px;}
+  .ticket .id{font-family:var(--mono);font-size:11px;color:var(--textMuted);}
+  .ticket .subj{font-size:13.5px;font-weight:600;line-height:1.35;flex:1;}
+  .ticket .r2{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--textSec);}
+  .ticket .who{display:flex;align-items:center;gap:6px;}
+  .ticket .av{width:20px;height:20px;border-radius:99px;background:var(--primary);color:#fff;font-size:9px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;font-family:var(--font);flex-shrink:0;}
+  .ticket .time{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--textMuted);}
+  /* status + priority pills */
+  .pill{font-size:10px;font-weight:700;font-family:var(--mono);padding:2px 9px;border-radius:99px;letter-spacing:.03em;
+    display:inline-flex;align-items:center;gap:4px;text-transform:uppercase;}
+  .st-open{background:#FCEBEB;color:var(--primary);}
+  .st-pending{background:#FAEEDA;color:var(--amber);}
+  .st-resolved{background:#E1F5EE;color:var(--green);}
+  .prio{font-size:10px;font-weight:600;font-family:var(--mono);padding:1px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;}
+  .p-urgent{background:#FCE7E7;color:#b91c1c;} .p-high{background:#FBE2D4;color:#854F0B;}
+  .p-normal{background:#EAF0F7;color:#3a6ea5;} .p-low{background:#EEEDEA;color:#777;}
+  /* detail panel */
+  .detail{padding:0;}
+  .d-head{padding:18px 20px 14px;border-bottom:1px solid var(--border);}
+  .d-head .top{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap;}
+  .d-head h3{font-size:17px;font-weight:700;margin:0 0 10px;line-height:1.35;}
+  .d-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--textSec);}
+  .d-meta b{color:var(--text);font-weight:600;}
+  .d-body{padding:16px 20px;}
+  .msg{display:flex;gap:11px;margin-bottom:16px;}
+  .msg .av{width:30px;height:30px;border-radius:99px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-size:11px;font-weight:700;color:#fff;}
+  .msg.cust .av{background:#534AB7;} .msg.agent .av{background:var(--green);}
+  .msg .bubble{flex:1;}
+  .msg .name{font-size:12px;font-weight:600;margin-bottom:3px;}
+  .msg .name span{font-weight:400;color:var(--textMuted);font-family:var(--mono);font-size:10.5px;margin-left:6px;}
+  .msg .txt{font-size:13.5px;line-height:1.6;color:var(--text);background:#F7F7F3;border:1px solid var(--border);
+    border-radius:8px;padding:11px 13px;}
+  /* AI suggested reply */
+  .ai{margin-top:6px;border:1.5px solid #F3C6C6;border-radius:10px;overflow:hidden;}
+  .ai-h{display:flex;align-items:center;gap:9px;background:#FCEBEB;padding:11px 15px;}
+  .ai-h svg{width:17px;height:17px;color:var(--primary);}
+  .ai-h .t{font-size:12.5px;font-weight:700;color:var(--primary);}
+  .ai-h .demo{margin-left:auto;font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:.08em;
+    background:#fff;color:var(--primary);border:1px solid #F3C6C6;padding:2px 8px;border-radius:99px;text-transform:uppercase;}
+  .ai-body{padding:14px 16px;}
+  .ai-body .conf{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--textSec);margin-bottom:10px;font-family:var(--mono);}
+  .ai-body .cite{background:#E1F5EE;color:var(--green);font-size:10px;font-weight:600;padding:1px 7px;border-radius:4px;font-family:var(--mono);}
+  .ai-body .reply{font-size:13.5px;line-height:1.65;color:var(--text);white-space:pre-wrap;}
+  .ai-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:#fff;}
+  .btn{font-family:var(--font);font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;cursor:pointer;
+    border:1px solid var(--border);background:#fff;color:var(--text);display:inline-flex;align-items:center;gap:6px;}
+  .btn svg{width:14px;height:14px;}
+  .btn.pri{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .btn.pri:hover{background:var(--primaryHover);}
+  .btn:not(.pri):hover{background:var(--hover);}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;
+    font-size:13px;font-weight:500;padding:11px 20px;border-radius:8px;box-shadow:var(--shadowMd);opacity:0;
+    pointer-events:none;transition:all .25s;z-index:50;display:flex;align-items:center;gap:8px;}
+  .toast svg{width:16px;height:16px;color:#4ade80;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  /* chart */
+  .chart-wrap{padding:16px 20px 20px;}
+  .chart-legend{display:flex;gap:16px;margin-bottom:8px;font-size:11.5px;color:var(--textSec);font-family:var(--mono);}
+  .chart-legend span{display:flex;align-items:center;gap:6px;}
+  .chart-legend .sw{width:10px;height:10px;border-radius:3px;}
+  .csat-row{display:flex;gap:14px;margin-top:16px;}
+  .csat-row .box{flex:1;background:#F7F7F3;border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+  .csat-row .box .k{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);}
+  .csat-row .box .v{font-family:var(--mono);font-size:20px;font-weight:500;margin-top:5px;}
+  footer{border-top:1px solid var(--border);margin-top:36px;padding-top:18px;font-size:12px;color:var(--textMuted);
+    font-family:var(--mono);text-align:center;}
+  @media(max-width:900px){.cols{grid-template-columns:1fr;}.kpis{grid-template-columns:repeat(2,1fr);}.wrap{padding:22px 20px 56px;}}
+</style>
+</head>
+<body>
+  <header>
+    <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
+    <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
+  </header>
+
+  <div class="wrap">
+    <a href="index.html" class="back"><i data-lucide="arrow-left"></i> Back to the build guide</a>
+
+    <div class="banner">
+      <i data-lucide="flask-conical"></i>
+      <div><strong>Front-end preview · demo data.</strong> This is a static, click-through mock-up of the finished dashboard. The real full-stack app + the AI backend that grounds replies in your knowledge base is <strong>your build</strong>.</div>
+    </div>
+
+    <div class="titlerow">
+      <div>
+        <h1>Support Co-Pilot</h1>
+      </div>
+      <div class="meta">Nova Devices · Support workspace · updated just now</div>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="kpis">
+      <div class="kpi">
+        <div class="top"><span class="lbl">Open tickets</span><span class="ic" style="background:#FCEBEB;color:var(--primary);"><i data-lucide="inbox"></i></span></div>
+        <div class="val" id="kpiOpen">—</div>
+        <div class="delta down"><i data-lucide="arrow-up-right"></i> 4 more than yesterday</div>
+      </div>
+      <div class="kpi">
+        <div class="top"><span class="lbl">Avg first response</span><span class="ic" style="background:#E7F0FE;color:var(--blue);"><i data-lucide="timer"></i></span></div>
+        <div class="val">1h 12m</div>
+        <div class="delta up"><i data-lucide="arrow-down-right"></i> 22m faster this week</div>
+      </div>
+      <div class="kpi">
+        <div class="top"><span class="lbl">CSAT (30d)</span><span class="ic" style="background:#E1F5EE;color:var(--green);"><i data-lucide="smile"></i></span></div>
+        <div class="val">94<span style="font-size:16px;">%</span></div>
+        <div class="delta up"><i data-lucide="arrow-up-right"></i> up 3 pts</div>
+      </div>
+      <div class="kpi">
+        <div class="top"><span class="lbl">Resolved (7d)</span><span class="ic" style="background:#FAEEDA;color:var(--amber);"><i data-lucide="check-check"></i></span></div>
+        <div class="val">137</div>
+        <div class="delta up"><i data-lucide="arrow-up-right"></i> 18% vs last week</div>
+      </div>
+    </div>
+
+    <div class="cols">
+      <!-- ticket queue -->
+      <div class="panel">
+        <div class="panel-h"><i data-lucide="list-checks"></i><h2>Ticket queue</h2><span class="count" id="qcount"></span></div>
+        <div class="filters" id="filters">
+          <span class="fchip active" data-f="all">All</span>
+          <span class="fchip" data-f="open">Open</span>
+          <span class="fchip" data-f="pending">Pending</span>
+          <span class="fchip" data-f="resolved">Resolved</span>
+        </div>
+        <div class="tlist" id="tlist"></div>
+      </div>
+
+      <!-- detail + chart -->
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <div class="panel detail" id="detail"></div>
+
+        <div class="panel">
+          <div class="panel-h"><i data-lucide="trending-up"></i><h2>Tickets over time</h2><span class="count">last 14 days</span></div>
+          <div class="chart-wrap">
+            <div class="chart-legend">
+              <span><span class="sw" style="background:var(--primary);"></span>Created</span>
+              <span><span class="sw" style="background:var(--green);"></span>Resolved</span>
+            </div>
+            <div id="chart"></div>
+            <div class="csat-row">
+              <div class="box"><div class="k">Backlog trend</div><div class="v" style="color:var(--green);">▼ shrinking</div></div>
+              <div class="box"><div class="k">Peak day</div><div class="v">Tue</div></div>
+              <div class="box"><div class="k">Auto-triaged</div><div class="v">81%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>ForgeMind AI · HO16 Final Capstone · Sample 05 — Customer Support Co-Pilot · front-end preview with demo data</footer>
+  </div>
+
+  <div class="toast" id="toast"><i data-lucide="check-circle-2"></i><span id="toastMsg">Reply sent</span></div>
+
+<script>
+// ---- demo data (no backend) ----
+const TICKETS = [
+  {id:"NV-4821",subj:"Refund not received after 10 days",cust:"Priya Nair",status:"open",prio:"urgent",time:"6m",cat:"Billing",
+    msg:"I returned the router on the 12th and was promised a refund within 5 business days. It's been 10 days and nothing has landed in my account. Order #NV-88213.",
+    reply:"Hi Priya, thanks for flagging this — I'm sorry the refund is running late.\n\nI can see your return for order #NV-88213 was received and approved on the 14th. Refunds to the original card can take 5–7 business days *after* approval to appear, so you should see ₹4,299 credited by end of this week. If it hasn't arrived by Friday, reply here and I'll raise a payment trace with our billing team right away.",
+    cite:"Refund Policy §3.2 · Payment timelines"},
+  {id:"NV-4820",subj:"Device won't pair with the app",cust:"Arjun Mehta",status:"open",prio:"high",time:"22m",cat:"Technical",
+    msg:"My Nova Hub keeps failing at the 'searching for device' step in the mobile app. I've tried restarting both the hub and my phone. Bluetooth is on.",
+    reply:"Hi Arjun, sorry for the pairing trouble. Nine times out of ten this is a stale Bluetooth cache.\n\nPlease try: (1) Force-quit the Nova app, (2) toggle Bluetooth off and on, (3) hold the hub's reset button for 8 seconds until the LED blinks amber, then re-open the app and tap 'Add device'. If it still stalls at 'searching', let me know your app version and I'll send the manual-pairing code.",
+    cite:"Troubleshooting KB · Pairing failures"},
+  {id:"NV-4819",subj:"How do I add a second admin to my account?",cust:"Sana Kapoor",status:"open",prio:"normal",time:"41m",cat:"Account",
+    msg:"My husband wants to manage our devices too. Can I add him as a second admin, and does he need his own subscription?",
+    reply:"Hi Sana! Yes — you can add a second admin at no extra cost.\n\nGo to Settings → Household → Invite member, enter his email, and choose the 'Admin' role. He'll get an invite link, set his own password, and share full control of your devices. One subscription covers the whole household (up to 6 members), so no separate plan is needed.",
+    cite:"Account Guide · Household roles"},
+  {id:"NV-4818",subj:"Firmware update bricked my thermostat",cust:"Rahul Das",status:"open",prio:"urgent",time:"1h",cat:"Technical",
+    msg:"After last night's auto-update my Nova Thermostat is stuck on a black screen and won't respond to anything. The house is cold. Please help urgently.",
+    reply:"Hi Rahul, that's frustrating — let's get your heat back on.\n\nFirst, a hard reset usually recovers a stalled update: hold both the + and − buttons together for 15 seconds until you see the Nova logo. If the screen stays black, flip the breaker for the thermostat for 30 seconds, then restore power. If neither works, this qualifies for priority replacement — I've flagged the ticket as urgent and our hardware team will reach out within 2 hours.",
+    cite:"Troubleshooting KB · Recovery mode"},
+  {id:"NV-4817",subj:"Wrong item shipped",cust:"Meera Iyer",status:"pending",prio:"high",time:"2h",cat:"Shipping",
+    msg:"I ordered the black Nova Cam but received a white one. Order #NV-88109. I'd like the correct colour please.",
+    reply:"Hi Meera, apologies for the mix-up on order #NV-88109.\n\nI've created a free exchange: a prepaid return label is on its way to your email, and the black Nova Cam will ship as soon as the label is scanned — no need to wait for the return to arrive. You'll have the right one within 3–4 business days.",
+    cite:"Shipping Policy · Exchanges"},
+  {id:"NV-4816",subj:"Subscription charged twice this month",cust:"Vikram Rao",status:"pending",prio:"urgent",time:"3h",cat:"Billing",
+    msg:"I was charged ₹499 twice on the 1st. My bank statement clearly shows two identical charges. Please refund the duplicate.",
+    reply:"Hi Vikram, thank you for the screenshot — you're right, there are two ₹499 charges dated the 1st.\n\nThe duplicate was caused by a retry after a gateway timeout. I've refunded the extra ₹499 to your original card; it will appear in 3–5 business days. Your subscription remains active and you won't be double-billed again.",
+    cite:"Billing KB · Duplicate charges"},
+  {id:"NV-4815",subj:"Can I pause my subscription while travelling?",cust:"Neha Sharma",status:"pending",prio:"low",time:"4h",cat:"Account",
+    msg:"I'll be abroad for two months. Is there a way to pause billing instead of cancelling completely?",
+    reply:"Hi Neha, great question — yes, you can pause.\n\nUnder Settings → Subscription → Pause, you can freeze billing for up to 3 months. Your devices keep working in local mode, cloud recording pauses, and billing resumes automatically on your chosen date. Nothing is lost and there's no reactivation fee.",
+    cite:"Account Guide · Pause & resume"},
+  {id:"NV-4814",subj:"Motion alerts arriving late",cust:"Karan Singh",status:"open",prio:"normal",time:"5h",cat:"Technical",
+    msg:"My Nova Cam motion notifications show up 3-4 minutes after the event. That's useless for a security cam. How do I fix the delay?",
+    reply:"Hi Karan, a lag like that is almost always upload bandwidth or notification batching.\n\nTwo quick fixes: (1) In the app, set Video quality to 'Auto' so clips upload faster on a busy network; (2) turn OFF 'Batch notifications' under Alerts so each event pushes instantly. If the delay persists, a wired Ethernet adapter for the cam removes Wi-Fi congestion entirely.",
+    cite:"Troubleshooting KB · Notification latency"},
+  {id:"NV-4813",subj:"Does the camera work without Wi-Fi?",cust:"Anita Desai",status:"resolved",prio:"low",time:"6h",cat:"Technical",
+    msg:"If my internet goes down, does the Nova Cam still record anything or is it completely dead?",
+    reply:"Hi Anita! Yes — the Nova Cam keeps recording to its local microSD card even with the internet down. You just won't get live streaming or cloud backup until the connection returns, at which point recent clips sync automatically. Pop in a 64–256GB card for offline peace of mind.",
+    cite:"Product FAQ · Offline recording"},
+  {id:"NV-4812",subj:"Requesting an invoice for reimbursement",cust:"Deepak Menon",status:"resolved",prio:"normal",time:"8h",cat:"Billing",
+    msg:"My employer reimburses home-office equipment. Can I get a proper GST invoice for my Nova Hub purchase?",
+    reply:"Hi Deepak, absolutely. I've generated a GST invoice for your Nova Hub order and emailed it to the address on file. If you need the company name or GSTIN added to the invoice, reply with those details and I'll reissue it within the hour.",
+    cite:"Billing KB · Invoices & GST"},
+  {id:"NV-4811",subj:"Night vision looks washed out",cust:"Ritu Agarwal",status:"resolved",prio:"low",time:"9h",cat:"Technical",
+    msg:"The infrared night view on my camera is very bright and washed out when pointed at a white wall. Is mine faulty?",
+    reply:"Hi Ritu, not faulty — that's IR bounce-back off nearby light surfaces. Angle the cam so a bright wall isn't directly in front of it, or lower 'IR intensity' to Medium under Camera settings. That clears the wash-out immediately.",
+    cite:"Troubleshooting KB · Night vision"},
+  {id:"NV-4810",subj:"Feature request: schedule arm/disarm",cust:"Gaurav Bhat",status:"pending",prio:"low",time:"11h",cat:"Feedback",
+    msg:"It would be great to auto-arm the system at 10pm and disarm at 7am on weekdays. Is that on the roadmap?",
+    reply:"Hi Gaurav, love this idea — and good news, scheduled arm/disarm is available today! Go to Automations → New → Schedule, pick your arm and disarm times, and choose which days apply. I've logged your note as a vote to make it more discoverable in the app.",
+    cite:"Product FAQ · Automations"},
+  {id:"NV-4809",subj:"Two-factor code never arrives",cust:"Farah Khan",status:"open",prio:"high",time:"12h",cat:"Account",
+    msg:"I'm locked out because the 2FA SMS never reaches my phone. I've checked signal and spam. What now?",
+    reply:"Hi Farah, sorry you're locked out. SMS codes can stall with certain carriers, so let's switch you to an authenticator app.\n\nI've temporarily emailed a one-time login link to your registered address. Once you're in, go to Security → Two-factor → Authenticator app to set up TOTP, which doesn't depend on SMS. Let me know if the email link doesn't arrive in 5 minutes.",
+    cite:"Account Guide · 2FA recovery"},
+  {id:"NV-4808",subj:"Bulk order for 12 units — discount?",cust:"Sunita Pillai",status:"pending",prio:"normal",time:"14h",cat:"Sales",
+    msg:"We're a small office wanting 12 Nova Hubs. Is there a business discount or a bulk-order process?",
+    reply:"Hi Sunita, thanks for considering Nova for your office! Orders of 10+ units qualify for our Business tier: 15% off, consolidated GST invoicing, and a single admin dashboard for all devices. I've cc'd our business team who'll send a formal quote for 12 hubs today.",
+    cite:"Sales Playbook · Bulk pricing"},
+  {id:"NV-4807",subj:"App crashes on Android 15",cust:"Imran Sheikh",status:"open",prio:"high",time:"16h",cat:"Technical",
+    msg:"Ever since updating to Android 15 the Nova app crashes on launch every single time. Pixel 8.",
+    reply:"Hi Imran, thanks for the report — we've had a few Android 15 launch-crash reports on Pixel and a fix is rolling out in v4.7.2.\n\nIn the meantime: clear the app's cache (Settings → Apps → Nova → Storage → Clear cache, not data), then reopen. That resolves it for most users until the update auto-installs. I've added your device so you'll get the patched build first.",
+    cite:"Known Issues · Android 15"},
+  {id:"NV-4806",subj:"Camera keeps going offline at night",cust:"Lakshmi Menon",status:"resolved",prio:"normal",time:"18h",cat:"Technical",
+    msg:"Every night around 2am my outdoor cam drops offline and reconnects by morning. Router isn't rebooting.",
+    reply:"Hi Lakshmi, a nightly drop at a fixed time usually points to a scheduled router band-steering or a smart-plug timer cutting power. Check that the cam isn't on a timed outlet, and in your router settings pin the cam to the 2.4GHz band so it doesn't get bumped to 5GHz at night. That's fixed it for every similar case.",
+    cite:"Troubleshooting KB · Nightly disconnects"},
+  {id:"NV-4805",subj:"Warranty claim for cracked lens",cust:"Aditya Kulkarni",status:"pending",prio:"high",time:"20h",cat:"Warranty",
+    msg:"My cam arrived with a hairline crack on the lens cover, spotted it while mounting. Bought 3 weeks ago.",
+    reply:"Hi Aditya, a lens crack out of the box is covered under our 1-year warranty — no question.\n\nCould you reply with a photo of the crack and your order number? The moment I have those I'll dispatch a free replacement with a prepaid return label for the damaged unit. You won't be charged and won't need to wait for the return to arrive first.",
+    cite:"Warranty Policy · DOA claims"},
+  {id:"NV-4804",subj:"Can I export my recorded clips?",cust:"Pooja Verma",status:"resolved",prio:"low",time:"22h",cat:"Technical",
+    msg:"I need to save a few clips for an insurance claim. How do I download them off the cloud?",
+    reply:"Hi Pooja, yes — open the clip in the app's Timeline, tap the ⋯ menu, and choose 'Download'. It saves an MP4 to your phone which you can forward anywhere. For a whole day, use Timeline → Select range → Export. Cloud clips stay available for 30 days on your plan, so grab them before then.",
+    cite:"Product FAQ · Exporting clips"},
+  {id:"NV-4803",subj:"Hub LED blinking red continuously",cust:"Nikhil Joshi",status:"open",prio:"normal",time:"1d",cat:"Technical",
+    msg:"My Nova Hub's LED has been solid-blinking red for an hour. What does red mean and how do I clear it?",
+    reply:"Hi Nikhil, a continuous red blink means the hub can't reach Nova's servers — almost always a network hiccup rather than hardware.\n\nCheck your internet is up on another device, then power-cycle the hub (unplug 20 seconds, plug back). The LED should go solid white within 2 minutes. If it stays red, your router may be blocking the hub — reply and I'll send the ports Nova needs open.",
+    cite:"Troubleshooting KB · LED status codes"},
+  {id:"NV-4802",subj:"Thank you — great support last week!",cust:"Ravi Chandran",status:"resolved",prio:"low",time:"1d",cat:"Feedback",
+    msg:"Just wanted to say your agent Sofia sorted my setup issue brilliantly last week. Five stars!",
+    reply:"Hi Ravi, this genuinely made our day — thank you! I've passed your kind words straight to Sofia and her team lead. If anything else comes up, you know where we are. Enjoy your Nova setup!",
+    cite:"—"},
+  {id:"NV-4801",subj:"Does Nova work with Google Home?",cust:"Simran Gill",status:"resolved",prio:"low",time:"2d",cat:"Technical",
+    msg:"Before I buy more devices — do Nova cameras and hubs integrate with Google Home and Alexa?",
+    reply:"Hi Simran! Yes to both. Nova works with Google Home and Alexa: link your account under Settings → Integrations, then you can view camera feeds on a Nest/Echo Show and arm/disarm by voice. Full setup steps are in the Integrations guide — happy to walk you through it if you'd like.",
+    cite:"Product FAQ · Smart-home integrations"},
+  {id:"NV-4800",subj:"Cancel my order before it ships",cust:"Manish Gupta",status:"resolved",prio:"normal",time:"2d",cat:"Shipping",
+    msg:"I placed order #NV-87990 this morning but changed my mind. Can I cancel before it ships?",
+    reply:"Hi Manish, done — order #NV-87990 has been cancelled before dispatch and no charge will be taken (any pending authorisation drops off in 2–3 days). If you'd like to reorder a different model later, just reach out and I'll help you pick.",
+    cite:"Shipping Policy · Cancellations"}
+];
+
+const AV_COLORS=["#534AB7","#0F6E56","#854F0B","#1877F2","#b91c1c","#3a6ea5"];
+function initials(n){return n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();}
+function statusPill(s){
+  const m={open:["st-open","Open"],pending:["st-pending","Pending"],resolved:["st-resolved","Resolved"]};
+  return `<span class="pill ${m[s][0]}">${m[s][1]}</span>`;
+}
+function prioPill(p){
+  const m={urgent:"p-urgent",high:"p-high",normal:"p-normal",low:"p-low"};
+  return `<span class="prio ${m[p]}">${p}</span>`;
+}
+
+let filter="all", selected=TICKETS[0].id;
+
+function visible(){return filter==="all"?TICKETS:TICKETS.filter(t=>t.status===filter);}
+
+function renderList(){
+  const list=document.getElementById("tlist");
+  const v=visible();
+  document.getElementById("qcount").textContent=v.length+" shown";
+  list.innerHTML=v.map((t,i)=>{
+    const col=AV_COLORS[t.cust.length%AV_COLORS.length];
+    return `<div class="ticket ${t.id===selected?'sel':''}" data-id="${t.id}">
+      <div class="r1"><span class="id">${t.id}</span>${statusPill(t.status)}<span class="subj">${t.subj}</span></div>
+      <div class="r2">
+        <span class="who"><span class="av" style="background:${col}">${initials(t.cust)}</span>${t.cust}</span>
+        ${prioPill(t.prio)}
+        <span class="time">${t.time} ago</span>
+      </div>
+    </div>`;
+  }).join("");
+  list.querySelectorAll(".ticket").forEach(el=>el.onclick=()=>{selected=el.dataset.id;renderList();renderDetail();});
+  lucide.createIcons();
+}
+
+function renderDetail(){
+  const t=TICKETS.find(x=>x.id===selected);
+  const col=AV_COLORS[t.cust.length%AV_COLORS.length];
+  const d=document.getElementById("detail");
+  d.innerHTML=`
+    <div class="d-head">
+      <div class="top">${statusPill(t.status)}${prioPill(t.prio)}<span class="pill" style="background:#EEEDFE;color:#3C3489;">${t.cat}</span><span class="id" style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--textMuted);">${t.id}</span></div>
+      <h3>${t.subj}</h3>
+      <div class="d-meta"><span><b>${t.cust}</b></span><span>Opened <b>${t.time} ago</b></span><span>Channel <b>Email</b></span></div>
+    </div>
+    <div class="d-body">
+      <div class="msg cust">
+        <div class="av" style="background:${col}">${initials(t.cust)}</div>
+        <div class="bubble">
+          <div class="name">${t.cust}<span>customer</span></div>
+          <div class="txt">${t.msg}</div>
+        </div>
+      </div>
+
+      <div class="ai">
+        <div class="ai-h"><i data-lucide="sparkles"></i><span class="t">AI-suggested reply</span><span class="demo">Demo</span></div>
+        <div class="ai-body">
+          <div class="conf"><i data-lucide="shield-check" style="width:13px;height:13px;color:var(--green);"></i> Confidence 92% · grounded in <span class="cite">${t.cite}</span></div>
+          <div class="reply">${t.reply}</div>
+        </div>
+        <div class="ai-actions">
+          <button class="btn pri" onclick="toast('Reply sent to ${t.cust}')"><i data-lucide="send"></i> Send reply</button>
+          <button class="btn" onclick="toast('Draft saved for editing')"><i data-lucide="pencil"></i> Edit</button>
+          <button class="btn" onclick="toast('Regenerating suggestion…')"><i data-lucide="refresh-cw"></i> Regenerate</button>
+        </div>
+      </div>
+    </div>`;
+  lucide.createIcons();
+}
+
+// ---- inline SVG trends chart ----
+function renderChart(){
+  const created=[38,52,44,61,47,29,22,41,55,48,63,50,34,26];
+  const resolved=[30,41,48,50,52,35,28,36,49,53,58,55,40,33];
+  const days=["","","","","","","","","","","","","",""];
+  const W=560,H=190,pl=34,pr=10,pt=12,pb=24;
+  const iw=W-pl-pr, ih=H-pt-pb;
+  const maxV=70, n=created.length;
+  const x=i=>pl+(iw*i/(n-1));
+  const y=v=>pt+ih-(ih*v/maxV);
+  const line=(arr,c)=>{
+    const pts=arr.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+    const area=`${pl},${pt+ih} ${pts} ${pl+iw},${pt+ih}`;
+    return `<polygon points="${area}" fill="${c}" opacity="0.07"/>
+      <polyline points="${pts}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${arr.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.6" fill="#fff" stroke="${c}" stroke-width="1.8"/>`).join("")}`;
+  };
+  const gy=[0,17.5,35,52.5,70];
+  const grid=gy.map(v=>`<line x1="${pl}" y1="${y(v).toFixed(1)}" x2="${pl+iw}" y2="${y(v).toFixed(1)}" stroke="#E5E5E0" stroke-width="1"/>
+    <text x="${pl-8}" y="${(y(v)+3).toFixed(1)}" text-anchor="end" font-family="DM Mono,monospace" font-size="9" fill="#999">${v}</text>`).join("");
+  const xlab=["14d","","","","10d","","","","6d","","","","2d","now"].map((l,i)=>l?`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#999">${l}</text>`:"").join("");
+  document.getElementById("chart").innerHTML=
+    `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;">
+      ${grid}${xlab}
+      ${line(created,"#dc2626")}
+      ${line(resolved,"#0F6E56")}
+    </svg>`;
+}
+
+let toastT;
+function toast(m){
+  const el=document.getElementById("toast");
+  document.getElementById("toastMsg").textContent=m;
+  el.classList.add("show");
+  clearTimeout(toastT);
+  toastT=setTimeout(()=>el.classList.remove("show"),2200);
+}
+
+// filters
+document.getElementById("filters").querySelectorAll(".fchip").forEach(c=>{
+  c.onclick=()=>{
+    document.querySelectorAll(".fchip").forEach(x=>x.classList.remove("active"));
+    c.classList.add("active");
+    filter=c.dataset.f;
+    const v=visible();
+    if(!v.find(t=>t.id===selected)&&v.length)selected=v[0].id;
+    renderList();renderDetail();
+  };
+});
+
+// KPI open count from data
+document.getElementById("kpiOpen").textContent=TICKETS.filter(t=>t.status==="open").length;
+
+renderList();
+renderDetail();
+renderChart();
+lucide.createIcons();
+</script>
+</body>
+</html>
