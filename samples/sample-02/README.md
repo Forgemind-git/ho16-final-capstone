@@ -2,6 +2,8 @@
 
 > **Problem Statement:** Your sales team flies blind with no view of the pipeline. This sample shows a finished, copy-and-use sales intelligence platform built entirely inside a Claude.ai subscription — no code, no API key, no servers.
 
+**▶ [See the finished dashboard (demo data)](preview.html)** — a populated, interactive front-end preview of this platform (pipeline, leaderboard, leads, AI outreach draft). Open `preview.html` in your browser.
+
 This is a **worked example** for a fictional company, **Acme Cloud** (a B2B SaaS that sells observability tooling — logs, metrics and tracing — to engineering teams). Read it, then **copy and adapt** every prompt and document to your own company. Replace "Acme Cloud" with your company name and swap in your own ICP and product facts.
 
 ## What you are building

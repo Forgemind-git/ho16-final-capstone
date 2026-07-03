@@ -2,6 +2,8 @@
 
 > **Problem Statement:** Your operations are run from memory. Build and deploy an AI ops command centre.
 
+**▶ [See the finished dashboard (demo data)](preview.html)** — a populated, interactive front-end preview of this command centre. Open `preview.html` in your browser.
+
 This is a **worked example you can copy and adapt.** Everything below is filled in for a
 fictional company called **Northwind Logistics** (a mid-size parcel-delivery and warehouse
 operation). Read it top to bottom, then swap in your own company name, your own documents, and
