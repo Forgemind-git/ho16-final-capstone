@@ -5,6 +5,8 @@
 > view of what is going wrong each week. Build a customer-support co-pilot using only
 > your Claude.ai subscription — no code, no API key.
 
+**▶ [See the finished dashboard (demo data)](preview.html)** — a self-contained, interactive front-end preview of what the co-pilot looks like once built. The real full-stack + AI backend is your build.
+
 **Brightcart** is a fictional e-commerce SaaS: it gives small online stores a hosted
 storefront, a checkout, and a subscriptions/billing engine. Its support team handles
 billing questions, login problems, checkout bugs, and refund requests all day. We use
