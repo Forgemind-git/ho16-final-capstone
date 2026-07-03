@@ -2,6 +2,8 @@
 
 > **Problem Statement:** You never know where your money goes. Build and deploy a personal-finance copilot.
 
+**▶ [See the finished dashboard (demo data)](preview.html)** — an interactive, front-end preview of what this copilot looks like once built (runs on demo data; the real full-stack + AI backend is your build).
+
 This is a **worked, copy-and-use example.** Everything below is filled in and ready to paste
 into your Claude.ai subscription. A real sample bank statement, `sample_statement.csv`, is
 included in this folder so you can build the whole thing without using your own data first.

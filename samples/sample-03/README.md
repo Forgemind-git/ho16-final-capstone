@@ -2,6 +2,8 @@
 
 > **Problem Statement:** You want to produce content at scale but research, drafting and tracking are disconnected. Build and deploy a content engine.
 
+**▶ [See the finished dashboard (demo data)](preview.html)** — an interactive, front-end preview of what this engine looks like once built (runs on demo data; the real full-stack + AI backend is your build).
+
 This is a **worked example** for the FINAL CAPSTONE. Everything below is real and copy-paste ready. Read it, then copy and adapt it for your own team and topic. Nothing here needs code, a terminal, an API key, or git — it all lives inside your normal Claude.ai subscription.
 
 ## The Worked Scenario

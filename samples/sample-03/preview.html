@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Content Production Engine — Sample Dashboard | HO16</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --pageBg:#F7F7F3; --headerBg:#0F0F10; --headerText:#F5F5F2; --headerMuted:#A1A1AA;
+    --headerBorder:rgba(255,255,255,.12); --cardBg:#fff; --border:#E5E5E0;
+    --text:#111; --textSec:#6B7280; --textMuted:#999; --primary:#dc2626; --primaryHover:#b91c1c;
+    --hover:#EFEEE6; --green:#0F6E56; --purple:#534AB7; --amber:#854F0B; --blue:#1877F2;
+    --shadowSm:0 1px 2px rgba(0,0,0,.08); --shadowMd:0 8px 24px rgba(0,0,0,.06);
+    --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
+  a{color:inherit;}
+  header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
+    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+  .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
+  .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
+  .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
+  .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  .wrap{max-width:none;margin:0;padding:22px 40px 72px;}
+
+  .demo-banner{display:flex;align-items:center;gap:10px;background:#FDF6F6;border:1px solid #F3C6C6;
+    border-radius:8px;padding:11px 16px;font-size:13px;color:var(--primary);font-weight:500;margin-bottom:20px;}
+  .demo-banner svg{width:17px;height:17px;flex-shrink:0;}
+  .demo-banner .b-sec{color:var(--textSec);font-weight:400;}
+
+  .toprow{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+  .back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:var(--mono);color:var(--textSec);text-decoration:none;margin-bottom:8px;}
+  .back:hover{color:var(--primary);}
+  h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;}
+  h1 .logo{width:34px;height:34px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;}
+  .subhead{font-size:13.5px;color:var(--textSec);margin:6px 0 22px;}
+
+  /* KPI cards */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
+  .kpi .lab{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .kpi .lab svg{width:14px;height:14px;color:var(--primary);}
+  .kpi .val{font-family:var(--mono);font-size:26px;font-weight:500;margin-top:8px;}
+  .kpi .delta{font-size:12px;font-weight:500;margin-top:2px;color:var(--green);}
+
+  /* toolbar */
+  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+  .filters{display:flex;gap:6px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px;}
+  .fbtn{font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:6px;border:none;background:transparent;color:var(--textSec);cursor:pointer;font-family:var(--font);}
+  .fbtn.active{background:var(--primary);color:#fff;}
+  .toolbar .spacer{margin-left:auto;}
+  .newbtn{display:inline-flex;align-items:center;gap:7px;background:var(--primary);color:#fff;border:none;font-weight:600;font-size:13px;padding:8px 15px;border-radius:8px;cursor:pointer;font-family:var(--font);}
+  .newbtn:hover{background:var(--primaryHover);}
+
+  /* board */
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start;margin-bottom:34px;}
+  .col{background:#F1F0EA;border:1px solid var(--border);border-radius:10px;padding:12px;min-height:120px;}
+  .col-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:12px;}
+  .col-h .cdot{width:9px;height:9px;border-radius:99px;}
+  .col-h .cnt{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--textSec);background:#fff;border:1px solid var(--border);border-radius:99px;padding:1px 8px;}
+  .col.ideas .cdot{background:#6B7280;} .col.drafting .cdot{background:var(--amber);}
+  .col.scheduled .cdot{background:var(--blue);} .col.published .cdot{background:var(--green);}
+  .ccard{background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:12px;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s,transform .12s;}
+  .ccard:hover{box-shadow:var(--shadowMd);transform:translateY(-1px);}
+  .ccard:last-child{margin-bottom:0;}
+  .ccard .ct{font-size:13.5px;font-weight:600;line-height:1.35;margin-bottom:8px;}
+  .ccard .cm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .chan{font-size:10px;font-weight:600;font-family:var(--mono);padding:2px 7px;border-radius:99px;text-transform:uppercase;letter-spacing:.03em;}
+  .chan.linkedin{background:#E7F0FE;color:#1877F2;} .chan.email{background:#EEEDFE;color:#534AB7;}
+  .chan.twitter{background:#E1F5EE;color:#0F6E56;} .chan.blog{background:#FAEEDA;color:#854F0B;}
+  .ccard .date{font-size:11px;font-family:var(--mono);color:var(--textMuted);margin-left:auto;display:flex;align-items:center;gap:4px;}
+  .ccard .avat{width:20px;height:20px;border-radius:99px;background:var(--primary);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+
+  .cols2{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start;}
+  .section-h{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;margin:0 0 12px;}
+  .section-h svg{color:var(--primary);width:18px;height:18px;}
+
+  /* schedule list */
+  .panel{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:18px 20px;}
+  .sched-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+  .sched-item:last-child{border-bottom:none;}
+  .sched-when{font-family:var(--mono);font-size:11px;color:var(--textSec);width:74px;flex-shrink:0;line-height:1.3;}
+  .sched-when b{display:block;color:var(--text);font-size:13px;font-weight:500;}
+  .sched-title{font-size:13px;font-weight:500;line-height:1.35;}
+  .sched-item .chan{margin-left:auto;flex-shrink:0;}
+
+  /* AI draft panel */
+  .ai-panel{background:linear-gradient(180deg,#fff,#FCFBF7);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;}
+  .ai-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);background:#fff;}
+  .ai-head .spark{width:30px;height:30px;border-radius:8px;background:#FCEBEB;color:var(--primary);display:flex;align-items:center;justify-content:center;}
+  .ai-head .tt{font-size:14px;font-weight:700;}
+  .ai-head .demo-tag{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);border:1px solid var(--border);border-radius:99px;padding:3px 9px;}
+  .ai-body{padding:16px 18px;}
+  .ai-prompt{font-size:12px;color:var(--textSec);font-family:var(--mono);background:#F1F0EA;border-radius:6px;padding:9px 12px;margin-bottom:14px;}
+  .ai-tabs{display:flex;gap:6px;margin-bottom:14px;}
+  .ai-tab{font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--textSec);cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;}
+  .ai-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
+  .ai-draft{font-size:13.5px;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:180px;}
+  .ai-draft .meta{font-family:var(--mono);font-size:11px;color:var(--textMuted);margin-bottom:10px;display:flex;gap:14px;}
+  .ai-actions{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+  .ai-actions button{font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;cursor:pointer;font-family:var(--font);border:1px solid var(--border);background:#fff;color:var(--text);display:inline-flex;align-items:center;gap:6px;}
+  .ai-actions .prim{background:var(--primary);color:#fff;border-color:var(--primary);}
+
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(30px);background:#0F0F10;color:#fff;font-size:13px;font-weight:500;padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.28s;display:flex;align-items:center;gap:8px;z-index:50;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast svg{width:16px;height:16px;color:#4ADE80;}
+
+  footer{border-top:1px solid var(--border);margin-top:44px;padding-top:18px;font-size:12px;color:var(--textMuted);font-family:var(--mono);text-align:center;}
+
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.board{grid-template-columns:repeat(2,1fr);}.cols2{grid-template-columns:1fr;}}
+  @media(max-width:640px){.wrap{padding:18px 18px 60px;}.kpis{grid-template-columns:1fr;}.board{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+  <header>
+    <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
+    <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
+  </header>
+
+  <div class="wrap">
+    <a href="index.html" class="back"><i data-lucide="arrow-left"></i> Back to the build guide</a>
+
+    <div class="demo-banner">
+      <i data-lucide="flask-conical"></i>
+      <span><strong>Front-end preview · demo data</strong> <span class="b-sec">— the real full-stack + AI backend is your build. Everything below runs client-side on canned sample data.</span></span>
+    </div>
+
+    <div class="toprow">
+      <h1><span class="logo"><i data-lucide="pen-tool"></i></span> Content Production Engine</h1>
+    </div>
+    <div class="subhead">Research brief → draft → schedule → publish. One pipeline for LinkedIn, email, blog and Twitter.</div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="lab"><i data-lucide="lightbulb"></i> Ideas in backlog</div><div class="val" id="kpiIdeas">6</div><div class="delta">+3 added this week</div></div>
+      <div class="kpi"><div class="lab"><i data-lucide="pen-line"></i> In production</div><div class="val" id="kpiProd">7</div><div class="delta">4 drafting · 3 scheduled</div></div>
+      <div class="kpi"><div class="lab"><i data-lucide="send"></i> Published this month</div><div class="val">24</div><div class="delta">+18% vs last month</div></div>
+      <div class="kpi"><div class="lab"><i data-lucide="clock"></i> Avg. brief → publish</div><div class="val">1.8<span style="font-size:14px;"> days</span></div><div class="delta">was 6 days manually</div></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="filters" id="chanFilters">
+        <button class="fbtn active" data-chan="all">All channels</button>
+        <button class="fbtn" data-chan="linkedin">LinkedIn</button>
+        <button class="fbtn" data-chan="email">Email</button>
+        <button class="fbtn" data-chan="blog">Blog</button>
+        <button class="fbtn" data-chan="twitter">Twitter</button>
+      </div>
+      <div class="spacer"></div>
+      <button class="newbtn" onclick="toast('New content brief created (demo)')"><i data-lucide="plus" style="width:15px;height:15px;"></i> New brief</button>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="cols2">
+      <div>
+        <div class="section-h"><i data-lucide="sparkles"></i> AI-generated draft</div>
+        <div class="ai-panel">
+          <div class="ai-head">
+            <span class="spark"><i data-lucide="sparkles"></i></span>
+            <span class="tt">Claude drafted this from your brief</span>
+            <span class="demo-tag">Demo output</span>
+          </div>
+          <div class="ai-body">
+            <div class="ai-prompt">Brief: "Why small teams should stop chasing AI hype and automate boring work instead" · voice: practical, warm, Indian English · audience: founders</div>
+            <div class="ai-tabs" id="aiTabs">
+              <button class="ai-tab active" data-fmt="linkedin"><i data-lucide="linkedin" style="width:13px;height:13px;"></i> LinkedIn</button>
+              <button class="ai-tab" data-fmt="email"><i data-lucide="mail" style="width:13px;height:13px;"></i> Email</button>
+              <button class="ai-tab" data-fmt="twitter"><i data-lucide="twitter" style="width:13px;height:13px;"></i> Twitter</button>
+            </div>
+            <div class="ai-draft" id="aiDraft"></div>
+            <div class="ai-actions">
+              <button class="prim" onclick="toast('Draft moved to Scheduled (demo)')"><i data-lucide="calendar-plus" style="width:14px;height:14px;"></i> Schedule</button>
+              <button onclick="regen()"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Regenerate</button>
+              <button onclick="toast('Copied to clipboard (demo)')"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-h"><i data-lucide="calendar-days"></i> Publishing schedule</div>
+        <div class="panel" id="schedList"></div>
+      </div>
+    </div>
+
+    <footer>Front-end preview · demo data only · HO16 Final Capstone · Sample 03 — Content Production Engine</footer>
+  </div>
+
+  <div class="toast" id="toast"><i data-lucide="check-circle"></i><span id="toastMsg"></span></div>
+
+<script>
+const CARDS = [
+  // Ideas
+  {id:1, stage:'ideas', chan:'linkedin', title:'The "automate boring work" thesis for founders', date:'—', who:'AR'},
+  {id:2, stage:'ideas', chan:'blog', title:'A field guide to Claude Projects for content teams', date:'—', who:'PK'},
+  {id:3, stage:'ideas', chan:'twitter', title:'Thread: 7 tasks you should never ask AI to do', date:'—', who:'AR'},
+  {id:4, stage:'ideas', chan:'email', title:'Newsletter: how we cut brief-to-publish to 2 days', date:'—', who:'SM'},
+  {id:5, stage:'ideas', chan:'linkedin', title:'Carousel — the 5-tool decision tree, explained', date:'—', who:'PK'},
+  {id:6, stage:'ideas', chan:'blog', title:'Case study: 24 posts a month with one subscription', date:'—', who:'SM'},
+  // Drafting
+  {id:7, stage:'drafting', chan:'linkedin', title:'Why small teams stop chasing AI hype', date:'in review', who:'AR'},
+  {id:8, stage:'drafting', chan:'email', title:'June recap — what actually shipped', date:'draft v2', who:'SM'},
+  {id:9, stage:'drafting', chan:'blog', title:'Grounding vs prompting — the real lever', date:'draft v1', who:'PK'},
+  {id:10, stage:'drafting', chan:'twitter', title:'Thread: reading a leaderboard without vibes', date:'draft v1', who:'AR'},
+  // Scheduled
+  {id:11, stage:'scheduled', chan:'linkedin', title:'The 2-day content pipeline (before/after)', date:'Jul 4, 9:00', who:'AR'},
+  {id:12, stage:'scheduled', chan:'email', title:'Weekly digest — issue #31', date:'Jul 5, 7:30', who:'SM'},
+  {id:13, stage:'scheduled', chan:'twitter', title:'Quote card: "give the model facts, not adjectives"', date:'Jul 6, 12:00', who:'PK'},
+  // Published
+  {id:14, stage:'published', chan:'linkedin', title:'How one subscription replaced 4 content tools', date:'Jun 28', who:'AR'},
+  {id:15, stage:'published', chan:'blog', title:'Building a content workspace inside Claude', date:'Jun 26', who:'PK'},
+  {id:16, stage:'published', chan:'email', title:'Newsletter #30 — the automation issue', date:'Jun 24', who:'SM'},
+  {id:17, stage:'published', chan:'twitter', title:'Thread: 6 weeks, 15 shipped projects', date:'Jun 22', who:'AR'},
+  {id:18, stage:'published', chan:'linkedin', title:'Prompt vs context vs grounding — a map', date:'Jun 20', who:'PK'},
+];
+const STAGES = [
+  {key:'ideas', label:'Ideas', cls:'ideas', icon:'lightbulb'},
+  {key:'drafting', label:'Drafting', cls:'drafting', icon:'pen-line'},
+  {key:'scheduled', label:'Scheduled', cls:'scheduled', icon:'calendar-clock'},
+  {key:'published', label:'Published', cls:'published', icon:'check-check'},
+];
+let chanFilter = 'all';
+
+function renderBoard(){
+  const board = document.getElementById('board');
+  board.innerHTML = STAGES.map(st=>{
+    const items = CARDS.filter(c=>c.stage===st.key && (chanFilter==='all'||c.chan===chanFilter));
+    return `<div class="col ${st.cls}">
+      <div class="col-h"><span class="cdot"></span>${st.label}<span class="cnt">${items.length}</span></div>
+      ${items.map(c=>`<div class="ccard" onclick="toast('Opened: ${c.title.replace(/'/g,'')}')">
+        <div class="ct">${c.title}</div>
+        <div class="cm">
+          <span class="chan ${c.chan}">${c.chan}</span>
+          <span class="avat">${c.who}</span>
+          <span class="date"><i data-lucide="clock" style="width:11px;height:11px;"></i> ${c.date}</span>
+        </div>
+      </div>`).join('') || '<div style="font-size:12px;color:var(--textMuted);padding:6px 2px;">No cards</div>'}
+    </div>`;
+  }).join('');
+  lucide.createIcons();
+}
+
+function renderSchedule(){
+  const sched = CARDS.filter(c=>c.stage==='scheduled').concat([
+    {chan:'blog', title:'Grounding vs prompting — the real lever', date:'Jul 8, 10:00'},
+    {chan:'linkedin', title:'Carousel — the 5-tool decision tree', date:'Jul 9, 9:00'},
+    {chan:'email', title:'Weekly digest — issue #32', date:'Jul 12, 7:30'},
+  ]);
+  document.getElementById('schedList').innerHTML = sched.map(s=>{
+    const [d,t] = s.date.split(', ');
+    return `<div class="sched-item">
+      <div class="sched-when"><b>${d}</b>${t||''}</div>
+      <div class="sched-title">${s.title}</div>
+      <span class="chan ${s.chan}">${s.chan}</span>
+    </div>`;
+  }).join('');
+}
+
+const DRAFTS = {
+  linkedin:`META · LinkedIn post · 128 words · voice matched ✓
+
+Everyone's racing to bolt "AI" onto everything. Most small teams don't need that.
+
+They need the boring stuff to disappear.
+
+Last month we shipped 24 pieces of content with one Claude subscription — no API keys, no new tools, no engineer. The trick wasn't a clever prompt. It was a repeatable pipeline:
+
+→ One Project holds our brand voice + every brief
+→ Claude drafts the long-form piece
+→ The same draft gets reshaped for email, blog and Twitter
+→ We schedule and ship
+
+Brief-to-publish went from 6 days to under 2.
+
+The lesson: don't ask "where can we add AI?" Ask "what boring step can we remove?"
+
+What's the one task you'd automate first? 👇`,
+  email:`META · Email · subject + body · voice matched ✓
+
+Subject: We cut content production from 6 days to 2 (here's how)
+
+Hi there,
+
+Quick one this week. We used to spend the better part of a week turning a rough idea into a finished LinkedIn post, an email, and a Twitter thread.
+
+Now it takes under two days — and honestly, most of that is us being fussy.
+
+The change was boring, which is the point: one Claude Project holds our brand voice and every brief. Claude drafts once, then reshapes the same piece for each channel. We review, schedule, ship.
+
+No API key. No new subscription. Just a pipeline that removes the copy-paste.
+
+Reply and tell me the one content task you'd hand off first.
+
+— The team`,
+  twitter:`META · Twitter thread · 5 tweets · voice matched ✓
+
+1/ We shipped 24 pieces of content last month with ONE Claude subscription. No API keys. No engineer. Here's the pipeline 🧵
+
+2/ The mistake most teams make: asking "where can we add AI?" Ask instead: "what boring step can we remove?"
+
+3/ One Project = our brand voice + every brief, always on hand. Claude drafts the long piece once.
+
+4/ Then the SAME draft gets reshaped for email, blog and Twitter. Reformatting used to eat half a day. Now it's a click.
+
+5/ Brief → publish: 6 days → under 2. The boring pipeline beat the clever prompt every time.`
+};
+let fmt = 'linkedin';
+function renderDraft(){
+  document.getElementById('aiDraft').textContent = DRAFTS[fmt];
+}
+function regen(){
+  toast('Regenerating draft (demo)…');
+  const el = document.getElementById('aiDraft');
+  el.style.opacity = .35;
+  setTimeout(()=>{ el.style.opacity = 1; toast('New draft ready (demo)'); }, 650);
+}
+
+let toastTimer;
+function toast(msg){
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 1900);
+}
+
+document.getElementById('chanFilters').addEventListener('click', e=>{
+  const b = e.target.closest('.fbtn'); if(!b) return;
+  document.querySelectorAll('#chanFilters .fbtn').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  chanFilter = b.dataset.chan;
+  renderBoard();
+});
+document.getElementById('aiTabs').addEventListener('click', e=>{
+  const b = e.target.closest('.ai-tab'); if(!b) return;
+  document.querySelectorAll('#aiTabs .ai-tab').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  fmt = b.dataset.fmt;
+  renderDraft();
+});
+
+renderBoard();
+renderSchedule();
+renderDraft();
+lucide.createIcons();
+</script>
+</body>
+</html>
