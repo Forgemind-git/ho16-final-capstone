@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Content Production Engine — Sample Dashboard | HO16</title>
+<title>AI Content Engine — Sample Dashboard | HO16</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
@@ -20,99 +20,124 @@
   body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
   a{color:inherit;}
   header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
-    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+    padding:0 20px;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--headerBorder);}
   .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
   .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
   .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
   .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
-  .wrap{max-width:none;margin:0;padding:22px 40px 72px;}
-
-  .demo-banner{display:flex;align-items:center;gap:10px;background:#FDF6F6;border:1px solid #F3C6C6;
-    border-radius:8px;padding:11px 16px;font-size:13px;color:var(--primary);font-weight:500;margin-bottom:20px;}
-  .demo-banner svg{width:17px;height:17px;flex-shrink:0;}
-  .demo-banner .b-sec{color:var(--textSec);font-weight:400;}
-
-  .toprow{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
-  .back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:var(--mono);color:var(--textSec);text-decoration:none;margin-bottom:8px;}
-  .back:hover{color:var(--primary);}
-  h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;}
-  h1 .logo{width:34px;height:34px;border-radius:8px;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;}
-  .subhead{font-size:13.5px;color:var(--textSec);margin:6px 0 22px;}
-
-  /* KPI cards */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
-  .kpi .lab{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
-  .kpi .lab svg{width:14px;height:14px;color:var(--primary);}
-  .kpi .val{font-family:var(--mono);font-size:26px;font-weight:500;margin-top:8px;}
-  .kpi .delta{font-size:12px;font-weight:500;margin-top:2px;color:var(--green);}
-
-  /* toolbar */
-  .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-  .filters{display:flex;gap:6px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px;}
-  .fbtn{font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:6px;border:none;background:transparent;color:var(--textSec);cursor:pointer;font-family:var(--font);}
-  .fbtn.active{background:var(--primary);color:#fff;}
-  .toolbar .spacer{margin-left:auto;}
-  .newbtn{display:inline-flex;align-items:center;gap:7px;background:var(--primary);color:#fff;border:none;font-weight:600;font-size:13px;padding:8px 15px;border-radius:8px;cursor:pointer;font-family:var(--font);}
-  .newbtn:hover{background:var(--primaryHover);}
-
-  /* board */
-  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start;margin-bottom:34px;}
-  .col{background:#F1F0EA;border:1px solid var(--border);border-radius:10px;padding:12px;min-height:120px;}
-  .col-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:12px;}
-  .col-h .cdot{width:9px;height:9px;border-radius:99px;}
-  .col-h .cnt{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--textSec);background:#fff;border:1px solid var(--border);border-radius:99px;padding:1px 8px;}
-  .col.ideas .cdot{background:#6B7280;} .col.drafting .cdot{background:var(--amber);}
-  .col.scheduled .cdot{background:var(--blue);} .col.published .cdot{background:var(--green);}
-  .ccard{background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:12px;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s,transform .12s;}
-  .ccard:hover{box-shadow:var(--shadowMd);transform:translateY(-1px);}
-  .ccard:last-child{margin-bottom:0;}
-  .ccard .ct{font-size:13.5px;font-weight:600;line-height:1.35;margin-bottom:8px;}
-  .ccard .cm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-  .chan{font-size:10px;font-weight:600;font-family:var(--mono);padding:2px 7px;border-radius:99px;text-transform:uppercase;letter-spacing:.03em;}
-  .chan.linkedin{background:#E7F0FE;color:#1877F2;} .chan.email{background:#EEEDFE;color:#534AB7;}
-  .chan.twitter{background:#E1F5EE;color:#0F6E56;} .chan.blog{background:#FAEEDA;color:#854F0B;}
-  .ccard .date{font-size:11px;font-family:var(--mono);color:var(--textMuted);margin-left:auto;display:flex;align-items:center;gap:4px;}
-  .ccard .avat{width:20px;height:20px;border-radius:99px;background:var(--primary);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
-
-  .cols2{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;align-items:start;}
-  .section-h{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;margin:0 0 12px;}
-  .section-h svg{color:var(--primary);width:18px;height:18px;}
-
-  /* schedule list */
-  .panel{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:18px 20px;}
-  .sched-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
-  .sched-item:last-child{border-bottom:none;}
-  .sched-when{font-family:var(--mono);font-size:11px;color:var(--textSec);width:74px;flex-shrink:0;line-height:1.3;}
-  .sched-when b{display:block;color:var(--text);font-size:13px;font-weight:500;}
-  .sched-title{font-size:13px;font-weight:500;line-height:1.35;}
-  .sched-item .chan{margin-left:auto;flex-shrink:0;}
-
-  /* AI draft panel */
-  .ai-panel{background:linear-gradient(180deg,#fff,#FCFBF7);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;}
-  .ai-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);background:#fff;}
-  .ai-head .spark{width:30px;height:30px;border-radius:8px;background:#FCEBEB;color:var(--primary);display:flex;align-items:center;justify-content:center;}
-  .ai-head .tt{font-size:14px;font-weight:700;}
-  .ai-head .demo-tag{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);border:1px solid var(--border);border-radius:99px;padding:3px 9px;}
-  .ai-body{padding:16px 18px;}
-  .ai-prompt{font-size:12px;color:var(--textSec);font-family:var(--mono);background:#F1F0EA;border-radius:6px;padding:9px 12px;margin-bottom:14px;}
-  .ai-tabs{display:flex;gap:6px;margin-bottom:14px;}
-  .ai-tab{font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:#fff;color:var(--textSec);cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;}
-  .ai-tab.active{background:var(--primary);color:#fff;border-color:var(--primary);}
-  .ai-draft{font-size:13.5px;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:180px;}
-  .ai-draft .meta{font-family:var(--mono);font-size:11px;color:var(--textMuted);margin-bottom:10px;display:flex;gap:14px;}
-  .ai-actions{display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
-  .ai-actions button{font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;cursor:pointer;font-family:var(--font);border:1px solid var(--border);background:#fff;color:var(--text);display:inline-flex;align-items:center;gap:6px;}
-  .ai-actions .prim{background:var(--primary);color:#fff;border-color:var(--primary);}
-
-  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(30px);background:#0F0F10;color:#fff;font-size:13px;font-weight:500;padding:11px 20px;border-radius:99px;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:.28s;display:flex;align-items:center;gap:8px;z-index:50;}
+  .demo-banner{background:#FDF6F6;border-bottom:1px solid #F3C6C6;color:#8a2b2b;font-size:12.5px;
+    padding:8px 48px;display:flex;align-items:center;gap:8px;font-weight:500;}
+  .demo-banner i{width:15px;height:15px;color:var(--primary);}
+  .app{display:flex;min-height:calc(100vh - 56px - 35px);}
+  .side{width:230px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);padding:22px 14px;display:flex;flex-direction:column;gap:4px;}
+  .brand-block{padding:0 8px 16px;margin-bottom:8px;border-bottom:1px solid var(--border);}
+  .brand-block .eye{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);}
+  .brand-block h1{font-size:19px;font-weight:700;margin:6px 0 10px;letter-spacing:-.01em;line-height:1.2;}
+  .chips{display:flex;flex-direction:column;gap:6px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;font-family:var(--mono);
+    background:#F1F0EA;border:1px solid var(--border);border-radius:99px;padding:3px 9px;color:var(--textSec);width:fit-content;}
+  .chip i{width:12px;height:12px;}
+  .chip .on{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  .navlink{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:500;
+    color:var(--textSec);cursor:pointer;transition:background .12s,color .12s;border:none;background:none;width:100%;text-align:left;font-family:var(--font);}
+  .navlink i{width:16px;height:16px;}
+  .navlink:hover{background:var(--hover);color:var(--text);}
+  .navlink.active{background:#FCEBEB;color:var(--primary);font-weight:600;}
+  .side-foot{margin-top:auto;padding:12px 8px 0;font-size:10.5px;color:var(--textMuted);font-family:var(--mono);line-height:1.6;}
+  .main{flex:1;padding:26px 34px 60px;min-width:0;}
+  .tab-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;}
+  .tab-head h2{font-size:21px;font-weight:700;margin:0;letter-spacing:-.01em;}
+  .tab-head p{font-size:13px;color:var(--textSec);margin:5px 0 0;}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-bottom:22px;}
+  .kpi{background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);padding:16px 18px;}
+  .kpi .lbl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .kpi .lbl i{width:13px;height:13px;color:var(--primary);}
+  .kpi .val{font-family:var(--mono);font-size:26px;font-weight:500;margin-top:8px;letter-spacing:-.02em;}
+  .kpi .sub{font-size:11.5px;color:var(--textSec);margin-top:3px;}
+  .kpi .sub.up{color:var(--green);font-weight:600;}
+  .card{background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);padding:0;overflow:hidden;}
+  .card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px;border-bottom:1px solid var(--border);}
+  .card-h h3{font-size:14px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;}
+  .card-h h3 i{width:16px;height:16px;color:var(--primary);}
+  .card-h .meta{font-size:11px;font-family:var(--mono);color:var(--textMuted);}
+  .toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:16px;}
+  .search{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px 11px;flex:1;min-width:180px;max-width:320px;}
+  .search i{width:15px;height:15px;color:var(--textMuted);}
+  .search input{border:none;outline:none;font-family:var(--font);font-size:13px;width:100%;background:none;color:var(--text);}
+  .fbtn{font-family:var(--font);font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--border);
+    background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .fbtn:hover{background:var(--hover);}
+  .fbtn.active{background:#111;color:#fff;border-color:#111;}
+  .btn-primary{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-size:13px;font-weight:600;
+    padding:9px 15px;border-radius:8px;border:none;background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadowSm);transition:background .12s;}
+  .btn-primary:hover{background:var(--primaryHover);}
+  .btn-primary i{width:15px;height:15px;}
+  .btn-ghost{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-size:12.5px;font-weight:600;
+    padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .btn-ghost:hover{background:var(--hover);}
+  .btn-ghost i{width:14px;height:14px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--textMuted);padding:11px 18px;border-bottom:1px solid var(--border);background:#FAFAF7;position:sticky;top:0;}
+  tbody td{padding:11px 18px;border-bottom:1px solid #F0EFE9;vertical-align:middle;}
+  tbody tr{cursor:pointer;transition:background .1s;}
+  tbody tr:hover{background:#FAFAF7;}
+  tbody tr:last-child td{border-bottom:none;}
+  .cell-topic{font-weight:600;color:var(--text);}
+  .muted{color:var(--textMuted);font-family:var(--mono);font-size:12px;}
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;font-family:var(--mono);padding:3px 9px;border-radius:99px;white-space:nowrap;}
+  .pill .d{width:6px;height:6px;border-radius:99px;}
+  .st-idea{background:#F1F0EA;color:#6b7280;} .st-idea .d{background:#9ca3af;}
+  .st-drafting{background:#FAEEDA;color:#854F0B;} .st-drafting .d{background:#d99413;}
+  .st-review{background:#EEEDFE;color:#534AB7;} .st-review .d{background:#7c73dd;}
+  .st-scheduled{background:#E7F0FE;color:#1877F2;} .st-scheduled .d{background:#1877F2;}
+  .st-published{background:#E1F5EE;color:#0F6E56;} .st-published .d{background:#0F6E56;}
+  .ch-pill{font-size:10.5px;font-weight:600;font-family:var(--mono);padding:2px 8px;border-radius:6px;background:#F1F0EA;color:var(--textSec);}
+  .ch-linkedin{background:#E7F0FE;color:#1877F2;} .ch-x{background:#EDEDED;color:#111;}
+  .ch-blog{background:#F3ECFB;color:#7c3aed;} .ch-email{background:#FDECEC;color:#dc2626;} .ch-instagram{background:#FBE9F3;color:#c026a6;}
+  .cols{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start;}
+  @media(max-width:960px){.cols{grid-template-columns:1fr;}}
+  .ai-badge{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;font-family:var(--mono);
+    text-transform:uppercase;letter-spacing:.06em;background:linear-gradient(90deg,#FCEBEB,#F3ECFB);color:var(--primary);
+    border:1px solid #F3C6C6;border-radius:99px;padding:4px 11px;}
+  .ai-badge i{width:13px;height:13px;}
+  .draft-list{display:flex;flex-direction:column;gap:8px;max-height:520px;overflow-y:auto;padding:14px;}
+  .draft-item{border:1px solid var(--border);border-radius:9px;padding:12px 13px;cursor:pointer;transition:all .12s;}
+  .draft-item:hover{background:#FAFAF7;border-color:#d8d8d0;}
+  .draft-item.sel{border-color:var(--primary);background:#FDF6F6;box-shadow:0 0 0 1px var(--primary);}
+  .draft-item .t{font-size:13px;font-weight:600;margin-bottom:5px;}
+  .draft-item .m{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .draft-body{padding:16px 18px;}
+  .draft-canvas{border:1px dashed #d8d8d0;border-radius:9px;background:#FCFCFA;padding:16px 18px;font-size:13.5px;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:220px;}
+  .variant-tabs{display:flex;gap:6px;margin:14px 0 12px;flex-wrap:wrap;}
+  .vtab{font-family:var(--mono);font-size:11px;font-weight:600;padding:5px 11px;border-radius:7px;border:1px solid var(--border);background:#fff;color:var(--textSec);cursor:pointer;}
+  .vtab.active{background:#111;color:#fff;border-color:#111;}
+  .gen-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;}
+  .slide{background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);overflow:hidden;transition:transform .12s,box-shadow .12s;}
+  .slide:hover{transform:translateY(-2px);box-shadow:var(--shadowMd);}
+  .slide .canvas{aspect-ratio:16/9;padding:16px;display:flex;flex-direction:column;position:relative;border-bottom:1px solid var(--border);}
+  .slide .kicker{font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--textMuted);}
+  .slide .st{font-size:15px;font-weight:700;line-height:1.2;margin-top:auto;}
+  .slide.title-slide .canvas{background:linear-gradient(135deg,#0F0F10,#2a2320);color:#fff;}
+  .slide.title-slide .kicker{color:#c9a6a6;} .slide.title-slide .st{font-size:17px;}
+  .slide .foot{padding:8px 12px;font-size:10.5px;font-family:var(--mono);color:var(--textMuted);display:flex;justify-content:space-between;align-items:center;}
+  .mini-tag{font-size:8px;font-family:var(--mono);background:#F1F0EA;border-radius:4px;padding:1px 5px;color:var(--textSec);}
+  .bar-row{display:flex;align-items:center;gap:6px;margin-top:5px;font-size:9px;font-family:var(--mono);color:var(--textSec);}
+  .bar-track{flex:1;height:7px;background:#EFEEE6;border-radius:99px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:99px;}
+  .mini-table{width:100%;font-size:8.5px;font-family:var(--mono);border-collapse:collapse;margin-top:4px;}
+  .mini-table td{padding:2px 3px;border-bottom:1px solid #eee;}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;
+    font-size:13px;font-weight:500;padding:12px 20px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);
+    display:flex;align-items:center;gap:9px;opacity:0;pointer-events:none;transition:all .25s;z-index:60;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .toast svg{width:16px;height:16px;color:#4ADE80;}
-
-  footer{border-top:1px solid var(--border);margin-top:44px;padding-top:18px;font-size:12px;color:var(--textMuted);font-family:var(--mono);text-align:center;}
-
-  @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.board{grid-template-columns:repeat(2,1fr);}.cols2{grid-template-columns:1fr;}}
-  @media(max-width:640px){.wrap{padding:18px 18px 60px;}.kpis{grid-template-columns:1fr;}.board{grid-template-columns:1fr;}}
+  .toast i{width:16px;height:16px;color:#4ade80;}
+  .hide{display:none!important;}
+  .spin{animation:sp 1s linear infinite;} @keyframes sp{to{transform:rotate(360deg);}}
+  .thinking{display:flex;align-items:center;gap:9px;color:var(--textSec);font-size:13px;padding:30px;justify-content:center;}
+  .empty{padding:40px;text-align:center;color:var(--textMuted);font-size:13px;}
+  @media(max-width:820px){.side{display:none;} .main{padding:22px 18px 50px;} .demo-banner{padding:8px 18px;}}
 </style>
 </head>
 <body>
@@ -120,232 +145,303 @@
     <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
     <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
   </header>
-
-  <div class="wrap">
-    <a href="index.html" class="back"><i data-lucide="arrow-left"></i> Back to the build guide</a>
-
-    <div class="demo-banner">
-      <i data-lucide="flask-conical"></i>
-      <span><strong>Front-end preview · demo data</strong> <span class="b-sec">— the real full-stack + AI backend is your build. Everything below runs client-side on canned sample data.</span></span>
-    </div>
-
-    <div class="toprow">
-      <h1><span class="logo"><i data-lucide="pen-tool"></i></span> Content Production Engine</h1>
-    </div>
-    <div class="subhead">Research brief → draft → schedule → publish. One pipeline for LinkedIn, email, blog and Twitter.</div>
-
-    <div class="kpis">
-      <div class="kpi"><div class="lab"><i data-lucide="lightbulb"></i> Ideas in backlog</div><div class="val" id="kpiIdeas">6</div><div class="delta">+3 added this week</div></div>
-      <div class="kpi"><div class="lab"><i data-lucide="pen-line"></i> In production</div><div class="val" id="kpiProd">7</div><div class="delta">4 drafting · 3 scheduled</div></div>
-      <div class="kpi"><div class="lab"><i data-lucide="send"></i> Published this month</div><div class="val">24</div><div class="delta">+18% vs last month</div></div>
-      <div class="kpi"><div class="lab"><i data-lucide="clock"></i> Avg. brief → publish</div><div class="val">1.8<span style="font-size:14px;"> days</span></div><div class="delta">was 6 days manually</div></div>
-    </div>
-
-    <div class="toolbar">
-      <div class="filters" id="chanFilters">
-        <button class="fbtn active" data-chan="all">All channels</button>
-        <button class="fbtn" data-chan="linkedin">LinkedIn</button>
-        <button class="fbtn" data-chan="email">Email</button>
-        <button class="fbtn" data-chan="blog">Blog</button>
-        <button class="fbtn" data-chan="twitter">Twitter</button>
-      </div>
-      <div class="spacer"></div>
-      <button class="newbtn" onclick="toast('New content brief created (demo)')"><i data-lucide="plus" style="width:15px;height:15px;"></i> New brief</button>
-    </div>
-
-    <div class="board" id="board"></div>
-
-    <div class="cols2">
-      <div>
-        <div class="section-h"><i data-lucide="sparkles"></i> AI-generated draft</div>
-        <div class="ai-panel">
-          <div class="ai-head">
-            <span class="spark"><i data-lucide="sparkles"></i></span>
-            <span class="tt">Claude drafted this from your brief</span>
-            <span class="demo-tag">Demo output</span>
-          </div>
-          <div class="ai-body">
-            <div class="ai-prompt">Brief: "Why small teams should stop chasing AI hype and automate boring work instead" · voice: practical, warm, Indian English · audience: founders</div>
-            <div class="ai-tabs" id="aiTabs">
-              <button class="ai-tab active" data-fmt="linkedin"><i data-lucide="linkedin" style="width:13px;height:13px;"></i> LinkedIn</button>
-              <button class="ai-tab" data-fmt="email"><i data-lucide="mail" style="width:13px;height:13px;"></i> Email</button>
-              <button class="ai-tab" data-fmt="twitter"><i data-lucide="twitter" style="width:13px;height:13px;"></i> Twitter</button>
-            </div>
-            <div class="ai-draft" id="aiDraft"></div>
-            <div class="ai-actions">
-              <button class="prim" onclick="toast('Draft moved to Scheduled (demo)')"><i data-lucide="calendar-plus" style="width:14px;height:14px;"></i> Schedule</button>
-              <button onclick="regen()"><i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Regenerate</button>
-              <button onclick="toast('Copied to clipboard (demo)')"><i data-lucide="copy" style="width:14px;height:14px;"></i> Copy</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="section-h"><i data-lucide="calendar-days"></i> Publishing schedule</div>
-        <div class="panel" id="schedList"></div>
-      </div>
-    </div>
-
-    <footer>Front-end preview · demo data only · HO16 Final Capstone · Sample 03 — Content Production Engine</footer>
+  <div class="demo-banner">
+    <i data-lucide="info"></i>
+    <span>Front-end preview · demo data · the real Google connection is your hands-on build (Claude Code)</span>
   </div>
 
-  <div class="toast" id="toast"><i data-lucide="check-circle"></i><span id="toastMsg"></span></div>
+  <div class="app">
+    <aside class="side">
+      <div class="brand-block">
+        <div class="eye">HO16 · Capstone · Sample 03</div>
+        <h1>AI Content Engine</h1>
+        <div class="chips">
+          <span class="chip"><span class="on"></span><i data-lucide="sheet"></i>Sheet · "Content-Calendar"</span>
+          <span class="chip"><span class="on"></span><i data-lucide="presentation"></i>Slides · "Weekly Plan"</span>
+          <span class="chip"><span class="on"></span><i data-lucide="sparkles"></i>Claude · content model</span>
+        </div>
+      </div>
+      <button class="navlink active" data-tab="calendar"><i data-lucide="calendar-days"></i>Content Calendar</button>
+      <button class="navlink" data-tab="drafts"><i data-lucide="pen-line"></i>AI Drafts</button>
+      <button class="navlink" data-tab="deck"><i data-lucide="presentation"></i>Slides Deck</button>
+      <div class="side-foot">
+        Synced 2 min ago<br>24 rows · Sheet1!A2:H25<br>Model: content-writer · demo
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- ===== CALENDAR ===== -->
+      <section id="tab-calendar">
+        <div class="tab-head">
+          <div>
+            <h2>Content Calendar</h2>
+            <p>Read live from the Google Sheet <strong>"Content-Calendar"</strong> — 24 planned pieces across 5 channels.</p>
+          </div>
+          <button class="btn-primary" onclick="goDrafts()"><i data-lucide="wand-sparkles"></i>Draft next post with AI</button>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><div class="lbl"><i data-lucide="layers"></i>Planned</div><div class="val" id="k-total">24</div><div class="sub">this cycle · 4 weeks</div></div>
+          <div class="kpi"><div class="lbl"><i data-lucide="check-check"></i>Published</div><div class="val" id="k-pub">6</div><div class="sub up">on schedule</div></div>
+          <div class="kpi"><div class="lbl"><i data-lucide="clock"></i>Scheduled</div><div class="val" id="k-sch">7</div><div class="sub">queued to publish</div></div>
+          <div class="kpi"><div class="lbl"><i data-lucide="pen-line"></i>In progress</div><div class="val" id="k-wip">6</div><div class="sub">drafting + review</div></div>
+          <div class="kpi"><div class="lbl"><i data-lucide="lightbulb"></i>Ideas</div><div class="val" id="k-idea">5</div><div class="sub">backlog</div></div>
+        </div>
+
+        <div class="cols">
+          <div class="card">
+            <div class="card-h">
+              <h3><i data-lucide="sheet"></i>Sheet rows</h3>
+              <span class="meta" id="row-count">24 rows</span>
+            </div>
+            <div style="padding:14px 18px 0;">
+              <div class="toolbar">
+                <div class="search"><i data-lucide="search"></i><input id="cal-search" placeholder="Search topics…" oninput="renderCal()"></div>
+                <button class="fbtn active" data-ch="all" onclick="setCh(this)">All</button>
+                <button class="fbtn" data-ch="LinkedIn" onclick="setCh(this)">LinkedIn</button>
+                <button class="fbtn" data-ch="X" onclick="setCh(this)">X</button>
+                <button class="fbtn" data-ch="Blog" onclick="setCh(this)">Blog</button>
+                <button class="fbtn" data-ch="Email" onclick="setCh(this)">Email</button>
+              </div>
+            </div>
+            <div style="overflow:auto;max-height:560px;">
+              <table>
+                <thead><tr><th>Date</th><th>Topic</th><th>Channel</th><th>Owner</th><th>Status</th></tr></thead>
+                <tbody id="cal-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:18px;">
+            <div class="card">
+              <div class="card-h"><h3><i data-lucide="bar-chart-3"></i>Pieces by channel</h3></div>
+              <div id="chan-chart" style="padding:16px 18px;"></div>
+            </div>
+            <div class="card">
+              <div class="card-h"><h3><i data-lucide="pie-chart"></i>Pipeline status</h3></div>
+              <div id="status-chart" style="padding:12px 18px 16px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DRAFTS ===== -->
+      <section id="tab-drafts" class="hide">
+        <div class="tab-head">
+          <div>
+            <h2>AI Drafts</h2>
+            <p>Pick a calendar topic → Claude drafts channel-ready copy. <span class="ai-badge"><i data-lucide="sparkles"></i>AI-generated · Demo</span></p>
+          </div>
+        </div>
+        <div class="cols">
+          <div class="card">
+            <div class="card-h"><h3><i data-lucide="list"></i>Topics from the Sheet</h3><span class="meta">tap to load</span></div>
+            <div class="draft-list" id="draft-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-h">
+              <h3><i data-lucide="pen-line"></i>Draft</h3>
+              <span class="ai-badge"><i data-lucide="sparkles"></i>Claude · Demo</span>
+            </div>
+            <div class="draft-body" id="draft-body">
+              <div class="empty"><i data-lucide="mouse-pointer-click" style="width:26px;height:26px;"></i><br><br>Select a topic on the left to generate a draft.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DECK ===== -->
+      <section id="tab-deck" class="hide">
+        <div class="tab-head">
+          <div>
+            <h2>Slides Deck — "This Week's Content Plan"</h2>
+            <p>Auto-built from the Sheet → exported to Google Slides. <span class="ai-badge"><i data-lucide="sparkles"></i>AI-generated · Demo</span></p>
+          </div>
+          <div style="display:flex;gap:9px;">
+            <button class="btn-ghost" onclick="toast('Deck rebuilt from latest Sheet rows')"><i data-lucide="refresh-cw"></i>Rebuild</button>
+            <button class="btn-primary" onclick="toast('Exported to Google Slides · demo')"><i data-lucide="upload"></i>Export to Slides</button>
+          </div>
+        </div>
+        <div class="card" style="padding:16px 18px;margin-bottom:18px;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <span class="chip"><i data-lucide="presentation"></i>5 slides</span>
+            <span class="chip"><i data-lucide="sheet"></i>source: Content-Calendar</span>
+            <span class="chip"><i data-lucide="palette"></i>theme: Forge brand</span>
+            <span style="margin-left:auto;font-size:12px;color:var(--textSec);font-family:var(--mono);">generated 09:04 · demo</span>
+          </div>
+        </div>
+        <div class="deck-grid" id="deck-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"><i data-lucide="check-circle-2"></i><span id="toast-msg">Done</span></div>
 
 <script>
-const CARDS = [
-  // Ideas
-  {id:1, stage:'ideas', chan:'linkedin', title:'The "automate boring work" thesis for founders', date:'—', who:'AR'},
-  {id:2, stage:'ideas', chan:'blog', title:'A field guide to Claude Projects for content teams', date:'—', who:'PK'},
-  {id:3, stage:'ideas', chan:'twitter', title:'Thread: 7 tasks you should never ask AI to do', date:'—', who:'AR'},
-  {id:4, stage:'ideas', chan:'email', title:'Newsletter: how we cut brief-to-publish to 2 days', date:'—', who:'SM'},
-  {id:5, stage:'ideas', chan:'linkedin', title:'Carousel — the 5-tool decision tree, explained', date:'—', who:'PK'},
-  {id:6, stage:'ideas', chan:'blog', title:'Case study: 24 posts a month with one subscription', date:'—', who:'SM'},
-  // Drafting
-  {id:7, stage:'drafting', chan:'linkedin', title:'Why small teams stop chasing AI hype', date:'in review', who:'AR'},
-  {id:8, stage:'drafting', chan:'email', title:'June recap — what actually shipped', date:'draft v2', who:'SM'},
-  {id:9, stage:'drafting', chan:'blog', title:'Grounding vs prompting — the real lever', date:'draft v1', who:'PK'},
-  {id:10, stage:'drafting', chan:'twitter', title:'Thread: reading a leaderboard without vibes', date:'draft v1', who:'AR'},
-  // Scheduled
-  {id:11, stage:'scheduled', chan:'linkedin', title:'The 2-day content pipeline (before/after)', date:'Jul 4, 9:00', who:'AR'},
-  {id:12, stage:'scheduled', chan:'email', title:'Weekly digest — issue #31', date:'Jul 5, 7:30', who:'SM'},
-  {id:13, stage:'scheduled', chan:'twitter', title:'Quote card: "give the model facts, not adjectives"', date:'Jul 6, 12:00', who:'PK'},
-  // Published
-  {id:14, stage:'published', chan:'linkedin', title:'How one subscription replaced 4 content tools', date:'Jun 28', who:'AR'},
-  {id:15, stage:'published', chan:'blog', title:'Building a content workspace inside Claude', date:'Jun 26', who:'PK'},
-  {id:16, stage:'published', chan:'email', title:'Newsletter #30 — the automation issue', date:'Jun 24', who:'SM'},
-  {id:17, stage:'published', chan:'twitter', title:'Thread: 6 weeks, 15 shipped projects', date:'Jun 22', who:'AR'},
-  {id:18, stage:'published', chan:'linkedin', title:'Prompt vs context vs grounding — a map', date:'Jun 20', who:'PK'},
+/* ---------------- demo data (as if read from Google Sheet) ---------------- */
+const CH = {LinkedIn:'ch-linkedin', X:'ch-x', Blog:'ch-blog', Email:'ch-email', Instagram:'ch-instagram'};
+const STORDER = ['Idea','Drafting','Review','Scheduled','Published'];
+const rows = [
+  {d:'Jul 07',topic:'5 signs your ops are running on hope, not data',ch:'LinkedIn',owner:'Aisha',st:'Published'},
+  {d:'Jul 07',topic:'Why we killed our Monday status meeting',ch:'Blog',owner:'Rahul',st:'Published'},
+  {d:'Jul 08',topic:'The 3-line prompt that saved us 4 hrs/week',ch:'X',owner:'Aisha',st:'Published'},
+  {d:'Jul 08',topic:'Weekly ops digest — what changed',ch:'Email',owner:'Meera',st:'Published'},
+  {d:'Jul 09',topic:'Behind the scenes: our AI content pipeline',ch:'LinkedIn',owner:'Rahul',st:'Published'},
+  {d:'Jul 09',topic:'Carousel: 6 dashboards every SMB needs',ch:'Instagram',owner:'Meera',st:'Published'},
+  {d:'Jul 10',topic:'How to turn a messy sheet into a live dashboard',ch:'Blog',owner:'Aisha',st:'Scheduled'},
+  {d:'Jul 10',topic:'One chart that predicts churn 30 days out',ch:'LinkedIn',owner:'Rahul',st:'Scheduled'},
+  {d:'Jul 11',topic:'Thread: what "AI over your Workspace" really means',ch:'X',owner:'Aisha',st:'Scheduled'},
+  {d:'Jul 11',topic:'Friday finance roundup',ch:'Email',owner:'Meera',st:'Scheduled'},
+  {d:'Jul 12',topic:'Case study: 40 hrs/month back with one agent',ch:'LinkedIn',owner:'Rahul',st:'Scheduled'},
+  {d:'Jul 14',topic:'Stop copy-pasting between tools — connect them',ch:'Blog',owner:'Aisha',st:'Scheduled'},
+  {d:'Jul 14',topic:'Reel: dashboard in 60 seconds',ch:'Instagram',owner:'Meera',st:'Scheduled'},
+  {d:'Jul 15',topic:'The real cost of "we’ll check the sheet later"',ch:'LinkedIn',owner:'Aisha',st:'Review'},
+  {d:'Jul 15',topic:'Thread: prompts we reuse every single week',ch:'X',owner:'Rahul',st:'Review'},
+  {d:'Jul 16',topic:'How grounding stops your AI from making things up',ch:'Blog',owner:'Aisha',st:'Review'},
+  {d:'Jul 17',topic:'Weekly ops digest — automation edition',ch:'Email',owner:'Meera',st:'Drafting'},
+  {d:'Jul 17',topic:'Founders: your calendar is a data source',ch:'LinkedIn',owner:'Rahul',st:'Drafting'},
+  {d:'Jul 18',topic:'6 KPIs we watch every morning (and why)',ch:'LinkedIn',owner:'Aisha',st:'Drafting'},
+  {d:'Jul 21',topic:'From ticket queue to answered — with AI',ch:'Blog',owner:'Rahul',st:'Idea'},
+  {d:'Jul 22',topic:'Thread: the anatomy of a good AI draft',ch:'X',owner:'Aisha',st:'Idea'},
+  {d:'Jul 23',topic:'Why your weekly report should write itself',ch:'LinkedIn',owner:'Meera',st:'Idea'},
+  {d:'Jul 24',topic:'Email: the Monday plan, auto-drafted',ch:'Email',owner:'Rahul',st:'Idea'},
+  {d:'Jul 25',topic:'Behind our Slides generator',ch:'Instagram',owner:'Meera',st:'Idea'},
 ];
-const STAGES = [
-  {key:'ideas', label:'Ideas', cls:'ideas', icon:'lightbulb'},
-  {key:'drafting', label:'Drafting', cls:'drafting', icon:'pen-line'},
-  {key:'scheduled', label:'Scheduled', cls:'scheduled', icon:'calendar-clock'},
-  {key:'published', label:'Published', cls:'published', icon:'check-check'},
-];
-let chanFilter = 'all';
+const stClass = {Idea:'st-idea',Drafting:'st-drafting',Review:'st-review',Scheduled:'st-scheduled',Published:'st-published'};
 
-function renderBoard(){
-  const board = document.getElementById('board');
-  board.innerHTML = STAGES.map(st=>{
-    const items = CARDS.filter(c=>c.stage===st.key && (chanFilter==='all'||c.chan===chanFilter));
-    return `<div class="col ${st.cls}">
-      <div class="col-h"><span class="cdot"></span>${st.label}<span class="cnt">${items.length}</span></div>
-      ${items.map(c=>`<div class="ccard" onclick="toast('Opened: ${c.title.replace(/'/g,'')}')">
-        <div class="ct">${c.title}</div>
-        <div class="cm">
-          <span class="chan ${c.chan}">${c.chan}</span>
-          <span class="avat">${c.who}</span>
-          <span class="date"><i data-lucide="clock" style="width:11px;height:11px;"></i> ${c.date}</span>
-        </div>
-      </div>`).join('') || '<div style="font-size:12px;color:var(--textMuted);padding:6px 2px;">No cards</div>'}
-    </div>`;
-  }).join('');
+const DRAFTS = {
+  linkedin:(t)=>`Everyone talks about "being data-driven." Almost no one is.\n\nHere's the uncomfortable truth behind "${t}":\n\nMost teams already have the data. It's sitting in a Google Sheet no one opens until something breaks.\n\nThree things changed for us when we wired that sheet to a real dashboard:\n\n→ The numbers came to us, not the other way round\n→ The weekly update wrote its own first draft\n→ "I'll check later" stopped being a strategy\n\nYou don't need a data team. You need your existing sheet, connected to something that reads it every morning.\n\nWhat's the one number you wish you saw every day?\n\n#AI #Operations #SmallBusiness`,
+  x:(t)=>`1/ ${t} — a short thread 🧵\n\n2/ Your data isn't the problem. Access to it is. It lives in a sheet you open once a week.\n\n3/ Wire that sheet to a dashboard + an AI that reads it daily. Suddenly the report writes itself.\n\n4/ We got ~4 hrs/week back. Not from a new tool — from connecting the ones we had.\n\n5/ Start tiny: one sheet, one KPI, one auto-drafted email. Then grow.\n\n6/ That's it. Reply if you want the exact setup.`,
+  email:(t)=>`Subject: ${t}\n\nHi there,\n\nQuick one this week. We've been rebuilding how our team turns raw sheets into decisions — and the difference has been bigger than we expected.\n\nThe short version: your Google Sheet is already a data source. The moment you connect it to a dashboard and let AI read it each morning, the weekly update stops being a chore and starts being a click.\n\nWe wrote up exactly how we did it — including the prompts.\n\nRead the full breakdown →\n\n— The ForgeMind team`
+};
+
+/* ---------------- calendar tab ---------------- */
+let curCh='all';
+function setCh(btn){document.querySelectorAll('[data-ch]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');curCh=btn.dataset.ch;renderCal();}
+function renderCal(){
+  const q=(document.getElementById('cal-search').value||'').toLowerCase();
+  const list=rows.filter(r=>(curCh==='all'||r.ch===curCh)&&r.topic.toLowerCase().includes(q));
+  const b=document.getElementById('cal-body');
+  document.getElementById('row-count').textContent=list.length+' rows';
+  if(!list.length){b.innerHTML='<tr><td colspan="5" class="empty">No rows match.</td></tr>';return;}
+  b.innerHTML=list.map((r,i)=>`<tr onclick="openInDrafts(${rows.indexOf(r)})">
+    <td class="muted">${r.d}</td>
+    <td class="cell-topic">${r.topic}</td>
+    <td><span class="ch-pill ${CH[r.ch]}">${r.ch}</span></td>
+    <td class="muted">${r.owner}</td>
+    <td><span class="pill ${stClass[r.st]}"><span class="d"></span>${r.st}</span></td>
+  </tr>`).join('');
   lucide.createIcons();
 }
 
-function renderSchedule(){
-  const sched = CARDS.filter(c=>c.stage==='scheduled').concat([
-    {chan:'blog', title:'Grounding vs prompting — the real lever', date:'Jul 8, 10:00'},
-    {chan:'linkedin', title:'Carousel — the 5-tool decision tree', date:'Jul 9, 9:00'},
-    {chan:'email', title:'Weekly digest — issue #32', date:'Jul 12, 7:30'},
-  ]);
-  document.getElementById('schedList').innerHTML = sched.map(s=>{
-    const [d,t] = s.date.split(', ');
-    return `<div class="sched-item">
-      <div class="sched-when"><b>${d}</b>${t||''}</div>
-      <div class="sched-title">${s.title}</div>
-      <span class="chan ${s.chan}">${s.chan}</span>
+function renderCharts(){
+  const counts={};rows.forEach(r=>counts[r.ch]=(counts[r.ch]||0)+1);
+  const max=Math.max(...Object.values(counts));
+  const colors={LinkedIn:'#1877F2',X:'#111',Blog:'#7c3aed',Email:'#dc2626',Instagram:'#c026a6'};
+  document.getElementById('chan-chart').innerHTML=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">
+      <div style="width:66px;font-size:12px;font-weight:600;">${k}</div>
+      <div style="flex:1;height:22px;background:#F1F0EA;border-radius:6px;overflow:hidden;">
+        <div style="width:${v/max*100}%;height:100%;background:${colors[k]};border-radius:6px;transition:width .5s;"></div>
+      </div>
+      <div class="muted" style="width:20px;text-align:right;">${v}</div>
+    </div>`).join('');
+  const sc={};rows.forEach(r=>sc[r.st]=(sc[r.st]||0)+1);
+  const total=rows.length;const dcol={Idea:'#9ca3af',Drafting:'#d99413',Review:'#7c73dd',Scheduled:'#1877F2',Published:'#0F6E56'};
+  let off=0,segs='';const R=52,C=2*Math.PI*R;
+  STORDER.forEach(s=>{const v=sc[s]||0;const len=v/total*C;
+    segs+=`<circle r="${R}" cx="70" cy="70" fill="none" stroke="${dcol[s]}" stroke-width="20" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"></circle>`;off+=len;});
+  document.getElementById('status-chart').innerHTML=`
+    <svg width="140" height="140" viewBox="0 0 140 140" style="flex-shrink:0;">${segs}
+      <text x="70" y="66" text-anchor="middle" font-family="DM Mono" font-size="22" fill="#111">${total}</text>
+      <text x="70" y="84" text-anchor="middle" font-family="DM Mono" font-size="9" fill="#999">PIECES</text></svg>
+    <div style="display:flex;flex-direction:column;gap:7px;">
+    ${STORDER.map(s=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="width:10px;height:10px;border-radius:3px;background:${dcol[s]};"></span><span style="width:74px;">${s}</span><span class="muted">${sc[s]||0}</span></div>`).join('')}
     </div>`;
-  }).join('');
 }
 
-const DRAFTS = {
-  linkedin:`META · LinkedIn post · 128 words · voice matched ✓
-
-Everyone's racing to bolt "AI" onto everything. Most small teams don't need that.
-
-They need the boring stuff to disappear.
-
-Last month we shipped 24 pieces of content with one Claude subscription — no API keys, no new tools, no engineer. The trick wasn't a clever prompt. It was a repeatable pipeline:
-
-→ One Project holds our brand voice + every brief
-→ Claude drafts the long-form piece
-→ The same draft gets reshaped for email, blog and Twitter
-→ We schedule and ship
-
-Brief-to-publish went from 6 days to under 2.
-
-The lesson: don't ask "where can we add AI?" Ask "what boring step can we remove?"
-
-What's the one task you'd automate first? 👇`,
-  email:`META · Email · subject + body · voice matched ✓
-
-Subject: We cut content production from 6 days to 2 (here's how)
-
-Hi there,
-
-Quick one this week. We used to spend the better part of a week turning a rough idea into a finished LinkedIn post, an email, and a Twitter thread.
-
-Now it takes under two days — and honestly, most of that is us being fussy.
-
-The change was boring, which is the point: one Claude Project holds our brand voice and every brief. Claude drafts once, then reshapes the same piece for each channel. We review, schedule, ship.
-
-No API key. No new subscription. Just a pipeline that removes the copy-paste.
-
-Reply and tell me the one content task you'd hand off first.
-
-— The team`,
-  twitter:`META · Twitter thread · 5 tweets · voice matched ✓
-
-1/ We shipped 24 pieces of content last month with ONE Claude subscription. No API keys. No engineer. Here's the pipeline 🧵
-
-2/ The mistake most teams make: asking "where can we add AI?" Ask instead: "what boring step can we remove?"
-
-3/ One Project = our brand voice + every brief, always on hand. Claude drafts the long piece once.
-
-4/ Then the SAME draft gets reshaped for email, blog and Twitter. Reformatting used to eat half a day. Now it's a click.
-
-5/ Brief → publish: 6 days → under 2. The boring pipeline beat the clever prompt every time.`
-};
-let fmt = 'linkedin';
-function renderDraft(){
-  document.getElementById('aiDraft').textContent = DRAFTS[fmt];
+/* ---------------- drafts tab ---------------- */
+let selIdx=null,curVariant='linkedin';
+function renderDraftList(){
+  document.getElementById('draft-list').innerHTML=rows.map((r,i)=>`
+    <div class="draft-item ${selIdx===i?'sel':''}" onclick="selectDraft(${i})">
+      <div class="t">${r.topic}</div>
+      <div class="m"><span class="ch-pill ${CH[r.ch]}">${r.ch}</span><span class="pill ${stClass[r.st]}"><span class="d"></span>${r.st}</span></div>
+    </div>`).join('');
+  lucide.createIcons();
 }
-function regen(){
-  toast('Regenerating draft (demo)…');
-  const el = document.getElementById('aiDraft');
-  el.style.opacity = .35;
-  setTimeout(()=>{ el.style.opacity = 1; toast('New draft ready (demo)'); }, 650);
+function selectDraft(i){
+  selIdx=i;curVariant='linkedin';renderDraftList();
+  const body=document.getElementById('draft-body');
+  body.innerHTML=`<div class="thinking"><i data-lucide="loader-2" class="spin"></i> Claude is drafting from your brand voice + the Sheet row…</div>`;
+  lucide.createIcons();
+  setTimeout(()=>renderDraftBody(),850);
+}
+function renderDraftBody(){
+  const topic=rows[selIdx].topic;
+  const body=document.getElementById('draft-body');
+  body.innerHTML=`
+    <div style="font-size:15px;font-weight:700;margin-bottom:4px;">${topic}</div>
+    <div style="font-size:11.5px;color:var(--textSec);font-family:var(--mono);">grounded on: brand-voice.md · Content-Calendar row · web research</div>
+    <div class="variant-tabs">
+      <button class="vtab ${curVariant==='linkedin'?'active':''}" onclick="setVariant('linkedin')">LinkedIn</button>
+      <button class="vtab ${curVariant==='x'?'active':''}" onclick="setVariant('x')">X / Twitter</button>
+      <button class="vtab ${curVariant==='email'?'active':''}" onclick="setVariant('email')">Email</button>
+    </div>
+    <div class="draft-canvas" id="draft-canvas">${DRAFTS[curVariant](topic)}</div>
+    <div class="gen-row">
+      <button class="btn-primary" onclick="toast('Draft saved to Sheet · status → Review')"><i data-lucide="save"></i>Save to Sheet</button>
+      <button class="btn-ghost" onclick="regen()"><i data-lucide="refresh-cw"></i>Regenerate</button>
+      <button class="btn-ghost" onclick="copyDraft()"><i data-lucide="copy"></i>Copy</button>
+      <span class="ai-badge" style="margin-left:auto;"><i data-lucide="sparkles"></i>AI-generated · not sent</span>
+    </div>`;
+  lucide.createIcons();
+}
+function setVariant(v){curVariant=v;renderDraftBody();}
+function regen(){const c=document.getElementById('draft-canvas');c.style.opacity=.35;
+  setTimeout(()=>{c.style.opacity=1;toast('Regenerated a fresh variant');},600);}
+function copyDraft(){const t=DRAFTS[curVariant](rows[selIdx].topic);navigator.clipboard&&navigator.clipboard.writeText(t);toast('Copied to clipboard');}
+function openInDrafts(i){goDrafts();setTimeout(()=>selectDraft(i),120);}
+function goDrafts(){switchTab('drafts');}
+
+/* ---------------- deck tab ---------------- */
+function renderDeck(){
+  const sc={};rows.forEach(r=>sc[r.st]=(sc[r.st]||0)+1);
+  const counts={};rows.forEach(r=>counts[r.ch]=(counts[r.ch]||0)+1);
+  const max=Math.max(...Object.values(counts));
+  const colors={LinkedIn:'#1877F2',X:'#111',Blog:'#7c3aed',Email:'#dc2626',Instagram:'#c026a6'};
+  const pub=rows.filter(r=>r.st==='Published').slice(0,5);
+  const slides=[
+    {cls:'title-slide',kicker:'ForgeMind AI · Week 28',title:'This Week’s Content Plan',foot:'Auto-generated from Sheet',tag:'Title',body:`<div style="margin-top:8px;font-size:10px;color:#c9a6a6;font-family:var(--mono);">24 pieces · 5 channels · 4 owners</div>`},
+    {kicker:'Overview',title:'Pieces by channel',foot:'Slide 2 of 5',tag:'Chart',body:Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-row"><span style="width:52px">${k}</span><span class="bar-track"><span class="bar-fill" style="width:${v/max*100}%;background:${colors[k]}"></span></span><span>${v}</span></div>`).join('')},
+    {kicker:'Pipeline',title:'Status breakdown',foot:'Slide 3 of 5',tag:'Chart',body:STORDER.map(s=>`<div class="bar-row"><span style="width:60px">${s}</span><span class="bar-track"><span class="bar-fill" style="width:${(sc[s]||0)/rows.length*100}%;background:#dc2626"></span></span><span>${sc[s]||0}</span></div>`).join('')},
+    {kicker:'Highlights',title:'Published this week',foot:'Slide 4 of 5',tag:'Table',body:`<table class="mini-table">${pub.map(r=>`<tr><td>${r.d}</td><td>${r.topic.slice(0,24)}…</td><td>${r.ch}</td></tr>`).join('')}</table>`},
+    {kicker:'Summary',title:'Ship 13 · Draft 6 · Ideate 5',foot:'Slide 5 of 5',tag:'Summary',body:`<div style="margin-top:6px;font-size:10.5px;color:var(--textSec);line-height:1.6;">Priority: clear the 3 in-review pieces, then schedule the LinkedIn case study for Fri.</div>`}
+  ];
+  document.getElementById('deck-grid').innerHTML=slides.map(s=>`
+    <div class="slide ${s.cls||''}">
+      <div class="canvas">
+        <div class="kicker">${s.kicker}</div>
+        <div style="margin-top:10px;flex:1;overflow:hidden;">${s.body||''}</div>
+        <div class="st">${s.title}</div>
+      </div>
+      <div class="foot"><span>${s.foot}</span><span class="mini-tag">${s.tag}</span></div>
+    </div>`).join('');
 }
 
-let toastTimer;
-function toast(msg){
-  document.getElementById('toastMsg').textContent = msg;
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 1900);
+/* ---------------- tabs + toast ---------------- */
+function switchTab(name){
+  document.querySelectorAll('.navlink').forEach(n=>n.classList.toggle('active',n.dataset.tab===name));
+  ['calendar','drafts','deck'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hide',t!==name));
+  if(name==='deck')renderDeck();
+  window.scrollTo(0,0);
 }
+document.querySelectorAll('.navlink').forEach(n=>n.addEventListener('click',()=>switchTab(n.dataset.tab)));
+let toastT;
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400);}
 
-document.getElementById('chanFilters').addEventListener('click', e=>{
-  const b = e.target.closest('.fbtn'); if(!b) return;
-  document.querySelectorAll('#chanFilters .fbtn').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  chanFilter = b.dataset.chan;
-  renderBoard();
-});
-document.getElementById('aiTabs').addEventListener('click', e=>{
-  const b = e.target.closest('.ai-tab'); if(!b) return;
-  document.querySelectorAll('#aiTabs .ai-tab').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');
-  fmt = b.dataset.fmt;
-  renderDraft();
-});
-
-renderBoard();
-renderSchedule();
-renderDraft();
+/* init */
+renderCal();renderCharts();renderDraftList();
 lucide.createIcons();
 </script>
 </body>

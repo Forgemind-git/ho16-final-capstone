@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Personal Finance Copilot — Sample Dashboard | HO16</title>
+<title>AI Finance Copilot — Sample Dashboard | HO16</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
@@ -20,93 +20,112 @@
   body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
   a{color:inherit;}
   header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
-    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+    padding:0 20px;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--headerBorder);}
   .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
   .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
   .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
   .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
-  .wrap{max-width:none;margin:0;padding:22px 40px 72px;}
-
-  .demo-banner{display:flex;align-items:center;gap:10px;background:#FDF6F6;border:1px solid #F3C6C6;
-    border-radius:8px;padding:11px 16px;font-size:13px;color:var(--primary);font-weight:500;margin-bottom:20px;}
-  .demo-banner svg{width:17px;height:17px;flex-shrink:0;}
-  .demo-banner .b-sec{color:var(--textSec);font-weight:400;}
-
-  .back{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:var(--mono);color:var(--textSec);text-decoration:none;margin-bottom:8px;}
-  .back:hover{color:var(--primary);}
-  h1{font-size:26px;font-weight:800;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:10px;}
-  h1 .logo{width:34px;height:34px;border-radius:8px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;}
-  .subhead{font-size:13.5px;color:var(--textSec);margin:6px 0 22px;}
-
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
-  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
-  .kpi .lab{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
-  .kpi .lab svg{width:14px;height:14px;}
-  .kpi .val{font-family:var(--mono);font-size:26px;font-weight:500;margin-top:8px;}
-  .kpi .delta{font-size:12px;font-weight:500;margin-top:2px;}
-  .up{color:var(--primary);} .down{color:var(--green);}
-  .kpi.income .lab svg{color:var(--green);} .kpi.spend .lab svg{color:var(--primary);}
-  .kpi.saved .lab svg{color:var(--blue);} .kpi.tx .lab svg{color:var(--amber);}
-
-  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;margin-bottom:22px;}
-  .panel{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:18px 20px;}
-  .panel-h{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;margin:0 0 4px;}
-  .panel-h svg{color:var(--primary);width:17px;height:17px;}
-  .panel-sub{font-size:12px;color:var(--textMuted);margin:0 0 16px;}
-
-  /* category bars */
-  .cat{margin-bottom:13px;}
-  .cat-top{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:5px;}
-  .cat-top .nm{font-weight:500;}
-  .cat-top .amt{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--textSec);}
-  .cat-top .swatch{width:9px;height:9px;border-radius:3px;}
-  .bar{height:9px;border-radius:99px;background:#F1F0EA;overflow:hidden;}
-  .bar span{display:block;height:100%;border-radius:99px;transition:width .5s ease;}
-
-  /* trend chart */
-  .chart-wrap{width:100%;overflow-x:auto;}
-  svg.trend{display:block;width:100%;height:auto;}
-
-  /* AI insights */
-  .ai-panel{background:linear-gradient(180deg,#fff,#FCFBF7);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;margin-bottom:22px;}
-  .ai-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);background:#fff;}
-  .ai-head .spark{width:30px;height:30px;border-radius:8px;background:#FCEBEB;color:var(--primary);display:flex;align-items:center;justify-content:center;}
-  .ai-head .tt{font-size:14px;font-weight:700;}
-  .ai-head .demo-tag{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);border:1px solid var(--border);border-radius:99px;padding:3px 9px;}
-  .ai-body{padding:16px 18px;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .insight{display:flex;gap:11px;align-items:flex-start;background:#fff;border:1px solid var(--border);border-radius:8px;padding:13px 14px;}
+  .demo-banner{background:#FDF6F6;border-bottom:1px solid #F3C6C6;color:#8a2b2b;font-size:12.5px;
+    padding:8px 48px;display:flex;align-items:center;gap:8px;font-weight:500;}
+  .demo-banner i{width:15px;height:15px;color:var(--primary);}
+  .app{display:flex;min-height:calc(100vh - 56px - 35px);}
+  .side{width:230px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);padding:22px 14px;display:flex;flex-direction:column;gap:4px;}
+  .brand-block{padding:0 8px 16px;margin-bottom:8px;border-bottom:1px solid var(--border);}
+  .brand-block .eye{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);}
+  .brand-block h1{font-size:19px;font-weight:700;margin:6px 0 10px;letter-spacing:-.01em;line-height:1.2;}
+  .chips{display:flex;flex-direction:column;gap:6px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;font-family:var(--mono);
+    background:#F1F0EA;border:1px solid var(--border);border-radius:99px;padding:3px 9px;color:var(--textSec);width:fit-content;}
+  .chip i{width:12px;height:12px;}
+  .chip .on{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  .navlink{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:500;
+    color:var(--textSec);cursor:pointer;transition:background .12s,color .12s;border:none;background:none;width:100%;text-align:left;font-family:var(--font);}
+  .navlink i{width:16px;height:16px;}
+  .navlink:hover{background:var(--hover);color:var(--text);}
+  .navlink.active{background:#FCEBEB;color:var(--primary);font-weight:600;}
+  .side-foot{margin-top:auto;padding:12px 8px 0;font-size:10.5px;color:var(--textMuted);font-family:var(--mono);line-height:1.6;}
+  .main{flex:1;padding:26px 34px 60px;min-width:0;}
+  .tab-head{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:20px;}
+  .tab-head h2{font-size:21px;font-weight:700;margin:0;letter-spacing:-.01em;}
+  .tab-head p{font-size:13px;color:var(--textSec);margin:5px 0 0;}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;margin-bottom:22px;}
+  .kpi{background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);padding:16px 18px;position:relative;overflow:hidden;}
+  .kpi .lbl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .kpi .lbl i{width:13px;height:13px;color:var(--primary);}
+  .kpi .val{font-family:var(--mono);font-size:25px;font-weight:500;margin-top:8px;letter-spacing:-.02em;}
+  .kpi .sub{font-size:11.5px;color:var(--textSec);margin-top:3px;display:flex;align-items:center;gap:4px;}
+  .kpi .sub.up{color:var(--green);font-weight:600;} .kpi .sub.down{color:var(--primary);font-weight:600;}
+  .kpi .sub i{width:12px;height:12px;}
+  .card{background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);padding:0;overflow:hidden;}
+  .card-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px;border-bottom:1px solid var(--border);}
+  .card-h h3{font-size:14px;font-weight:700;margin:0;display:flex;align-items:center;gap:8px;}
+  .card-h h3 i{width:16px;height:16px;color:var(--primary);}
+  .card-h .meta{font-size:11px;font-family:var(--mono);color:var(--textMuted);}
+  .toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:16px;}
+  .search{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:7px 11px;flex:1;min-width:180px;max-width:320px;}
+  .search i{width:15px;height:15px;color:var(--textMuted);}
+  .search input{border:none;outline:none;font-family:var(--font);font-size:13px;width:100%;background:none;color:var(--text);}
+  .fbtn{font-family:var(--font);font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--border);
+    background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .fbtn:hover{background:var(--hover);}
+  .fbtn.active{background:#111;color:#fff;border-color:#111;}
+  .btn-primary{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-size:13px;font-weight:600;
+    padding:9px 15px;border-radius:8px;border:none;background:var(--primary);color:#fff;cursor:pointer;box-shadow:var(--shadowSm);transition:background .12s;}
+  .btn-primary:hover{background:var(--primaryHover);}
+  .btn-primary i{width:15px;height:15px;}
+  .btn-ghost{display:inline-flex;align-items:center;gap:7px;font-family:var(--font);font-size:12.5px;font-weight:600;
+    padding:8px 13px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
+  .btn-ghost:hover{background:var(--hover);}
+  .btn-ghost i{width:14px;height:14px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--textMuted);padding:11px 18px;border-bottom:1px solid var(--border);background:#FAFAF7;position:sticky;top:0;}
+  thead th.r,tbody td.r{text-align:right;}
+  tbody td{padding:10px 18px;border-bottom:1px solid #F0EFE9;vertical-align:middle;}
+  tbody tr:hover{background:#FAFAF7;}
+  tbody tr:last-child td{border-bottom:none;}
+  .amt{font-family:var(--mono);font-weight:500;}
+  .amt.neg{color:var(--primary);} .amt.pos{color:var(--green);}
+  .muted{color:var(--textMuted);font-family:var(--mono);font-size:12px;}
+  .cat-pill{font-size:10.5px;font-weight:600;font-family:var(--mono);padding:2px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:5px;}
+  .cat-pill .d{width:7px;height:7px;border-radius:2px;}
+  .cols{display:grid;grid-template-columns:1.35fr .9fr;gap:18px;align-items:start;}
+  @media(max-width:1000px){.cols{grid-template-columns:1fr;}}
+  .ai-badge{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;font-family:var(--mono);
+    text-transform:uppercase;letter-spacing:.06em;background:linear-gradient(90deg,#FCEBEB,#F3ECFB);color:var(--primary);
+    border:1px solid #F3C6C6;border-radius:99px;padding:4px 11px;}
+  .ai-badge i{width:13px;height:13px;}
+  .insight{display:flex;gap:11px;padding:13px 16px;border-bottom:1px solid #F0EFE9;}
+  .insight:last-child{border-bottom:none;}
   .insight .ic{width:30px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-  .insight .ic svg{width:16px;height:16px;}
-  .insight.warn .ic{background:#FCEBEB;color:var(--primary);} .insight.good .ic{background:#E1F5EE;color:var(--green);}
-  .insight.info .ic{background:#E7F0FE;color:var(--blue);} .insight.tip .ic{background:#FAEEDA;color:var(--amber);}
-  .insight .txt{font-size:13px;line-height:1.5;}
-  .insight .txt b{font-weight:700;}
-  .ai-ask{display:flex;gap:8px;padding:0 18px 16px;}
-  .ai-ask input{flex:1;font-family:var(--font);font-size:13px;border:1px solid var(--border);border-radius:8px;padding:10px 13px;background:#fff;}
-  .ai-ask input:focus{outline:none;border-color:var(--primary);}
-  .ai-ask button{background:var(--primary);color:#fff;border:none;font-weight:600;font-size:13px;padding:0 16px;border-radius:8px;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;}
-
-  /* transactions */
-  .tx-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-  .filters{display:flex;gap:6px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:4px;flex-wrap:wrap;}
-  .fbtn{font-size:12px;font-weight:500;padding:6px 11px;border-radius:6px;border:none;background:transparent;color:var(--textSec);cursor:pointer;font-family:var(--font);}
-  .fbtn.active{background:var(--primary);color:#fff;}
-  table{width:100%;border-collapse:collapse;}
-  th{text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--textMuted);padding:8px 10px;border-bottom:1px solid var(--border);}
-  th.r,td.r{text-align:right;}
-  td{font-size:13px;padding:11px 10px;border-bottom:1px solid var(--border);}
-  tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:var(--hover);}
-  .tx-merchant{font-weight:500;}
-  .tx-date{font-family:var(--mono);font-size:12px;color:var(--textSec);}
-  .tx-amt{font-family:var(--mono);font-weight:500;}
-  .tx-amt.out{color:var(--text);} .tx-amt.in{color:var(--green);}
-  .catpill{font-size:10.5px;font-weight:600;font-family:var(--mono);padding:2px 8px;border-radius:99px;white-space:nowrap;}
-
-  footer{border-top:1px solid var(--border);margin-top:44px;padding-top:18px;font-size:12px;color:var(--textMuted);font-family:var(--mono);text-align:center;}
-
-  @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr);}.cols2{grid-template-columns:1fr;}.ai-body{grid-template-columns:1fr;}}
-  @media(max-width:640px){.wrap{padding:18px 18px 60px;}.kpis{grid-template-columns:1fr;}}
+  .insight .ic i{width:16px;height:16px;}
+  .insight .ic.warn{background:#FAEEDA;color:#854F0B;} .insight .ic.good{background:#E1F5EE;color:#0F6E56;}
+  .insight .ic.info{background:#E7F0FE;color:#1877F2;} .insight .ic.alert{background:#FCEBEB;color:#dc2626;}
+  .insight .t{font-size:13.5px;font-weight:600;margin-bottom:2px;}
+  .insight .b{font-size:12.5px;color:var(--textSec);line-height:1.55;}
+  /* gmail draft */
+  .mail{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .mail-top{background:#FAFAF7;border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:9px;}
+  .mail-top .g{width:26px;height:26px;border-radius:7px;background:#FCEBEB;color:var(--primary);display:flex;align-items:center;justify-content:center;}
+  .mail-top .g i{width:15px;height:15px;}
+  .mail-meta{font-size:11px;font-family:var(--mono);color:var(--textMuted);}
+  .mail-field{padding:9px 16px;border-bottom:1px solid #F0EFE9;font-size:12.5px;display:flex;gap:8px;}
+  .mail-field .k{color:var(--textMuted);font-family:var(--mono);width:52px;flex-shrink:0;}
+  .mail-body{padding:16px;font-size:13.5px;line-height:1.7;color:var(--text);white-space:pre-wrap;}
+  .mail-actions{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:9px;align-items:center;flex-wrap:wrap;background:#FCFCFA;}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;
+    font-size:13px;font-weight:500;padding:12px 20px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.25);
+    display:flex;align-items:center;gap:9px;opacity:0;pointer-events:none;transition:all .25s;z-index:60;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast i{width:16px;height:16px;color:#4ade80;}
+  .hide{display:none!important;}
+  .spin{animation:sp 1s linear infinite;} @keyframes sp{to{transform:rotate(360deg);}}
+  .thinking{display:flex;align-items:center;gap:9px;color:var(--textSec);font-size:13px;padding:24px;justify-content:center;}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;padding:14px 18px 4px;font-size:11.5px;font-family:var(--mono);color:var(--textSec);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;} .legend .sw{width:9px;height:9px;border-radius:3px;}
+  .addrow{display:grid;grid-template-columns:1fr 1.6fr 1fr 1fr auto;gap:8px;padding:14px 18px;border-top:1px solid var(--border);background:#FCFCFA;align-items:center;}
+  .addrow input,.addrow select{font-family:var(--font);font-size:12.5px;padding:7px 9px;border:1px solid var(--border);border-radius:7px;outline:none;background:#fff;}
+  @media(max-width:760px){.addrow{grid-template-columns:1fr 1fr;} .side{display:none;} .main{padding:22px 18px 50px;} .demo-banner{padding:8px 18px;}}
 </style>
 </head>
 <body>
@@ -114,217 +133,327 @@
     <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
     <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
   </header>
-
-  <div class="wrap">
-    <a href="index.html" class="back"><i data-lucide="arrow-left"></i> Back to the build guide</a>
-
-    <div class="demo-banner">
-      <i data-lucide="flask-conical"></i>
-      <span><strong>Front-end preview · demo data</strong> <span class="b-sec">— the real full-stack + AI backend is your build. Numbers below are a canned sample statement, categorised client-side.</span></span>
-    </div>
-
-    <h1><span class="logo"><i data-lucide="wallet"></i></span> Personal Finance Copilot</h1>
-    <div class="subhead">June 2026 · statement analysed · 22 transactions categorised · demo account "A. Rao"</div>
-
-    <div class="kpis">
-      <div class="kpi income"><div class="lab"><i data-lucide="arrow-down-circle"></i> Income</div><div class="val">₹1,84,000</div><div class="delta down">salary + freelance</div></div>
-      <div class="kpi spend"><div class="lab"><i data-lucide="arrow-up-circle"></i> Total spend</div><div class="val">₹1,37,420</div><div class="delta up">+11% vs May</div></div>
-      <div class="kpi saved"><div class="lab"><i data-lucide="piggy-bank"></i> Net saved</div><div class="val">₹46,580</div><div class="delta down">25% savings rate</div></div>
-      <div class="kpi tx"><div class="lab"><i data-lucide="receipt"></i> Transactions</div><div class="val">22</div><div class="delta" style="color:var(--textSec);">auto-categorised</div></div>
-    </div>
-
-    <div class="ai-panel">
-      <div class="ai-head">
-        <span class="spark"><i data-lucide="sparkles"></i></span>
-        <span class="tt">Claude's insights on your spending</span>
-        <span class="demo-tag">Demo output</span>
-      </div>
-      <div class="ai-body">
-        <div class="insight warn"><span class="ic"><i data-lucide="trending-up"></i></span><span class="txt">You spent <b>22% more on dining</b> this month (₹18,400 vs ₹15,080 in May). 9 orders were food delivery on weekends.</span></div>
-        <div class="insight good"><span class="ic"><i data-lucide="check-circle"></i></span><span class="txt">Your <b>savings rate hit 25%</b> — above your 20% goal for the third month running. Nicely done.</span></div>
-        <div class="insight info"><span class="ic"><i data-lucide="repeat"></i></span><span class="txt">You have <b>5 recurring subscriptions</b> totalling ₹3,240/mo. "CloudDrive Pro" (₹899) hasn't been used since April.</span></div>
-        <div class="insight tip"><span class="ic"><i data-lucide="lightbulb"></i></span><span class="txt">Groceries were <b>18% under budget</b>. Move the surplus (₹2,100) to your emergency fund to stay on track.</span></div>
-      </div>
-      <div class="ai-ask">
-        <input id="askInput" placeholder="Ask about your finances — e.g. &quot;How much did I spend on travel?&quot;" onkeydown="if(event.key==='Enter')ask()">
-        <button onclick="ask()"><i data-lucide="send" style="width:14px;height:14px;"></i> Ask</button>
-      </div>
-    </div>
-
-    <div class="cols2">
-      <div class="panel">
-        <div class="panel-h"><i data-lucide="pie-chart"></i> Spending by category</div>
-        <div class="panel-sub">June 2026 · ₹1,37,420 across 8 categories</div>
-        <div id="cats"></div>
-      </div>
-      <div class="panel">
-        <div class="panel-h"><i data-lucide="line-chart"></i> Monthly spend trend</div>
-        <div class="panel-sub">Last 6 months · total outgoing per month</div>
-        <div class="chart-wrap">
-          <svg class="trend" viewBox="0 0 520 220" id="trendSvg"></svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-h"><i data-lucide="list"></i> Transactions</div>
-      <div class="panel-sub">Auto-categorised by Claude from your uploaded CSV</div>
-      <div class="tx-toolbar">
-        <div class="filters" id="catFilters"></div>
-      </div>
-      <table>
-        <thead><tr><th>Date</th><th>Merchant</th><th>Category</th><th class="r">Amount</th></tr></thead>
-        <tbody id="txBody"></tbody>
-      </table>
-    </div>
-
-    <footer>Front-end preview · demo data only · HO16 Final Capstone · Sample 04 — Personal Finance Copilot</footer>
+  <div class="demo-banner">
+    <i data-lucide="info"></i>
+    <span>Front-end preview · demo data · the real Google connection is your hands-on build (Claude Code)</span>
   </div>
 
+  <div class="app">
+    <aside class="side">
+      <div class="brand-block">
+        <div class="eye">HO16 · Capstone · Sample 04</div>
+        <h1>AI Finance Copilot</h1>
+        <div class="chips">
+          <span class="chip"><span class="on"></span><i data-lucide="sheet"></i>Sheet · "Transactions"</span>
+          <span class="chip"><span class="on"></span><i data-lucide="mail"></i>Gmail · weekly summary</span>
+          <span class="chip"><span class="on"></span><i data-lucide="sparkles"></i>Claude · finance model</span>
+        </div>
+      </div>
+      <button class="navlink active" data-tab="overview"><i data-lucide="layout-dashboard"></i>Overview</button>
+      <button class="navlink" data-tab="tx"><i data-lucide="receipt"></i>Transactions</button>
+      <button class="navlink" data-tab="insights"><i data-lucide="sparkles"></i>AI Insights</button>
+      <div class="side-foot">
+        Synced 4 min ago<br>28 rows · Transactions!A2:E29<br>Period: Jul 2026 · demo
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- ===== OVERVIEW ===== -->
+      <section id="tab-overview">
+        <div class="tab-head">
+          <div>
+            <h2>Overview — July 2026</h2>
+            <p>KPIs and charts computed live from the Google Sheet <strong>"Transactions"</strong>.</p>
+          </div>
+          <button class="btn-primary" onclick="switchTab('insights')"><i data-lucide="wand-sparkles"></i>Draft weekly email</button>
+        </div>
+        <div class="kpis" id="kpi-row"></div>
+
+        <div class="cols">
+          <div style="display:flex;flex-direction:column;gap:18px;">
+            <div class="card">
+              <div class="card-h"><h3><i data-lucide="line-chart"></i>Daily spend — July</h3><span class="meta">₹, this month</span></div>
+              <div id="trend-chart" style="padding:16px 12px 10px;"></div>
+            </div>
+            <div class="card">
+              <div class="card-h"><h3><i data-lucide="bar-chart-3"></i>Spend by category</h3><span class="meta">top 7</span></div>
+              <div id="cat-chart" style="padding:16px 18px;"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h"><h3><i data-lucide="pie-chart"></i>Where the money went</h3></div>
+            <div id="donut" style="padding:14px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;"></div>
+            <div class="legend" id="donut-legend"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TRANSACTIONS ===== -->
+      <section id="tab-tx" class="hide">
+        <div class="tab-head">
+          <div>
+            <h2>Transactions</h2>
+            <p>Auto-categorised by Claude on import. <span class="ai-badge"><i data-lucide="sparkles"></i>AI-categorised · Demo</span></p>
+          </div>
+          <span class="meta" id="tx-count" style="font-family:var(--mono);color:var(--textSec);"></span>
+        </div>
+        <div class="toolbar">
+          <div class="search"><i data-lucide="search"></i><input id="tx-search" placeholder="Search transactions…" oninput="renderTx()"></div>
+          <button class="fbtn active" data-cat="all" onclick="setCat(this)">All</button>
+          <button class="fbtn" data-cat="Income" onclick="setCat(this)">Income</button>
+          <button class="fbtn" data-cat="Food & Dining" onclick="setCat(this)">Food</button>
+          <button class="fbtn" data-cat="Software" onclick="setCat(this)">Software</button>
+          <button class="fbtn" data-cat="Travel" onclick="setCat(this)">Travel</button>
+          <button class="fbtn" data-cat="Marketing" onclick="setCat(this)">Marketing</button>
+        </div>
+        <div class="card">
+          <div style="overflow:auto;max-height:560px;">
+            <table>
+              <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Account</th><th class="r">Amount</th></tr></thead>
+              <tbody id="tx-body"></tbody>
+            </table>
+          </div>
+          <div class="addrow">
+            <input id="a-date" placeholder="Jul 30" value="Jul 30">
+            <input id="a-desc" placeholder="Description">
+            <select id="a-cat"></select>
+            <input id="a-amt" placeholder="-1200" type="number">
+            <button class="btn-primary" onclick="addTx()"><i data-lucide="plus"></i>Add</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AI INSIGHTS ===== -->
+      <section id="tab-insights" class="hide">
+        <div class="tab-head">
+          <div>
+            <h2>AI Insights</h2>
+            <p>Claude reads every row and surfaces what matters. <span class="ai-badge"><i data-lucide="sparkles"></i>AI-generated · Demo</span></p>
+          </div>
+          <button class="btn-ghost" onclick="reanalyse()"><i data-lucide="refresh-cw"></i>Re-analyse</button>
+        </div>
+        <div class="cols">
+          <div class="card">
+            <div class="card-h"><h3><i data-lucide="lightbulb"></i>Insights &amp; anomalies</h3><span class="ai-badge"><i data-lucide="sparkles"></i>Claude · Demo</span></div>
+            <div id="insight-list"></div>
+          </div>
+          <div class="card" style="overflow:visible;">
+            <div class="card-h"><h3><i data-lucide="mail"></i>Weekly Gmail summary</h3><span class="meta">draft · not sent</span></div>
+            <div style="padding:16px 18px;">
+              <div class="mail">
+                <div class="mail-top">
+                  <div class="g"><i data-lucide="mail"></i></div>
+                  <div><div style="font-size:12.5px;font-weight:700;">Weekly Finance Summary</div><div class="mail-meta">Gmail draft · auto-composed by Claude</div></div>
+                </div>
+                <div class="mail-field"><span class="k">To</span><span>you@yourcompany.com</span></div>
+                <div class="mail-field"><span class="k">Subject</span><span id="mail-subject">Your week in money — 26 Jun to 2 Jul</span></div>
+                <div class="mail-body" id="mail-body"></div>
+                <div class="mail-actions">
+                  <button class="btn-primary" onclick="toast('Saved to Gmail Drafts · demo (nothing was sent)')"><i data-lucide="send"></i>Send via Gmail</button>
+                  <button class="btn-ghost" onclick="toast('Saved to Gmail Drafts · demo')"><i data-lucide="save"></i>Save draft</button>
+                  <span class="ai-badge" style="margin-left:auto;"><i data-lucide="sparkles"></i>AI-drafted · not sent</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"><i data-lucide="check-circle-2"></i><span id="toast-msg">Done</span></div>
+
 <script>
-const CATCOLORS = {
-  'Dining':'#dc2626','Groceries':'#0F6E56','Rent':'#534AB7','Travel':'#1877F2',
-  'Shopping':'#854F0B','Utilities':'#0891B2','Subscriptions':'#DB2777','Income':'#0F6E56','Health':'#7C3AED'
+/* ---------------- demo data (as if imported into a Google Sheet) ---------------- */
+const CATS = {
+  'Income':      '#0F6E56',
+  'Food & Dining':'#dc2626',
+  'Software':    '#534AB7',
+  'Travel':      '#1877F2',
+  'Marketing':   '#c026a6',
+  'Payroll':     '#854F0B',
+  'Office':      '#0891b2',
+  'Utilities':   '#6b7280'
 };
-function catStyle(c){const col=CATCOLORS_HEX(c);return `background:${col}1A;color:${col};`;}
-function CATCOLORS_HEX(c){return CATCOLORS[c]||'#6B7280';}
-
-const CATS = [
-  {name:'Rent', amt:42000},
-  {name:'Groceries', amt:19800},
-  {name:'Dining', amt:18400},
-  {name:'Travel', amt:16200},
-  {name:'Shopping', amt:14600},
-  {name:'Subscriptions', amt:3240},
-  {name:'Utilities', amt:8180},
-  {name:'Health', amt:15000},
+let tx = [
+  {d:'Jul 01',desc:'Client retainer — Meridian Co',cat:'Income',acct:'HDFC ••4021',amt:185000},
+  {d:'Jul 01',desc:'AWS — monthly hosting',cat:'Software',acct:'Amex ••1007',amt:-12400},
+  {d:'Jul 02',desc:'Team lunch — Truffles',cat:'Food & Dining',acct:'HDFC ••4021',amt:-3850},
+  {d:'Jul 02',desc:'Google Workspace (5 seats)',cat:'Software',acct:'Amex ••1007',amt:-3600},
+  {d:'Jul 03',desc:'Meta Ads — July campaign',cat:'Marketing',acct:'Amex ••1007',amt:-45000},
+  {d:'Jul 04',desc:'Uber — client meeting',cat:'Travel',acct:'HDFC ••4021',amt:-620},
+  {d:'Jul 05',desc:'Salary — Aisha',cat:'Payroll',acct:'HDFC ••4021',amt:-68000},
+  {d:'Jul 05',desc:'Salary — Rahul',cat:'Payroll',acct:'HDFC ••4021',amt:-72000},
+  {d:'Jul 06',desc:'Swiggy — office snacks',cat:'Food & Dining',acct:'HDFC ••4021',amt:-1240},
+  {d:'Jul 07',desc:'Notion — annual plan',cat:'Software',acct:'Amex ••1007',amt:-8900},
+  {d:'Jul 08',desc:'Client milestone — Vertex',cat:'Income',acct:'HDFC ••4021',amt:95000},
+  {d:'Jul 09',desc:'Electricity — office',cat:'Utilities',acct:'HDFC ••4021',amt:-4200},
+  {d:'Jul 10',desc:'Flight — Blr→Del (sales)',cat:'Travel',acct:'Amex ••1007',amt:-9800},
+  {d:'Jul 11',desc:'Hotel — Delhi 2 nights',cat:'Travel',acct:'Amex ••1007',amt:-11200},
+  {d:'Jul 12',desc:'Dinner — client, Delhi',cat:'Food & Dining',acct:'Amex ••1007',amt:-4600},
+  {d:'Jul 13',desc:'Figma — team plan',cat:'Software',acct:'Amex ••1007',amt:-5400},
+  {d:'Jul 14',desc:'LinkedIn Ads',cat:'Marketing',acct:'Amex ••1007',amt:-18500},
+  {d:'Jul 15',desc:'Coffee run — Blue Tokai',cat:'Food & Dining',acct:'HDFC ••4021',amt:-980},
+  {d:'Jul 16',desc:'Printer paper + supplies',cat:'Office',acct:'HDFC ••4021',amt:-2300},
+  {d:'Jul 17',desc:'Client retainer — Nova Labs',cat:'Income',acct:'HDFC ••4021',amt:120000},
+  {d:'Jul 18',desc:'Zoom — annual',cat:'Software',acct:'Amex ••1007',amt:-14900},
+  {d:'Jul 19',desc:'Internet — Airtel biz',cat:'Utilities',acct:'HDFC ••4021',amt:-3100},
+  {d:'Jul 20',desc:'Team dinner — quarter close',cat:'Food & Dining',acct:'HDFC ••4021',amt:-6800},
+  {d:'Jul 21',desc:'Cab — airport drop',cat:'Travel',acct:'HDFC ••4021',amt:-540},
+  {d:'Jul 22',desc:'Canva Pro',cat:'Software',acct:'Amex ••1007',amt:-3300},
+  {d:'Jul 23',desc:'Google Ads — retargeting',cat:'Marketing',acct:'Amex ••1007',amt:-22000},
+  {d:'Jul 24',desc:'Standing desk — new hire',cat:'Office',acct:'HDFC ••4021',amt:-18900},
+  {d:'Jul 25',desc:'Lunch — Swiggy',cat:'Food & Dining',acct:'HDFC ••4021',amt:-1420},
 ];
-function renderCats(){
-  const max = Math.max(...CATS.map(c=>c.amt));
-  document.getElementById('cats').innerHTML = CATS.map(c=>{
-    const col = CATCOLORS_HEX(c.name);
-    return `<div class="cat">
-      <div class="cat-top"><span class="swatch" style="background:${col}"></span><span class="nm">${c.name}</span><span class="amt">₹${c.amt.toLocaleString('en-IN')}</span></div>
-      <div class="bar"><span style="width:${(c.amt/max*100).toFixed(1)}%;background:${col}"></span></div>
-    </div>`;
-  }).join('');
-}
+const fmt = n => (n<0?'-':'')+'₹'+Math.abs(n).toLocaleString('en-IN');
 
-const TREND = [
-  {m:'Jan', v:118400},{m:'Feb', v:124900},{m:'Mar', v:131200},
-  {m:'Apr', v:126700},{m:'May', v:123800},{m:'Jun', v:137420},
-];
-function renderTrend(){
-  const W=520,H=220,padL=48,padR=16,padT=18,padB=34;
-  const xs=(W-padL-padR)/(TREND.length-1);
-  const max=Math.max(...TREND.map(d=>d.v))*1.08, min=Math.min(...TREND.map(d=>d.v))*0.9;
-  const y=v=>padT+(H-padT-padB)*(1-(v-min)/(max-min));
-  const x=i=>padL+xs*i;
-  let grid='',path='',area='',dots='',labels='';
-  for(let g=0;g<=3;g++){
-    const gy=padT+(H-padT-padB)*g/3;
-    const gv=max-(max-min)*g/3;
-    grid+=`<line x1="${padL}" y1="${gy.toFixed(1)}" x2="${W-padR}" y2="${gy.toFixed(1)}" stroke="#E5E5E0" stroke-width="1"/>`;
-    grid+=`<text x="${padL-8}" y="${(gy+4).toFixed(1)}" text-anchor="end" font-family="'DM Mono',monospace" font-size="9" fill="#999">₹${Math.round(gv/1000)}k</text>`;
-  }
-  TREND.forEach((d,i)=>{
-    const px=x(i),py=y(d.v);
-    path+=(i===0?`M`:`L`)+`${px.toFixed(1)} ${py.toFixed(1)} `;
-    area+=(i===0?`M`:`L`)+`${px.toFixed(1)} ${py.toFixed(1)} `;
-    dots+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${i===TREND.length-1?4.5:3.2}" fill="${i===TREND.length-1?'#dc2626':'#fff'}" stroke="#dc2626" stroke-width="2"/>`;
-    labels+=`<text x="${px.toFixed(1)}" y="${H-14}" text-anchor="middle" font-family="'DM Mono',monospace" font-size="10" fill="#6B7280">${d.m}</text>`;
+/* ---------------- KPIs + charts ---------------- */
+function computed(){
+  let income=0,spend=0;const byCat={};const byDay={};
+  tx.forEach(t=>{
+    if(t.amt>=0)income+=t.amt; else {spend+=-t.amt; byCat[t.cat]=(byCat[t.cat]||0)+(-t.amt);}
+    const day=t.d;byDay[day]=(byDay[day]||0)+(t.amt<0?-t.amt:0);
   });
-  area+=`L${x(TREND.length-1).toFixed(1)} ${H-padB} L${padL} ${H-padB} Z`;
-  document.getElementById('trendSvg').innerHTML =
-    grid +
-    `<path d="${area}" fill="#dc262614"/>` +
-    `<path d="${path}" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>` +
-    dots + labels;
+  return {income,spend,net:income-spend,byCat,byDay};
 }
-
-const TX = [
-  {d:'Jun 30', m:'Sunrise Apartments', c:'Rent', a:-42000},
-  {d:'Jun 29', m:'Zomato', c:'Dining', a:-720},
-  {d:'Jun 28', m:'BigBasket', c:'Groceries', a:-3140},
-  {d:'Jun 27', m:'Salary — Acme Corp', c:'Income', a:154000},
-  {d:'Jun 26', m:'Indian Oil', c:'Travel', a:-2400},
-  {d:'Jun 25', m:'Swiggy', c:'Dining', a:-540},
-  {d:'Jun 24', m:'Amazon.in', c:'Shopping', a:-4680},
-  {d:'Jun 23', m:'Netflix', c:'Subscriptions', a:-649},
-  {d:'Jun 22', m:'Apollo Pharmacy', c:'Health', a:-1280},
-  {d:'Jun 21', m:'Uber', c:'Travel', a:-380},
-  {d:'Jun 20', m:'DMart', c:'Groceries', a:-2860},
-  {d:'Jun 19', m:'Freelance — Bolt Studio', c:'Income', a:30000},
-  {d:'Jun 18', m:'Zomato', c:'Dining', a:-890},
-  {d:'Jun 17', m:'BESCOM Electricity', c:'Utilities', a:-2180},
-  {d:'Jun 16', m:'CloudDrive Pro', c:'Subscriptions', a:-899},
-  {d:'Jun 15', m:'Myntra', c:'Shopping', a:-3420},
-  {d:'Jun 14', m:'IRCTC Rail', c:'Travel', a:-1640},
-  {d:'Jun 13', m:'Swiggy Instamart', c:'Groceries', a:-1120},
-  {d:'Jun 12', m:'Cult.fit', c:'Health', a:-1499},
-  {d:'Jun 11', m:'Airtel Broadband', c:'Utilities', a:-999},
-  {d:'Jun 10', m:'Zomato', c:'Dining', a:-1180},
-  {d:'Jun 09', m:'Spotify', c:'Subscriptions', a:-119},
-];
-let txFilter='All';
-function renderFilters(){
-  const cats=['All',...new Set(TX.map(t=>t.c))];
-  document.getElementById('catFilters').innerHTML = cats.map(c=>
-    `<button class="fbtn ${c===txFilter?'active':''}" data-c="${c}">${c}</button>`).join('');
-}
-function renderTx(){
-  const rows = TX.filter(t=>txFilter==='All'||t.c===txFilter);
-  document.getElementById('txBody').innerHTML = rows.map(t=>{
-    const col=CATCOLORS_HEX(t.c);
-    const inc=t.a>0;
-    return `<tr>
-      <td class="tx-date">${t.d}</td>
-      <td class="tx-merchant">${t.m}</td>
-      <td><span class="catpill" style="background:${col}1A;color:${col}">${t.c}</span></td>
-      <td class="r"><span class="tx-amt ${inc?'in':'out'}">${inc?'+':'−'}₹${Math.abs(t.a).toLocaleString('en-IN')}</span></td>
-    </tr>`;
-  }).join('');
-}
-document.getElementById('catFilters').addEventListener('click', e=>{
-  const b=e.target.closest('.fbtn'); if(!b) return;
-  txFilter=b.dataset.c;
-  renderFilters(); renderTx();
-});
-
-const ANSWERS = {
-  travel:'You spent ₹16,200 on Travel in June across 4 transactions (fuel, Uber, IRCTC rail). That is 12% of your spend — down ₹900 from May.',
-  dining:'Dining came to ₹18,400 this month across 9 orders — 22% higher than May. Most were weekend food delivery (Zomato, Swiggy).',
-  save:'You saved ₹46,580 in June — a 25% savings rate, above your 20% goal. Cutting one unused subscription would add ₹899/mo.',
-  subscription:'You have 5 recurring subscriptions totalling ₹3,240/mo: Netflix, CloudDrive Pro, Cult.fit, Airtel, Spotify. CloudDrive Pro looks unused since April.',
-  default:'This is a demo — in your real build, Claude reads your categorised transactions and answers questions like this from your actual statement.'
-};
-function ask(){
-  const q=(document.getElementById('askInput').value||'').toLowerCase();
-  let key='default';
-  if(/travel|fuel|uber|rail/.test(q)) key='travel';
-  else if(/dining|food|eat|restaurant|zomato|swiggy/.test(q)) key='dining';
-  else if(/save|saving|saved/.test(q)) key='save';
-  else if(/subscri|netflix|recurring/.test(q)) key='subscription';
-  showAnswer(ANSWERS[key]);
-}
-function showAnswer(text){
-  let box=document.getElementById('answerBox');
-  if(!box){
-    box=document.createElement('div');
-    box.id='answerBox';
-    box.className='insight info';
-    box.style.gridColumn='1 / -1';
-    box.style.margin='0 18px 16px';
-    document.querySelector('.ai-panel').insertBefore(box, document.querySelector('.ai-ask'));
-  }
-  box.innerHTML=`<span class="ic"><i data-lucide="message-circle"></i></span><span class="txt">${text} <b style="color:var(--textMuted);font-weight:500;font-family:var(--mono);font-size:10px;">DEMO</b></span>`;
+function renderKpis(){
+  const c=computed();
+  const topCat=Object.entries(c.byCat).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('kpi-row').innerHTML=`
+    <div class="kpi"><div class="lbl"><i data-lucide="arrow-down-left"></i>Income</div><div class="val" style="color:var(--green)">${fmt(c.income)}</div><div class="sub up"><i data-lucide="trending-up"></i>3 clients paid</div></div>
+    <div class="kpi"><div class="lbl"><i data-lucide="arrow-up-right"></i>Spend</div><div class="val" style="color:var(--primary)">${fmt(c.spend)}</div><div class="sub down"><i data-lucide="trending-up"></i>+18% vs June</div></div>
+    <div class="kpi"><div class="lbl"><i data-lucide="wallet"></i>Net</div><div class="val">${fmt(c.net)}</div><div class="sub ${c.net>=0?'up':'down'}">${c.net>=0?'surplus':'deficit'} this month</div></div>
+    <div class="kpi"><div class="lbl"><i data-lucide="flame"></i>Top category</div><div class="val" style="font-size:19px;margin-top:11px;">${topCat[0]}</div><div class="sub">${fmt(topCat[1])} spent</div></div>
+    <div class="kpi"><div class="lbl"><i data-lucide="receipt"></i>Transactions</div><div class="val">${tx.length}</div><div class="sub">100% auto-categorised</div></div>`;
   lucide.createIcons();
 }
+function renderTrend(){
+  const c=computed();
+  const days=tx.map(t=>t.d).filter((v,i,a)=>a.indexOf(v)===i);
+  const pts=days.map(d=>({d,v:c.byDay[d]||0}));
+  const max=Math.max(...pts.map(p=>p.v),1);
+  const W=560,H=160,pad=8;
+  const x=i=>pad+i*((W-2*pad)/(pts.length-1));
+  const y=v=>H-14-(v/max)*(H-30);
+  let line=pts.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ');
+  let area=`M${x(0)},${H-14} `+pts.map((p,i)=>`L${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ')+` L${x(pts.length-1)},${H-14} Z`;
+  const dots=pts.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.6" fill="#dc2626"/>`).join('');
+  document.getElementById('trend-chart').innerHTML=`
+    <svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="none" style="display:block;">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dc2626" stop-opacity=".18"/><stop offset="1" stop-color="#dc2626" stop-opacity="0"/></linearGradient></defs>
+      <path d="${area}" fill="url(#g1)"/><path d="${line}" fill="none" stroke="#dc2626" stroke-width="2"/>${dots}
+    </svg>
+    <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--textMuted);padding:0 6px;">
+      <span>Jul 01</span><span>Jul 13</span><span>Jul 25</span></div>`;
+}
+function renderCatBar(){
+  const c=computed();
+  const arr=Object.entries(c.byCat).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const max=Math.max(...arr.map(a=>a[1]));
+  document.getElementById('cat-chart').innerHTML=arr.map(([k,v])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:104px;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${k}</div>
+      <div style="flex:1;height:20px;background:#F1F0EA;border-radius:6px;overflow:hidden;">
+        <div style="width:${v/max*100}%;height:100%;background:${CATS[k]};border-radius:6px;transition:width .5s;"></div>
+      </div>
+      <div class="muted" style="width:64px;text-align:right;">${fmt(v)}</div>
+    </div>`).join('');
+}
+function renderDonut(){
+  const c=computed();
+  const arr=Object.entries(c.byCat).sort((a,b)=>b[1]-a[1]);
+  const total=arr.reduce((s,a)=>s+a[1],0);
+  let off=0,segs='';const R=54,C=2*Math.PI*R;
+  arr.forEach(([k,v])=>{const len=v/total*C;
+    segs+=`<circle r="${R}" cx="72" cy="72" fill="none" stroke="${CATS[k]}" stroke-width="22" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 72 72)"></circle>`;off+=len;});
+  document.getElementById('donut').innerHTML=`
+    <svg width="144" height="144" viewBox="0 0 144 144">${segs}
+      <text x="72" y="68" text-anchor="middle" font-family="DM Mono" font-size="15" fill="#111">${fmt(total).replace('₹','₹ ')}</text>
+      <text x="72" y="86" text-anchor="middle" font-family="DM Mono" font-size="9" fill="#999">TOTAL SPEND</text></svg>`;
+  document.getElementById('donut-legend').innerHTML=arr.map(([k,v])=>`<span><span class="sw" style="background:${CATS[k]}"></span>${k} · ${Math.round(v/total*100)}%</span>`).join('');
+}
 
-renderCats();
-renderTrend();
-renderFilters();
-renderTx();
+/* ---------------- transactions tab ---------------- */
+let curCat='all';
+function setCat(btn){document.querySelectorAll('[data-cat]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');curCat=btn.dataset.cat;renderTx();}
+function renderTx(){
+  const q=(document.getElementById('tx-search').value||'').toLowerCase();
+  const list=tx.filter(t=>(curCat==='all'||t.cat===curCat)&&(t.desc.toLowerCase().includes(q)||t.cat.toLowerCase().includes(q)));
+  document.getElementById('tx-count').textContent=list.length+' of '+tx.length+' rows';
+  document.getElementById('tx-body').innerHTML=list.map(t=>`<tr>
+    <td class="muted">${t.d}</td>
+    <td style="font-weight:500;">${t.desc}</td>
+    <td><span class="cat-pill" style="background:${hex(CATS[t.cat],.12)};color:${CATS[t.cat]}"><span class="d" style="background:${CATS[t.cat]}"></span>${t.cat}</span></td>
+    <td class="muted">${t.acct}</td>
+    <td class="r amt ${t.amt<0?'neg':'pos'}">${fmt(t.amt)}</td>
+  </tr>`).join('') || '<tr><td colspan="5" style="padding:36px;text-align:center;color:var(--textMuted);">No transactions match.</td></tr>';
+}
+function hex(c,a){const n=parseInt(c.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+function addTx(){
+  const d=document.getElementById('a-date').value||'Jul 30';
+  const desc=document.getElementById('a-desc').value.trim();
+  const cat=document.getElementById('a-cat').value;
+  const amt=parseFloat(document.getElementById('a-amt').value);
+  if(!desc||isNaN(amt)){toast('Add a description and amount');return;}
+  tx.push({d,desc,cat,acct:'HDFC ••4021',amt});
+  document.getElementById('a-desc').value='';document.getElementById('a-amt').value='';
+  renderTx();refreshAll();toast('Row added → Claude re-categorised + KPIs updated');
+}
+function fillCatSelect(){document.getElementById('a-cat').innerHTML=Object.keys(CATS).map(c=>`<option>${c}</option>`).join('');document.getElementById('a-cat').value='Food & Dining';}
+
+/* ---------------- insights + mail ---------------- */
+function renderInsights(){
+  const c=computed();
+  const arr=Object.entries(c.byCat).sort((a,b)=>b[1]-a[1]);
+  const top=arr[0],marketing=c.byCat['Marketing']||0,software=c.byCat['Software']||0,travel=c.byCat['Travel']||0;
+  const items=[
+    {ic:'alert',cls:'alert',t:`Marketing is your #1 controllable spend`,b:`${fmt(marketing)} across Meta, LinkedIn & Google Ads this month — 3× your software bill. Worth checking cost-per-lead before August.`},
+    {ic:'trending-up',cls:'warn',t:`Spend is up 18% vs June`,b:`Mostly travel (${fmt(travel)}) from the Delhi sales trip and a one-off standing desk for the new hire. Both are non-recurring.`},
+    {ic:'layers',cls:'info',t:`8 active software subscriptions`,b:`${fmt(software)}/month across AWS, Workspace, Notion, Figma, Zoom, Canva. Zoom (${fmt(14900)}) renewed annually — flag for review.`},
+    {ic:'check-circle-2',cls:'good',t:`Healthy surplus`,b:`Net ${fmt(c.net)} this month — three retainers landed on time. Runway is comfortable; consider moving ${fmt(50000)} to reserves.`},
+  ];
+  document.getElementById('insight-list').innerHTML=items.map(it=>`
+    <div class="insight"><div class="ic ${it.cls}"><i data-lucide="${it.ic}"></i></div>
+      <div><div class="t">${it.t}</div><div class="b">${it.b}</div></div></div>`).join('');
+  const body=`Hi,
+
+Here's your finance snapshot for the week, straight from the Transactions sheet.
+
+• Income: ${fmt(c.income)} across 3 client payments
+• Spend: ${fmt(c.spend)} (up ~18% vs last month)
+• Net: ${fmt(c.net)} — a healthy surplus
+
+What stood out:
+1. Marketing was the biggest line at ${fmt(c.byCat['Marketing']||0)}. Ad spend is climbing — worth a look at cost-per-lead.
+2. Travel (${fmt(c.byCat['Travel']||0)}) was a one-off from the Delhi trip; it won't repeat next week.
+3. You're running 8 software subscriptions. Zoom renews annually — I've flagged it for review.
+
+Suggested action: move ${fmt(50000)} to reserves while runway is comfortable.
+
+— Your Finance Copilot (drafted automatically, ready for you to send)`;
+  document.getElementById('mail-body').textContent=body;
+  lucide.createIcons();
+}
+function reanalyse(){
+  document.getElementById('insight-list').innerHTML=`<div class="thinking"><i data-lucide="loader-2" class="spin"></i> Claude is re-reading all ${tx.length} rows…</div>`;
+  lucide.createIcons();
+  setTimeout(()=>{renderInsights();toast('Re-analysed '+tx.length+' transactions');},900);
+}
+
+/* ---------------- tabs + shared ---------------- */
+function refreshAll(){renderKpis();renderTrend();renderCatBar();renderDonut();renderInsights();}
+function switchTab(name){
+  document.querySelectorAll('.navlink').forEach(n=>n.classList.toggle('active',n.dataset.tab===name));
+  ['overview','tx','insights'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hide',t!==name));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('.navlink').forEach(n=>n.addEventListener('click',()=>switchTab(n.dataset.tab)));
+let toastT;
+function toast(msg){const t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);}
+
+/* init */
+fillCatSelect();renderTx();refreshAll();
 lucide.createIcons();
 </script>
 </body>
