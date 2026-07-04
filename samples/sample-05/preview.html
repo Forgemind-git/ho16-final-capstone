@@ -3,445 +3,595 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Support Co-Pilot — Live Dashboard Preview (demo data) | HO16 Sample 05</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>AI Support Co-Pilot — Live Demo | HO16</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
   :root{
     --pageBg:#F7F7F3; --headerBg:#0F0F10; --headerText:#F5F5F2; --headerMuted:#A1A1AA;
     --headerBorder:rgba(255,255,255,.12); --cardBg:#fff; --border:#E5E5E0;
     --text:#111; --textSec:#6B7280; --textMuted:#999; --primary:#dc2626; --primaryHover:#b91c1c;
-    --hover:#EFEEE6; --green:#0F6E56; --amber:#854F0B; --blue:#1877F2;
+    --hover:#EFEEE6; --green:#0F6E56; --purple:#534AB7; --amber:#854F0B;
     --shadowSm:0 1px 2px rgba(0,0,0,.08); --shadowMd:0 8px 24px rgba(0,0,0,.06);
     --font:'DM Sans',system-ui,sans-serif; --mono:'DM Mono',monospace;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;}
+  html,body{margin:0;height:100%;}
   body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
+  a{color:inherit;text-decoration:none;}
+  /* dark header — full width */
   header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
-    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+    padding:0 22px;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--headerBorder);flex-shrink:0;}
   .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
   .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
+  .app-name{margin-left:20px;padding-left:20px;border-left:1px solid var(--headerBorder);font-size:13px;font-weight:600;
+    display:flex;align-items:center;gap:8px;color:#EDEDEA;}
+  .app-name svg{width:16px;height:16px;color:var(--primary);}
   .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
   .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
-  .wrap{max-width:none;margin:0;padding:26px 40px 64px;}
-  .back{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-family:var(--mono);color:var(--textSec);
-    text-decoration:none;margin-bottom:16px;font-weight:500;}
-  .back:hover{color:var(--primary);}
-  .back svg{width:14px;height:14px;}
-  /* demo banner */
-  .banner{display:flex;align-items:center;gap:11px;background:#FDF6F6;border:1px solid #F3C6C6;border-radius:8px;
-    padding:12px 18px;margin-bottom:22px;font-size:13px;color:var(--textSec);line-height:1.5;}
-  .banner svg{width:18px;height:18px;color:var(--primary);flex-shrink:0;}
-  .banner strong{color:var(--primary);font-weight:600;}
-  /* title row */
-  .titlerow{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:22px;}
-  h1{font-size:24px;font-weight:700;margin:0;letter-spacing:-.01em;}
-  .titlerow .meta{font-size:12.5px;color:var(--textSec);font-family:var(--mono);}
+  /* top strip: demo banner + connected chip */
+  .topstrip{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 34px 0;}
+  .demo-banner{display:inline-flex;align-items:center;gap:9px;background:#FDF6F6;border:1px solid #F3C6C6;
+    color:#8a2b2b;font-size:12.5px;font-weight:500;padding:8px 14px;border-radius:8px;line-height:1.4;}
+  .demo-banner svg{width:15px;height:15px;color:var(--primary);flex-shrink:0;}
+  .demo-banner b{font-weight:700;}
+  .conn-chip{display:inline-flex;align-items:center;gap:8px;background:var(--cardBg);border:1px solid var(--border);
+    border-radius:99px;padding:6px 13px;font-size:12px;font-weight:600;box-shadow:var(--shadowSm);}
+  .conn-chip .lbl{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);}
+  .conn-chip .g{display:inline-flex;align-items:center;gap:5px;color:var(--text);}
+  .conn-chip .g svg{width:15px;height:15px;color:var(--green);}
+  .conn-chip .sep{width:1px;height:14px;background:var(--border);}
+  .conn-chip .live{width:6px;height:6px;border-radius:99px;background:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.15);}
+  /* tab strip */
+  .tabs{display:flex;gap:4px;padding:16px 34px 0;border-bottom:1px solid var(--border);margin:14px 0 0;}
+  .tab{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;font-size:13.5px;font-weight:600;color:var(--textSec);
+    border-radius:8px 8px 0 0;cursor:pointer;border:1px solid transparent;border-bottom:none;position:relative;top:1px;transition:color .12s,background .12s;}
+  .tab svg{width:16px;height:16px;}
+  .tab:hover{color:var(--text);background:var(--hover);}
+  .tab.active{color:var(--primary);background:var(--cardBg);border-color:var(--border);box-shadow:0 -2px 6px rgba(0,0,0,.03);}
+  .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--cardBg);}
+  .tab .count{font-family:var(--mono);font-size:10px;font-weight:600;background:#FCEBEB;color:var(--primary);border-radius:99px;padding:1px 7px;}
+  /* main */
+  main{padding:26px 34px 80px;}
+  .view{display:none;}
+  .view.active{display:block;}
   /* KPI cards */
-  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
-  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
-  .kpi .top{display:flex;align-items:center;justify-content:space-between;}
-  .kpi .lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--textMuted);}
-  .kpi .ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .kpi .ic svg{width:16px;height:16px;}
-  .kpi .val{font-family:var(--mono);font-size:27px;font-weight:500;margin-top:10px;letter-spacing:-.02em;}
-  .kpi .delta{font-size:11.5px;font-weight:500;margin-top:3px;display:flex;align-items:center;gap:4px;}
-  .kpi .delta svg{width:13px;height:13px;}
-  .up{color:var(--green);} .down{color:var(--primary);}
-  /* main layout */
-  .cols{display:grid;grid-template-columns:minmax(360px,1.15fr) 1.35fr;gap:18px;align-items:start;}
-  .panel{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;}
-  .panel-h{display:flex;align-items:center;gap:9px;padding:15px 18px;border-bottom:1px solid var(--border);}
-  .panel-h svg{width:18px;height:18px;color:var(--primary);}
-  .panel-h h2{font-size:14.5px;font-weight:600;margin:0;}
-  .panel-h .count{margin-left:auto;font-family:var(--mono);font-size:11.5px;color:var(--textMuted);}
-  /* filter chips */
-  .filters{display:flex;gap:7px;padding:12px 18px 4px;flex-wrap:wrap;}
-  .fchip{font-size:11.5px;font-weight:600;font-family:var(--mono);padding:4px 12px;border-radius:99px;cursor:pointer;
-    border:1px solid var(--border);background:#fff;color:var(--textSec);transition:all .12s;}
-  .fchip:hover{background:var(--hover);}
-  .fchip.active{background:#111;color:#fff;border-color:#111;}
-  /* ticket list */
-  .tlist{max-height:560px;overflow-y:auto;padding:8px;}
-  .ticket{display:flex;flex-direction:column;gap:6px;padding:12px 13px;border-radius:8px;cursor:pointer;
-    border:1px solid transparent;transition:background .12s,border-color .12s;}
-  .ticket:hover{background:var(--hover);}
-  .ticket.sel{background:#FCEBEB;border-color:#F3C6C6;}
-  .ticket .r1{display:flex;align-items:center;gap:8px;}
-  .ticket .id{font-family:var(--mono);font-size:11px;color:var(--textMuted);}
-  .ticket .subj{font-size:13.5px;font-weight:600;line-height:1.35;flex:1;}
-  .ticket .r2{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--textSec);}
-  .ticket .who{display:flex;align-items:center;gap:6px;}
-  .ticket .av{width:20px;height:20px;border-radius:99px;background:var(--primary);color:#fff;font-size:9px;font-weight:700;
-    display:flex;align-items:center;justify-content:center;font-family:var(--font);flex-shrink:0;}
-  .ticket .time{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--textMuted);}
-  /* status + priority pills */
-  .pill{font-size:10px;font-weight:700;font-family:var(--mono);padding:2px 9px;border-radius:99px;letter-spacing:.03em;
-    display:inline-flex;align-items:center;gap:4px;text-transform:uppercase;}
-  .st-open{background:#FCEBEB;color:var(--primary);}
-  .st-pending{background:#FAEEDA;color:var(--amber);}
-  .st-resolved{background:#E1F5EE;color:var(--green);}
-  .prio{font-size:10px;font-weight:600;font-family:var(--mono);padding:1px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.03em;}
-  .p-urgent{background:#FCE7E7;color:#b91c1c;} .p-high{background:#FBE2D4;color:#854F0B;}
-  .p-normal{background:#EAF0F7;color:#3a6ea5;} .p-low{background:#EEEDEA;color:#777;}
-  /* detail panel */
-  .detail{padding:0;}
-  .d-head{padding:18px 20px 14px;border-bottom:1px solid var(--border);}
-  .d-head .top{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap;}
-  .d-head h3{font-size:17px;font-weight:700;margin:0 0 10px;line-height:1.35;}
-  .d-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--textSec);}
-  .d-meta b{color:var(--text);font-weight:600;}
-  .d-body{padding:16px 20px;}
-  .msg{display:flex;gap:11px;margin-bottom:16px;}
-  .msg .av{width:30px;height:30px;border-radius:99px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-    font-size:11px;font-weight:700;color:#fff;}
-  .msg.cust .av{background:#534AB7;} .msg.agent .av{background:var(--green);}
-  .msg .bubble{flex:1;}
-  .msg .name{font-size:12px;font-weight:600;margin-bottom:3px;}
-  .msg .name span{font-weight:400;color:var(--textMuted);font-family:var(--mono);font-size:10.5px;margin-left:6px;}
-  .msg .txt{font-size:13.5px;line-height:1.6;color:var(--text);background:#F7F7F3;border:1px solid var(--border);
-    border-radius:8px;padding:11px 13px;}
-  /* AI suggested reply */
-  .ai{margin-top:6px;border:1.5px solid #F3C6C6;border-radius:10px;overflow:hidden;}
-  .ai-h{display:flex;align-items:center;gap:9px;background:#FCEBEB;padding:11px 15px;}
-  .ai-h svg{width:17px;height:17px;color:var(--primary);}
-  .ai-h .t{font-size:12.5px;font-weight:700;color:var(--primary);}
-  .ai-h .demo{margin-left:auto;font-size:9px;font-weight:700;font-family:var(--mono);letter-spacing:.08em;
-    background:#fff;color:var(--primary);border:1px solid #F3C6C6;padding:2px 8px;border-radius:99px;text-transform:uppercase;}
-  .ai-body{padding:14px 16px;}
-  .ai-body .conf{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--textSec);margin-bottom:10px;font-family:var(--mono);}
-  .ai-body .cite{background:#E1F5EE;color:var(--green);font-size:10px;font-weight:600;padding:1px 7px;border-radius:4px;font-family:var(--mono);}
-  .ai-body .reply{font-size:13.5px;line-height:1.65;color:var(--text);white-space:pre-wrap;}
-  .ai-actions{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:#fff;}
-  .btn{font-family:var(--font);font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:7px;cursor:pointer;
-    border:1px solid var(--border);background:#fff;color:var(--text);display:inline-flex;align-items:center;gap:6px;}
-  .btn svg{width:14px;height:14px;}
-  .btn.pri{background:var(--primary);color:#fff;border-color:var(--primary);}
-  .btn.pri:hover{background:var(--primaryHover);}
-  .btn:not(.pri):hover{background:var(--hover);}
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;
-    font-size:13px;font-weight:500;padding:11px 20px;border-radius:8px;box-shadow:var(--shadowMd);opacity:0;
-    pointer-events:none;transition:all .25s;z-index:50;display:flex;align-items:center;gap:8px;}
-  .toast svg{width:16px;height:16px;color:#4ade80;}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  /* chart */
-  .chart-wrap{padding:16px 20px 20px;}
-  .chart-legend{display:flex;gap:16px;margin-bottom:8px;font-size:11.5px;color:var(--textSec);font-family:var(--mono);}
-  .chart-legend span{display:flex;align-items:center;gap:6px;}
-  .chart-legend .sw{width:10px;height:10px;border-radius:3px;}
-  .csat-row{display:flex;gap:14px;margin-top:16px;}
-  .csat-row .box{flex:1;background:#F7F7F3;border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
-  .csat-row .box .k{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);}
-  .csat-row .box .v{font-family:var(--mono);font-size:20px;font-weight:500;margin-top:5px;}
-  footer{border-top:1px solid var(--border);margin-top:36px;padding-top:18px;font-size:12px;color:var(--textMuted);
-    font-family:var(--mono);text-align:center;}
-  @media(max-width:900px){.cols{grid-template-columns:1fr;}.kpis{grid-template-columns:repeat(2,1fr);}.wrap{padding:22px 20px 56px;}}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:20px;}
+  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);padding:16px 18px;}
+  .kpi .kh{display:flex;align-items:center;justify-content:space-between;}
+  .kpi .kc{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--textMuted);}
+  .kpi .ki{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+  .kpi .ki svg{width:16px;height:16px;}
+  .kpi .kv{font-family:var(--mono);font-size:27px;font-weight:500;margin-top:8px;letter-spacing:-.02em;}
+  .kpi .kd{font-size:11.5px;color:var(--textSec);margin-top:3px;font-weight:500;}
+  .ki.red{background:#FCEBEB;color:var(--primary);} .ki.green{background:#E1F5EE;color:var(--green);}
+  .ki.purple{background:#EEEDFE;color:var(--purple);} .ki.amber{background:#FAEEDA;color:var(--amber);}
+  .kd.up{color:var(--green);} .kd.down{color:var(--primary);}
+  /* toolbar */
+  .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
+  .search{display:flex;align-items:center;gap:8px;background:var(--cardBg);border:1px solid var(--border);border-radius:8px;
+    padding:9px 12px;flex:1;min-width:240px;box-shadow:var(--shadowSm);}
+  .search svg{width:16px;height:16px;color:var(--textMuted);}
+  .search input{border:none;outline:none;font-family:var(--font);font-size:13.5px;color:var(--text);width:100%;background:none;}
+  select.filter{font-family:var(--font);font-size:13px;font-weight:500;color:var(--text);background:var(--cardBg);
+    border:1px solid var(--border);border-radius:8px;padding:9px 12px;cursor:pointer;box-shadow:var(--shadowSm);outline:none;}
+  .tbcount{font-family:var(--mono);font-size:11.5px;color:var(--textMuted);margin-left:auto;}
+  /* table */
+  .tablewrap{background:var(--cardBg);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);overflow:hidden;}
+  .tscroll{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;min-width:920px;}
+  thead th{text-align:left;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--textMuted);padding:12px 14px;border-bottom:1px solid var(--border);background:#FBFBF8;white-space:nowrap;}
+  tbody td{padding:12px 14px;border-bottom:1px solid #F0EFEA;font-size:13px;vertical-align:middle;}
+  tbody tr{cursor:pointer;transition:background .1s;}
+  tbody tr:hover{background:var(--hover);}
+  tbody tr:last-child td{border-bottom:none;}
+  .tid{font-family:var(--mono);font-size:12px;color:var(--textSec);font-weight:500;}
+  .tsubj{font-weight:600;color:var(--text);}
+  .tcust{color:var(--textSec);font-size:12.5px;}
+  .tcust .co{font-size:11px;color:var(--textMuted);}
+  .num{font-family:var(--mono);}
+  /* pills */
+  .pill{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10.5px;font-weight:600;
+    padding:3px 9px;border-radius:99px;letter-spacing:.02em;white-space:nowrap;}
+  .p-crit{background:#FCE4E4;color:#b91c1c;} .p-high{background:#FAEEDA;color:var(--amber);}
+  .p-med{background:#E7F0FE;color:#1d4ed8;} .p-low{background:#EEF1F0;color:#5b6b66;}
+  .s-open{background:#FCEBEB;color:var(--primary);} .s-pending{background:#FAEEDA;color:var(--amber);}
+  .s-resolved{background:#E1F5EE;color:var(--green);}
+  .cat{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--textSec);
+    background:#F1F0EA;border-radius:5px;padding:2px 8px;}
+  .sla{font-family:var(--mono);font-size:11.5px;font-weight:500;}
+  .sla.risk{color:var(--primary);} .sla.ok{color:var(--green);} .sla.warn{color:var(--amber);}
+  .senti{display:inline-flex;align-items:center;gap:5px;font-size:12px;}
+  .senti .bar{width:38px;height:6px;border-radius:99px;background:#EDECE6;overflow:hidden;}
+  .senti .bar i{display:block;height:100%;border-radius:99px;}
+  .hint{font-size:12px;color:var(--textMuted);padding:12px 4px 0;display:flex;align-items:center;gap:6px;}
+  .hint svg{width:14px;height:14px;}
+  /* ticket detail */
+  .tk-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:start;}
+  .panel{background:var(--cardBg);border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadowSm);padding:20px 22px;margin-bottom:18px;}
+  .panel-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:14px;color:var(--text);}
+  .panel-h svg{width:16px;height:16px;color:var(--primary);}
+  .tk-back{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--textSec);
+    cursor:pointer;margin-bottom:16px;padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--cardBg);}
+  .tk-back:hover{background:var(--hover);color:var(--text);}
+  .tk-back svg{width:15px;height:15px;}
+  .tk-subject{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:0 0 6px;}
+  .tk-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:18px;}
+  .msg{background:#FBFBF8;border:1px solid var(--border);border-radius:8px;padding:16px 18px;font-size:14px;line-height:1.7;color:var(--text);}
+  .msg .from{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+  .avatar{width:34px;height:34px;border-radius:99px;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:13px;font-family:var(--mono);flex-shrink:0;}
+  .from .fn{font-weight:600;font-size:13.5px;} .from .fe{font-size:11.5px;color:var(--textMuted);font-family:var(--mono);}
+  .from .ft{margin-left:auto;font-size:11.5px;color:var(--textMuted);font-family:var(--mono);}
+  .metagrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;}
+  .metagrid .mi .ml{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);margin-bottom:4px;}
+  .metagrid .mi .mv{font-size:13px;font-weight:600;color:var(--text);}
+  /* AI panel */
+  .ai-panel{border:1px solid #E1DEF7;background:linear-gradient(180deg,#FBFAFF 0%,#fff 60%);}
+  .ai-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .ai-head .ai-ic{width:34px;height:34px;border-radius:9px;background:var(--purple);color:#fff;display:flex;align-items:center;justify-content:center;}
+  .ai-head .ai-ic svg{width:18px;height:18px;}
+  .ai-head .ai-t{font-size:14px;font-weight:700;}
+  .ai-head .ai-s{font-size:11.5px;color:var(--textSec);}
+  .ai-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;background:#EEEDFE;color:var(--purple);border-radius:99px;padding:3px 9px;margin-left:auto;}
+  .ai-badge svg{width:11px;height:11px;}
+  .triage-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+  .triage-row .tr{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;}
+  .triage-row .tr .trl{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);margin-bottom:5px;}
+  .triage-row .tr .trv{font-size:12.5px;font-weight:600;}
+  .summ{background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:12.5px;line-height:1.6;color:var(--textSec);margin-bottom:14px;}
+  .summ b{color:var(--text);}
+  .kb-cite{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--green);
+    background:#E1F5EE;border-radius:6px;padding:5px 10px;margin-bottom:12px;}
+  .kb-cite svg{width:13px;height:13px;}
+  .reply-box{background:#fff;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:13.5px;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:150px;}
+  .ai-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--font);font-size:13px;font-weight:600;
+    padding:10px 16px;border-radius:8px;cursor:pointer;border:1px solid transparent;transition:background .12s,transform .05s;}
+  .btn svg{width:15px;height:15px;}
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--primary);color:#fff;box-shadow:0 2px 8px rgba(220,38,38,.22);}
+  .btn-primary:hover{background:var(--primaryHover);}
+  .btn-ghost{background:#fff;color:var(--text);border-color:var(--border);}
+  .btn-ghost:hover{background:var(--hover);}
+  .btn-sent{background:#E1F5EE;color:var(--green);border-color:#B9E4D6;pointer-events:none;}
+  .grounded-note{font-size:11.5px;color:var(--textMuted);margin-top:12px;line-height:1.55;display:flex;gap:7px;align-items:flex-start;}
+  .grounded-note svg{width:14px;height:14px;flex-shrink:0;margin-top:1px;color:var(--purple);}
+  /* trends */
+  .chart-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;margin-bottom:18px;}
+  .chart-grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+  .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:11px;}
+  .bar-row .bl{width:110px;font-size:12.5px;font-weight:600;color:var(--text);flex-shrink:0;}
+  .bar-row .btrack{flex:1;height:22px;background:#F1F0EA;border-radius:6px;overflow:hidden;}
+  .bar-row .bfill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;
+    font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;transition:width .5s;}
+  .prio-legend{display:flex;flex-direction:column;gap:12px;}
+  .prio-item{display:flex;align-items:center;gap:11px;}
+  .prio-item .dot{width:12px;height:12px;border-radius:4px;flex-shrink:0;}
+  .prio-item .pn{font-size:13px;font-weight:600;flex:1;}
+  .prio-item .pv{font-family:var(--mono);font-size:13px;font-weight:600;}
+  .prio-item .pp{font-family:var(--mono);font-size:11px;color:var(--textMuted);width:42px;text-align:right;}
+  .ai-summary{border:1px solid #E1DEF7;background:linear-gradient(180deg,#FBFAFF,#fff);}
+  .ai-summary p{font-size:13.5px;line-height:1.75;color:var(--textSec);margin:0 0 10px;}
+  .ai-summary p b{color:var(--text);}
+  .ai-summary ul{margin:0;padding-left:18px;}
+  .ai-summary li{font-size:13px;line-height:1.7;color:var(--textSec);margin-bottom:5px;}
+  /* toast */
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;pointer-events:none;
+    background:#0F0F10;color:#fff;font-size:13.5px;font-weight:500;padding:13px 20px;border-radius:10px;display:flex;align-items:center;gap:10px;
+    box-shadow:0 12px 32px rgba(0,0,0,.28);z-index:60;transition:opacity .25s,transform .25s;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+  .toast svg{width:17px;height:17px;color:#4ade80;}
+  @media(max-width:940px){.tk-grid{grid-template-columns:1fr;}.chart-grid,.chart-grid2{grid-template-columns:1fr;}}
+  @media(max-width:640px){.topstrip,.tabs,main{padding-left:16px;padding-right:16px;}}
 </style>
 </head>
 <body>
   <header>
     <span class="wordmark">FORGE<span class="badge">COURSE</span></span>
+    <span class="app-name"><i data-lucide="headset"></i> AI Support Co-Pilot</span>
     <span class="header-right"><span class="dot"></span>ForgeMind AI · Hands-On Portfolio</span>
   </header>
 
-  <div class="wrap">
-    <a href="index.html" class="back"><i data-lucide="arrow-left"></i> Back to the build guide</a>
-
-    <div class="banner">
-      <i data-lucide="flask-conical"></i>
-      <div><strong>Front-end preview · demo data.</strong> This is a static, click-through mock-up of the finished dashboard. The real full-stack app + the AI backend that grounds replies in your knowledge base is <strong>your build</strong>.</div>
-    </div>
-
-    <div class="titlerow">
-      <div>
-        <h1>Support Co-Pilot</h1>
-      </div>
-      <div class="meta">Nova Devices · Support workspace · updated just now</div>
-    </div>
-
-    <!-- KPI cards -->
-    <div class="kpis">
-      <div class="kpi">
-        <div class="top"><span class="lbl">Open tickets</span><span class="ic" style="background:#FCEBEB;color:var(--primary);"><i data-lucide="inbox"></i></span></div>
-        <div class="val" id="kpiOpen">—</div>
-        <div class="delta down"><i data-lucide="arrow-up-right"></i> 4 more than yesterday</div>
-      </div>
-      <div class="kpi">
-        <div class="top"><span class="lbl">Avg first response</span><span class="ic" style="background:#E7F0FE;color:var(--blue);"><i data-lucide="timer"></i></span></div>
-        <div class="val">1h 12m</div>
-        <div class="delta up"><i data-lucide="arrow-down-right"></i> 22m faster this week</div>
-      </div>
-      <div class="kpi">
-        <div class="top"><span class="lbl">CSAT (30d)</span><span class="ic" style="background:#E1F5EE;color:var(--green);"><i data-lucide="smile"></i></span></div>
-        <div class="val">94<span style="font-size:16px;">%</span></div>
-        <div class="delta up"><i data-lucide="arrow-up-right"></i> up 3 pts</div>
-      </div>
-      <div class="kpi">
-        <div class="top"><span class="lbl">Resolved (7d)</span><span class="ic" style="background:#FAEEDA;color:var(--amber);"><i data-lucide="check-check"></i></span></div>
-        <div class="val">137</div>
-        <div class="delta up"><i data-lucide="arrow-up-right"></i> 18% vs last week</div>
-      </div>
-    </div>
-
-    <div class="cols">
-      <!-- ticket queue -->
-      <div class="panel">
-        <div class="panel-h"><i data-lucide="list-checks"></i><h2>Ticket queue</h2><span class="count" id="qcount"></span></div>
-        <div class="filters" id="filters">
-          <span class="fchip active" data-f="all">All</span>
-          <span class="fchip" data-f="open">Open</span>
-          <span class="fchip" data-f="pending">Pending</span>
-          <span class="fchip" data-f="resolved">Resolved</span>
-        </div>
-        <div class="tlist" id="tlist"></div>
-      </div>
-
-      <!-- detail + chart -->
-      <div style="display:flex;flex-direction:column;gap:18px;">
-        <div class="panel detail" id="detail"></div>
-
-        <div class="panel">
-          <div class="panel-h"><i data-lucide="trending-up"></i><h2>Tickets over time</h2><span class="count">last 14 days</span></div>
-          <div class="chart-wrap">
-            <div class="chart-legend">
-              <span><span class="sw" style="background:var(--primary);"></span>Created</span>
-              <span><span class="sw" style="background:var(--green);"></span>Resolved</span>
-            </div>
-            <div id="chart"></div>
-            <div class="csat-row">
-              <div class="box"><div class="k">Backlog trend</div><div class="v" style="color:var(--green);">▼ shrinking</div></div>
-              <div class="box"><div class="k">Peak day</div><div class="v">Tue</div></div>
-              <div class="box"><div class="k">Auto-triaged</div><div class="v">81%</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <footer>ForgeMind AI · HO16 Final Capstone · Sample 05 — Customer Support Co-Pilot · front-end preview with demo data</footer>
+  <div class="topstrip">
+    <span class="demo-banner"><i data-lucide="flask-conical"></i> <span><b>Front-end preview · demo data</b> — the real Google connection is your hands-on build (Claude Code)</span></span>
+    <span class="conn-chip">
+      <span class="lbl">Connected to</span>
+      <span class="g"><i data-lucide="sheet"></i> Google Sheets</span>
+      <span class="sep"></span>
+      <span class="g"><i data-lucide="mail"></i> Gmail</span>
+      <span class="live"></span>
+    </span>
   </div>
 
-  <div class="toast" id="toast"><i data-lucide="check-circle-2"></i><span id="toastMsg">Reply sent</span></div>
+  <div class="tabs">
+    <div class="tab active" data-tab="queue"><i data-lucide="inbox"></i> Queue <span class="count" id="queueCount">22</span></div>
+    <div class="tab" data-tab="ticket"><i data-lucide="ticket"></i> Ticket</div>
+    <div class="tab" data-tab="trends"><i data-lucide="trending-up"></i> Trends</div>
+  </div>
+
+  <main>
+    <!-- ============ QUEUE ============ -->
+    <section class="view active" id="view-queue">
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kh"><span class="kc">Open Tickets</span><span class="ki red"><i data-lucide="inbox"></i></span></div>
+          <div class="kv">14</div><div class="kd down">&#9650; 3 vs yesterday</div>
+        </div>
+        <div class="kpi">
+          <div class="kh"><span class="kc">Avg First Response</span><span class="ki purple"><i data-lucide="timer"></i></span></div>
+          <div class="kv">1h 48m</div><div class="kd up">&#9660; 22m this week</div>
+        </div>
+        <div class="kpi">
+          <div class="kh"><span class="kc">Resolved Today</span><span class="ki green"><i data-lucide="check-check"></i></span></div>
+          <div class="kv">31</div><div class="kd up">&#9650; 8 vs avg</div>
+        </div>
+        <div class="kpi">
+          <div class="kh"><span class="kc">SLA At-Risk</span><span class="ki amber"><i data-lucide="alarm-clock"></i></span></div>
+          <div class="kv">4</div><div class="kd">2 critical &middot; 2 high</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search"><i data-lucide="search"></i><input id="searchBox" placeholder="Search subject, customer, ID…"></div>
+        <select class="filter" id="catFilter">
+          <option value="">All categories</option>
+          <option>Billing</option><option>Technical</option><option>Returns</option><option>Account</option><option>General</option>
+        </select>
+        <select class="filter" id="prioFilter">
+          <option value="">All priorities</option>
+          <option>Critical</option><option>High</option><option>Medium</option><option>Low</option>
+        </select>
+        <span class="tbcount" id="tbCount"></span>
+      </div>
+
+      <div class="tablewrap">
+        <div class="tscroll">
+          <table>
+            <thead><tr>
+              <th>#ID</th><th>Subject</th><th>Customer</th><th>Category</th><th>Priority</th><th>Status</th><th>SLA / Age</th><th>AI Sentiment</th>
+            </tr></thead>
+            <tbody id="ticketRows"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="hint"><i data-lucide="mouse-pointer-click"></i> Rows are read from your <b>&nbsp;Google Sheet&nbsp;</b> — click any ticket to open its AI-drafted reply.</div>
+    </section>
+
+    <!-- ============ TICKET ============ -->
+    <section class="view" id="view-ticket">
+      <div class="tk-back" id="tkBack"><i data-lucide="arrow-left"></i> Back to queue</div>
+      <div id="ticketDetail"></div>
+    </section>
+
+    <!-- ============ TRENDS ============ -->
+    <section class="view" id="view-trends">
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kh"><span class="kc">Tickets &middot; 7 days</span><span class="ki red"><i data-lucide="inbox"></i></span></div>
+          <div class="kv">155</div><div class="kd down">&#9650; 12% vs last week</div>
+        </div>
+        <div class="kpi">
+          <div class="kh"><span class="kc">SLA Compliance</span><span class="ki green"><i data-lucide="shield-check"></i></span></div>
+          <div class="kv">92%</div><div class="kd up">&#9650; 4 pts</div>
+        </div>
+        <div class="kpi">
+          <div class="kh"><span class="kc">AI-Drafted Replies</span><span class="ki purple"><i data-lucide="sparkles"></i></span></div>
+          <div class="kv">138</div><div class="kd">89% of all replies</div>
+        </div>
+        <div class="kpi">
+          <div class="kh"><span class="kc">CSAT</span><span class="ki amber"><i data-lucide="smile"></i></span></div>
+          <div class="kv">4.6<span style="font-size:15px;color:var(--textMuted)">/5</span></div><div class="kd up">&#9650; 0.2</div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="panel">
+          <div class="panel-h"><i data-lucide="line-chart"></i> Ticket Volume — Last 7 Days</div>
+          <div id="volChart"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><i data-lucide="pie-chart"></i> Priority Distribution</div>
+          <div class="prio-legend" id="prioDist"></div>
+        </div>
+      </div>
+
+      <div class="chart-grid2">
+        <div class="panel">
+          <div class="panel-h"><i data-lucide="bar-chart-3"></i> Tickets by Category</div>
+          <div id="catBars"></div>
+        </div>
+        <div class="panel ai-summary">
+          <div class="ai-head" style="margin-bottom:12px">
+            <div class="ai-ic"><i data-lucide="sparkles"></i></div>
+            <div><div class="ai-t">AI Weekly Summary</div><div class="ai-s">Grounded in this week's ticket data</div></div>
+            <span class="ai-badge"><i data-lucide="flask-conical"></i> Demo</span>
+          </div>
+          <p><b>155 tickets</b> this week, up 12% — driven by a spike in <b>Billing</b> after the new invoice run. SLA held at <b>92%</b> despite the volume.</p>
+          <ul>
+            <li><b>Watch:</b> Billing is now 34% of volume (&#9650; from 26%). Consider a proactive invoice FAQ.</li>
+            <li><b>Win:</b> AI drafted 89% of replies — first-response time down to 1h 48m.</li>
+            <li><b>Action:</b> 2 Critical tickets at SLA risk today — route to Tier-2 now.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"><i data-lucide="check-circle-2"></i><span id="toastMsg">Sent</span></div>
 
 <script>
-// ---- demo data (no backend) ----
-const TICKETS = [
-  {id:"NV-4821",subj:"Refund not received after 10 days",cust:"Priya Nair",status:"open",prio:"urgent",time:"6m",cat:"Billing",
-    msg:"I returned the router on the 12th and was promised a refund within 5 business days. It's been 10 days and nothing has landed in my account. Order #NV-88213.",
-    reply:"Hi Priya, thanks for flagging this — I'm sorry the refund is running late.\n\nI can see your return for order #NV-88213 was received and approved on the 14th. Refunds to the original card can take 5–7 business days *after* approval to appear, so you should see ₹4,299 credited by end of this week. If it hasn't arrived by Friday, reply here and I'll raise a payment trace with our billing team right away.",
-    cite:"Refund Policy §3.2 · Payment timelines"},
-  {id:"NV-4820",subj:"Device won't pair with the app",cust:"Arjun Mehta",status:"open",prio:"high",time:"22m",cat:"Technical",
-    msg:"My Nova Hub keeps failing at the 'searching for device' step in the mobile app. I've tried restarting both the hub and my phone. Bluetooth is on.",
-    reply:"Hi Arjun, sorry for the pairing trouble. Nine times out of ten this is a stale Bluetooth cache.\n\nPlease try: (1) Force-quit the Nova app, (2) toggle Bluetooth off and on, (3) hold the hub's reset button for 8 seconds until the LED blinks amber, then re-open the app and tap 'Add device'. If it still stalls at 'searching', let me know your app version and I'll send the manual-pairing code.",
-    cite:"Troubleshooting KB · Pairing failures"},
-  {id:"NV-4819",subj:"How do I add a second admin to my account?",cust:"Sana Kapoor",status:"open",prio:"normal",time:"41m",cat:"Account",
-    msg:"My husband wants to manage our devices too. Can I add him as a second admin, and does he need his own subscription?",
-    reply:"Hi Sana! Yes — you can add a second admin at no extra cost.\n\nGo to Settings → Household → Invite member, enter his email, and choose the 'Admin' role. He'll get an invite link, set his own password, and share full control of your devices. One subscription covers the whole household (up to 6 members), so no separate plan is needed.",
-    cite:"Account Guide · Household roles"},
-  {id:"NV-4818",subj:"Firmware update bricked my thermostat",cust:"Rahul Das",status:"open",prio:"urgent",time:"1h",cat:"Technical",
-    msg:"After last night's auto-update my Nova Thermostat is stuck on a black screen and won't respond to anything. The house is cold. Please help urgently.",
-    reply:"Hi Rahul, that's frustrating — let's get your heat back on.\n\nFirst, a hard reset usually recovers a stalled update: hold both the + and − buttons together for 15 seconds until you see the Nova logo. If the screen stays black, flip the breaker for the thermostat for 30 seconds, then restore power. If neither works, this qualifies for priority replacement — I've flagged the ticket as urgent and our hardware team will reach out within 2 hours.",
-    cite:"Troubleshooting KB · Recovery mode"},
-  {id:"NV-4817",subj:"Wrong item shipped",cust:"Meera Iyer",status:"pending",prio:"high",time:"2h",cat:"Shipping",
-    msg:"I ordered the black Nova Cam but received a white one. Order #NV-88109. I'd like the correct colour please.",
-    reply:"Hi Meera, apologies for the mix-up on order #NV-88109.\n\nI've created a free exchange: a prepaid return label is on its way to your email, and the black Nova Cam will ship as soon as the label is scanned — no need to wait for the return to arrive. You'll have the right one within 3–4 business days.",
-    cite:"Shipping Policy · Exchanges"},
-  {id:"NV-4816",subj:"Subscription charged twice this month",cust:"Vikram Rao",status:"pending",prio:"urgent",time:"3h",cat:"Billing",
-    msg:"I was charged ₹499 twice on the 1st. My bank statement clearly shows two identical charges. Please refund the duplicate.",
-    reply:"Hi Vikram, thank you for the screenshot — you're right, there are two ₹499 charges dated the 1st.\n\nThe duplicate was caused by a retry after a gateway timeout. I've refunded the extra ₹499 to your original card; it will appear in 3–5 business days. Your subscription remains active and you won't be double-billed again.",
-    cite:"Billing KB · Duplicate charges"},
-  {id:"NV-4815",subj:"Can I pause my subscription while travelling?",cust:"Neha Sharma",status:"pending",prio:"low",time:"4h",cat:"Account",
-    msg:"I'll be abroad for two months. Is there a way to pause billing instead of cancelling completely?",
-    reply:"Hi Neha, great question — yes, you can pause.\n\nUnder Settings → Subscription → Pause, you can freeze billing for up to 3 months. Your devices keep working in local mode, cloud recording pauses, and billing resumes automatically on your chosen date. Nothing is lost and there's no reactivation fee.",
-    cite:"Account Guide · Pause & resume"},
-  {id:"NV-4814",subj:"Motion alerts arriving late",cust:"Karan Singh",status:"open",prio:"normal",time:"5h",cat:"Technical",
-    msg:"My Nova Cam motion notifications show up 3-4 minutes after the event. That's useless for a security cam. How do I fix the delay?",
-    reply:"Hi Karan, a lag like that is almost always upload bandwidth or notification batching.\n\nTwo quick fixes: (1) In the app, set Video quality to 'Auto' so clips upload faster on a busy network; (2) turn OFF 'Batch notifications' under Alerts so each event pushes instantly. If the delay persists, a wired Ethernet adapter for the cam removes Wi-Fi congestion entirely.",
-    cite:"Troubleshooting KB · Notification latency"},
-  {id:"NV-4813",subj:"Does the camera work without Wi-Fi?",cust:"Anita Desai",status:"resolved",prio:"low",time:"6h",cat:"Technical",
-    msg:"If my internet goes down, does the Nova Cam still record anything or is it completely dead?",
-    reply:"Hi Anita! Yes — the Nova Cam keeps recording to its local microSD card even with the internet down. You just won't get live streaming or cloud backup until the connection returns, at which point recent clips sync automatically. Pop in a 64–256GB card for offline peace of mind.",
-    cite:"Product FAQ · Offline recording"},
-  {id:"NV-4812",subj:"Requesting an invoice for reimbursement",cust:"Deepak Menon",status:"resolved",prio:"normal",time:"8h",cat:"Billing",
-    msg:"My employer reimburses home-office equipment. Can I get a proper GST invoice for my Nova Hub purchase?",
-    reply:"Hi Deepak, absolutely. I've generated a GST invoice for your Nova Hub order and emailed it to the address on file. If you need the company name or GSTIN added to the invoice, reply with those details and I'll reissue it within the hour.",
-    cite:"Billing KB · Invoices & GST"},
-  {id:"NV-4811",subj:"Night vision looks washed out",cust:"Ritu Agarwal",status:"resolved",prio:"low",time:"9h",cat:"Technical",
-    msg:"The infrared night view on my camera is very bright and washed out when pointed at a white wall. Is mine faulty?",
-    reply:"Hi Ritu, not faulty — that's IR bounce-back off nearby light surfaces. Angle the cam so a bright wall isn't directly in front of it, or lower 'IR intensity' to Medium under Camera settings. That clears the wash-out immediately.",
-    cite:"Troubleshooting KB · Night vision"},
-  {id:"NV-4810",subj:"Feature request: schedule arm/disarm",cust:"Gaurav Bhat",status:"pending",prio:"low",time:"11h",cat:"Feedback",
-    msg:"It would be great to auto-arm the system at 10pm and disarm at 7am on weekdays. Is that on the roadmap?",
-    reply:"Hi Gaurav, love this idea — and good news, scheduled arm/disarm is available today! Go to Automations → New → Schedule, pick your arm and disarm times, and choose which days apply. I've logged your note as a vote to make it more discoverable in the app.",
-    cite:"Product FAQ · Automations"},
-  {id:"NV-4809",subj:"Two-factor code never arrives",cust:"Farah Khan",status:"open",prio:"high",time:"12h",cat:"Account",
-    msg:"I'm locked out because the 2FA SMS never reaches my phone. I've checked signal and spam. What now?",
-    reply:"Hi Farah, sorry you're locked out. SMS codes can stall with certain carriers, so let's switch you to an authenticator app.\n\nI've temporarily emailed a one-time login link to your registered address. Once you're in, go to Security → Two-factor → Authenticator app to set up TOTP, which doesn't depend on SMS. Let me know if the email link doesn't arrive in 5 minutes.",
-    cite:"Account Guide · 2FA recovery"},
-  {id:"NV-4808",subj:"Bulk order for 12 units — discount?",cust:"Sunita Pillai",status:"pending",prio:"normal",time:"14h",cat:"Sales",
-    msg:"We're a small office wanting 12 Nova Hubs. Is there a business discount or a bulk-order process?",
-    reply:"Hi Sunita, thanks for considering Nova for your office! Orders of 10+ units qualify for our Business tier: 15% off, consolidated GST invoicing, and a single admin dashboard for all devices. I've cc'd our business team who'll send a formal quote for 12 hubs today.",
-    cite:"Sales Playbook · Bulk pricing"},
-  {id:"NV-4807",subj:"App crashes on Android 15",cust:"Imran Sheikh",status:"open",prio:"high",time:"16h",cat:"Technical",
-    msg:"Ever since updating to Android 15 the Nova app crashes on launch every single time. Pixel 8.",
-    reply:"Hi Imran, thanks for the report — we've had a few Android 15 launch-crash reports on Pixel and a fix is rolling out in v4.7.2.\n\nIn the meantime: clear the app's cache (Settings → Apps → Nova → Storage → Clear cache, not data), then reopen. That resolves it for most users until the update auto-installs. I've added your device so you'll get the patched build first.",
-    cite:"Known Issues · Android 15"},
-  {id:"NV-4806",subj:"Camera keeps going offline at night",cust:"Lakshmi Menon",status:"resolved",prio:"normal",time:"18h",cat:"Technical",
-    msg:"Every night around 2am my outdoor cam drops offline and reconnects by morning. Router isn't rebooting.",
-    reply:"Hi Lakshmi, a nightly drop at a fixed time usually points to a scheduled router band-steering or a smart-plug timer cutting power. Check that the cam isn't on a timed outlet, and in your router settings pin the cam to the 2.4GHz band so it doesn't get bumped to 5GHz at night. That's fixed it for every similar case.",
-    cite:"Troubleshooting KB · Nightly disconnects"},
-  {id:"NV-4805",subj:"Warranty claim for cracked lens",cust:"Aditya Kulkarni",status:"pending",prio:"high",time:"20h",cat:"Warranty",
-    msg:"My cam arrived with a hairline crack on the lens cover, spotted it while mounting. Bought 3 weeks ago.",
-    reply:"Hi Aditya, a lens crack out of the box is covered under our 1-year warranty — no question.\n\nCould you reply with a photo of the crack and your order number? The moment I have those I'll dispatch a free replacement with a prepaid return label for the damaged unit. You won't be charged and won't need to wait for the return to arrive first.",
-    cite:"Warranty Policy · DOA claims"},
-  {id:"NV-4804",subj:"Can I export my recorded clips?",cust:"Pooja Verma",status:"resolved",prio:"low",time:"22h",cat:"Technical",
-    msg:"I need to save a few clips for an insurance claim. How do I download them off the cloud?",
-    reply:"Hi Pooja, yes — open the clip in the app's Timeline, tap the ⋯ menu, and choose 'Download'. It saves an MP4 to your phone which you can forward anywhere. For a whole day, use Timeline → Select range → Export. Cloud clips stay available for 30 days on your plan, so grab them before then.",
-    cite:"Product FAQ · Exporting clips"},
-  {id:"NV-4803",subj:"Hub LED blinking red continuously",cust:"Nikhil Joshi",status:"open",prio:"normal",time:"1d",cat:"Technical",
-    msg:"My Nova Hub's LED has been solid-blinking red for an hour. What does red mean and how do I clear it?",
-    reply:"Hi Nikhil, a continuous red blink means the hub can't reach Nova's servers — almost always a network hiccup rather than hardware.\n\nCheck your internet is up on another device, then power-cycle the hub (unplug 20 seconds, plug back). The LED should go solid white within 2 minutes. If it stays red, your router may be blocking the hub — reply and I'll send the ports Nova needs open.",
-    cite:"Troubleshooting KB · LED status codes"},
-  {id:"NV-4802",subj:"Thank you — great support last week!",cust:"Ravi Chandran",status:"resolved",prio:"low",time:"1d",cat:"Feedback",
-    msg:"Just wanted to say your agent Sofia sorted my setup issue brilliantly last week. Five stars!",
-    reply:"Hi Ravi, this genuinely made our day — thank you! I've passed your kind words straight to Sofia and her team lead. If anything else comes up, you know where we are. Enjoy your Nova setup!",
-    cite:"—"},
-  {id:"NV-4801",subj:"Does Nova work with Google Home?",cust:"Simran Gill",status:"resolved",prio:"low",time:"2d",cat:"Technical",
-    msg:"Before I buy more devices — do Nova cameras and hubs integrate with Google Home and Alexa?",
-    reply:"Hi Simran! Yes to both. Nova works with Google Home and Alexa: link your account under Settings → Integrations, then you can view camera feeds on a Nest/Echo Show and arm/disarm by voice. Full setup steps are in the Integrations guide — happy to walk you through it if you'd like.",
-    cite:"Product FAQ · Smart-home integrations"},
-  {id:"NV-4800",subj:"Cancel my order before it ships",cust:"Manish Gupta",status:"resolved",prio:"normal",time:"2d",cat:"Shipping",
-    msg:"I placed order #NV-87990 this morning but changed my mind. Can I cancel before it ships?",
-    reply:"Hi Manish, done — order #NV-87990 has been cancelled before dispatch and no charge will be taken (any pending authorisation drops off in 2–3 days). If you'd like to reorder a different model later, just reach out and I'll help you pick.",
-    cite:"Shipping Policy · Cancellations"}
+/* ---------------- DATA (baked-in, from "Google Sheet") ---------------- */
+const tickets = [
+  {id:'TK-4021', subj:'Charged twice for my March subscription', name:'Priya Nair', email:'priya.nair@gmail.com', co:'Nimbus Retail', cat:'Billing', prio:'Critical', status:'Open', sla:'42m left', slaState:'risk', senti:18,
+    body:"Hi, I just noticed TWO charges of ₹2,499 on my card for March — one on the 2nd and another on the 4th. This is really frustrating, I've been a customer for two years. Please refund the duplicate immediately, my order ref is #NR-88213."},
+  {id:'TK-4019', subj:'App crashes on login after latest update', name:'Marcus Feld', email:'m.feld@outlook.com', co:'Feld Studios', cat:'Technical', prio:'High', status:'Open', sla:'2h 10m', slaState:'warn', senti:30,
+    body:"Ever since the update to v4.2 the app crashes the second I tap 'Log in'. I'm on iPhone 14, iOS 18.1. Tried reinstalling twice. This is blocking my whole team from working."},
+  {id:'TK-4017', subj:'Wrong size delivered — need exchange', name:'Aisha Rahman', email:'aisha.r@yahoo.com', co:'—', cat:'Returns', prio:'Medium', status:'Open', sla:'19h', slaState:'ok', senti:44,
+    body:"I ordered a Large hoodie (order #NR-90412) but received a Small. Could I please exchange it for the correct size? Happy to send the wrong one back."},
+  {id:'TK-4015', subj:'Cannot reset my password — link expired', name:'Tom Becker', email:'tbecker@proton.me', co:'Becker & Co', cat:'Account', prio:'Medium', status:'Pending', sla:'16h', slaState:'ok', senti:38,
+    body:"The password reset link keeps saying 'expired' even when I click it right away. I've requested it 4 times now. How do I get back into my account?"},
+  {id:'TK-4013', subj:'Do you ship to Singapore?', name:'Wei Lin', email:'weilin88@gmail.com', co:'—', cat:'General', prio:'Low', status:'Open', sla:'54h', slaState:'ok', senti:66,
+    body:"Hello! Quick question — do you ship internationally to Singapore, and roughly how long does delivery take? Thinking of placing a big order for my office."},
+  {id:'TK-4011', subj:'Refund still not received after 10 days', name:'Sofia Marchetti', email:'sofia.m@gmail.com', co:'Marchetti Ltd', cat:'Billing', prio:'High', status:'Open', sla:'3h 40m', slaState:'warn', senti:22,
+    body:"I was told my refund of ₹5,800 would arrive in 5-7 business days. It's now been 10 and nothing. My patience is running out — order #NR-87001. Please escalate."},
+  {id:'TK-4009', subj:'Feature request: dark mode', name:'Ravi Menon', email:'ravi.menon@gmail.com', co:'Menon Design', cat:'General', prio:'Low', status:'Open', sla:'48h', slaState:'ok', senti:72,
+    body:"Love the product! Any chance dark mode is on the roadmap? Would be so much easier on the eyes during late-night sessions. Keep up the great work."},
+  {id:'TK-4007', subj:'Invoice missing GST breakdown', name:'Neha Kapoor', email:'neha.k@company.in', co:'Kapoor Textiles', cat:'Billing', prio:'Medium', status:'Pending', sla:'12h', slaState:'ok', senti:40,
+    body:"Our finance team needs the GST breakdown on invoice #INV-33120 for filing. The PDF only shows the total. Can you resend with the tax split-up?"},
+  {id:'TK-4005', subj:'Two-factor codes never arrive', name:'James Okoro', email:'j.okoro@gmail.com', co:'—', cat:'Account', prio:'High', status:'Open', sla:'1h 20m', slaState:'risk', senti:28,
+    body:"I'm locked out — the 2FA SMS codes simply never arrive on my phone (+234...). I've been trying for an hour. I have an important order to place today."},
+  {id:'TK-4003', subj:'Product arrived damaged', name:'Elena Popov', email:'elena.popov@mail.com', co:'—', cat:'Returns', prio:'Medium', status:'Open', sla:'20h', slaState:'ok', senti:35,
+    body:"My order #NR-91008 arrived with the box crushed and the item scratched. I've attached photos. I'd like a replacement, not a refund, if possible."},
+  {id:'TK-4001', subj:'How do I upgrade to the annual plan?', name:'Daniel Cho', email:'dan.cho@gmail.com', co:'Cho Media', cat:'Billing', prio:'Low', status:'Resolved', sla:'Done', slaState:'ok', senti:68,
+    body:"I'm currently on the monthly plan and want to switch to annual to save. Where do I do that in my account settings?"},
+  {id:'TK-3998', subj:'Export to CSV is broken', name:'Hannah Weiss', email:'h.weiss@gmail.com', co:'Weiss Analytics', cat:'Technical', prio:'High', status:'Open', sla:'2h 55m', slaState:'warn', senti:33,
+    body:"When I click 'Export CSV' the file downloads but it's completely empty — 0 bytes. This worked fine last week. I rely on this for weekly reporting."},
+  {id:'TK-3996', subj:'Cancel my subscription please', name:'Omar Farouk', email:'omar.f@gmail.com', co:'—', cat:'Account', prio:'Medium', status:'Pending', sla:'14h', slaState:'ok', senti:41,
+    body:"I'd like to cancel my subscription before the next billing date. Please confirm it won't renew. Account email is this one."},
+  {id:'TK-3994', subj:'Discount code not applying at checkout', name:'Lucia Ferreira', email:'lucia.f@gmail.com', co:'—', cat:'Billing', prio:'Medium', status:'Open', sla:'17h', slaState:'ok', senti:47,
+    body:"The code SAVE20 won't apply at checkout — it says 'invalid'. Your email said it's valid until the 30th. Can you help before the sale ends?"},
+  {id:'TK-3992', subj:'Bulk order enquiry — 200 units', name:'Kenji Tanaka', email:'k.tanaka@corp.jp', co:'Tanaka Corp', cat:'General', prio:'Medium', status:'Open', sla:'22h', slaState:'ok', senti:70,
+    body:"We're interested in a bulk order of ~200 units for our staff. Do you offer volume discounts and a dedicated account manager? Please advise on lead time."},
+  {id:'TK-3990', subj:'Account hacked — unauthorized login', name:'Grace Mwangi', email:'grace.m@gmail.com', co:'—', cat:'Account', prio:'Critical', status:'Open', sla:'25m left', slaState:'risk', senti:12,
+    body:"I got an email saying my account was logged in from a device I don't recognize in another country. I think I've been hacked. Please lock my account NOW and help me secure it."},
+  {id:'TK-3988', subj:'Where is my order? No tracking update', name:'Peter Nowak', email:'p.nowak@gmail.com', co:'—', cat:'General', prio:'Low', status:'Open', sla:'40h', slaState:'ok', senti:52,
+    body:"Order #NR-89550 was placed 6 days ago and the tracking hasn't moved from 'label created'. Is it actually shipped? Getting a bit worried."},
+  {id:'TK-3986', subj:'Requesting a VAT invoice for EU', name:'Isabelle Dubois', email:'i.dubois@eu.fr', co:'Dubois SARL', cat:'Billing', prio:'Low', status:'Resolved', sla:'Done', slaState:'ok', senti:60,
+    body:"For our EU accounting we need a proper VAT invoice including our VAT number FR-882203. Can you issue one for order #NR-88900?"},
+  {id:'TK-3984', subj:'Integration webhook returns 500', name:'Arjun Sethi', email:'arjun@devhouse.io', co:'DevHouse', cat:'Technical', prio:'High', status:'Open', sla:'4h', slaState:'warn', senti:29,
+    body:"Your outgoing webhook to our endpoint has been returning 500s since yesterday 14:00 UTC. Nothing changed on our side. This is breaking our order sync pipeline."},
+  {id:'TK-3982', subj:'Return window — am I still eligible?', name:'Mei Chen', email:'mei.chen@gmail.com', co:'—', cat:'Returns', prio:'Low', status:'Resolved', sla:'Done', slaState:'ok', senti:58,
+    body:"I bought a jacket 25 days ago (order #NR-87755). Your policy says 30 days — am I still within the window to return it for a refund? It's unworn with tags."},
+  {id:'TK-3980', subj:'Charged after I cancelled', name:'David Klein', email:'d.klein@gmail.com', co:'Klein Partners', cat:'Billing', prio:'High', status:'Open', sla:'3h 05m', slaState:'warn', senti:24,
+    body:"I cancelled last month and STILL got charged ₹2,499 today. I have the cancellation confirmation email. I want this reversed and confirmation it won't happen again."},
+  {id:'TK-3978', subj:'Can I change my delivery address?', name:'Fatima Zahra', email:'fatima.z@gmail.com', co:'—', cat:'General', prio:'Low', status:'Pending', sla:'30h', slaState:'ok', senti:62,
+    body:"I just placed order #NR-92110 but used my old address by mistake. Can I update it to my new address before it ships? Hopefully it hasn't gone out yet."}
 ];
 
-const AV_COLORS=["#534AB7","#0F6E56","#854F0B","#1877F2","#b91c1c","#3a6ea5"];
-function initials(n){return n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();}
-function statusPill(s){
-  const m={open:["st-open","Open"],pending:["st-pending","Pending"],resolved:["st-resolved","Resolved"]};
-  return `<span class="pill ${m[s][0]}">${m[s][1]}</span>`;
+/* Canned AI drafts for first 6 tickets — grounded in KB */
+const draftsA = {
+  'TK-4021':{cat:'Billing',prio:'Critical',route:'Billing → Refunds (Tier-2)',summary:'Customer was charged twice (₹2,499) for the March subscription and wants the duplicate refunded urgently.',kb:'Refunds & Duplicate Charges Policy',
+    reply:"Hi Priya,\n\nI'm so sorry for the worry a double charge causes — you're absolutely right to flag this, and thank you for being with us these two years.\n\nI can see two ₹2,499 charges on order #NR-88213 (Mar 2 and Mar 4). As outlined in our Refunds & Duplicate Charges Policy, duplicate charges are refunded in full to the original payment method. I've raised the reversal for the March 4 charge now.\n\nWhat happens next: the ₹2,499 refund will reach your card in 3–5 business days, and you'll get an email confirmation with the reference number. Nothing further is needed from you.\n\nWarm regards,\nThe Nimbus Support Team"},
+  'TK-4019':{cat:'Technical',prio:'High',route:'Technical → Mobile Team',summary:'App crashes on login immediately after updating to v4.2 (iPhone 14, iOS 18.1); reinstall did not help.',kb:'v4.2 Known Issues & Login Crash Fix',
+    reply:"Hi Marcus,\n\nThat sounds incredibly frustrating, especially when it's blocking your whole team — let's get you back in.\n\nPer our v4.2 Known Issues guide, a small number of iOS 18.1 users hit a login crash caused by a cached session token. The fix is: (1) fully close the app, (2) go to Settings → General → iPhone Storage → our app → Offload App, (3) reinstall from the App Store, then (4) log in. Offloading (not just reinstalling) clears the stale token.\n\nIf it still crashes after that, reply here and I'll escalate straight to our Mobile Team with your device details.\n\nBest,\nThe Feld Support Team"},
+  'TK-4017':{cat:'Returns',prio:'Medium',route:'Returns → Exchanges',summary:'Received a Small hoodie instead of the ordered Large (order #NR-90412) and wants a size exchange.',kb:'Size Exchange & Returns Policy',
+    reply:"Hi Aisha,\n\nApologies for the mix-up on order #NR-90412 — that's on us, and we'll sort it quickly.\n\nAs described in our Size Exchange & Returns Policy, wrong-item exchanges are free and we cover return shipping. I've emailed you a prepaid return label; just drop the Small hoodie at any partner pickup point. Your Large is reserved and ships the moment the return scans in.\n\nExpected timeline: your correct size should reach you within 4–6 business days. No charge for any of this.\n\nKind regards,\nThe Nimbus Support Team"},
+  'TK-4015':{cat:'Account',prio:'Medium',route:'Account → Access',summary:'Password reset link reports "expired" immediately; requested 4 times and cannot log in.',kb:'Password Reset Troubleshooting',
+    reply:"Hi Tom,\n\nSorry for the run-around with the reset link — let's fix this.\n\nOur Password Reset Troubleshooting guide notes this usually happens when an older reset email is opened first (each new request invalidates the previous link). Please: (1) delete all earlier reset emails, (2) request one fresh link, and (3) open the newest email and click within 15 minutes. If your browser autofills an old URL, try it in a private/incognito window.\n\nIf the newest link still fails, reply here and I'll trigger a manual reset for you directly.\n\nBest,\nThe Becker Support Team"},
+  'TK-4013':{cat:'General',prio:'Low',route:'General → Sales',summary:'Prospective customer asks whether you ship to Singapore and typical delivery time for a large office order.',kb:'International Shipping Guide',
+    reply:"Hi Wei,\n\nGreat to hear you're considering a larger order for your office!\n\nYes — per our International Shipping Guide, we ship to Singapore. Standard delivery is typically 7–10 business days, with an express option at checkout that lands in 3–5. Orders above a certain value also qualify for free international shipping, which your office order would likely reach.\n\nIf you share rough quantities, I'm happy to confirm exact shipping costs and any volume pricing. Looking forward to it!\n\nWarm regards,\nThe Nimbus Support Team"},
+  'TK-4011':{cat:'Billing',prio:'High',route:'Billing → Refunds (Tier-2)',summary:'Refund of ₹5,800 promised in 5–7 days has not arrived after 10 days (order #NR-87001); wants escalation.',kb:'Refund Timelines & Escalation',
+    reply:"Hi Sofia,\n\nYou're right to chase this — 10 days is beyond what we promised, and I'm sorry.\n\nI've checked order #NR-87001: the refund was approved but got stuck at the payment-processor step. Per our Refund Timelines & Escalation policy, I've now re-submitted it as a priority reversal and flagged it to our billing lead.\n\nWhat happens next: the ₹5,800 should now clear within 2–3 business days. I'll personally email you the moment the processor confirms it. Thank you for your patience.\n\nSincerely,\nThe Marchetti Support Team"}
+};
+
+/* Alternate canned drafts (for Regenerate) */
+const draftsB = {
+  'TK-4021':"Hi Priya,\n\nThank you for flagging this, and I'm sorry for the stress a duplicate charge causes.\n\nI've confirmed the two ₹2,499 charges on #NR-88213. Under our Refunds & Duplicate Charges Policy I've issued an immediate reversal of the extra charge to your original card. You'll see it in 3–5 business days with an email confirmation.\n\nAs a goodwill gesture for the trouble after two loyal years, I've also added a small account credit for your next renewal.\n\nWarmly,\nThe Nimbus Support Team",
+  'TK-4019':"Hi Marcus,\n\nSorry this is holding up your team. Our v4.2 Known Issues guide has a targeted fix for the iOS 18.1 login crash: offload the app (Settings → iPhone Storage → Offload App), reinstall, then sign in — this clears the stale session token behind the crash.\n\nI've also enabled a server-side flag on your account that bypasses the affected code path, so it should be resolved even before you reinstall. Let me know how it goes and I'll loop in Mobile if needed.\n\nBest,\nThe Feld Support Team"
+};
+
+/* Fallback grounded template for tickets without a canned draft */
+function fallbackDraft(t){
+  const kbByCat = {Billing:'Billing & Payments FAQ',Technical:'Troubleshooting Guide',Returns:'Returns & Exchanges Policy',Account:'Account & Access Guide',General:'General FAQ'};
+  const kb = kbByCat[t.cat]||'General FAQ';
+  return {
+    cat:t.cat, prio:t.prio, route:t.cat+' → '+(t.prio==='Critical'||t.prio==='High'?'Tier-2':'Tier-1'),
+    summary:t.subj.charAt(0).toLowerCase()+t.subj.slice(1)+' — needs a grounded reply from the knowledge base.',
+    kb:kb,
+    reply:"Hi "+t.name.split(' ')[0]+",\n\nThanks for reaching out, and I'm sorry for any hassle here.\n\nRegarding \""+t.subj+"\": as outlined in our "+kb+", here's how we'll handle it. I've reviewed your message and started the relevant steps on our side so this moves forward straight away.\n\nWhat happens next: I'll follow up with confirmation shortly, and you don't need to do anything further for now. Do reply if anything is unclear.\n\nBest,\nThe Support Team"
+  };
 }
-function prioPill(p){
-  const m={urgent:"p-urgent",high:"p-high",normal:"p-normal",low:"p-low"};
-  return `<span class="prio ${m[p]}">${p}</span>`;
+
+/* ---------------- RENDER QUEUE ---------------- */
+const prioClass = {Critical:'p-crit',High:'p-high',Medium:'p-med',Low:'p-low'};
+const statusClass = {Open:'s-open',Pending:'s-pending',Resolved:'s-resolved'};
+function sentiColor(s){ return s<33?'var(--primary)':s<55?'var(--amber)':'var(--green)'; }
+
+let selectedId = null;
+const currentVariant = {};
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderRows(){
+  const q = document.getElementById('searchBox').value.trim().toLowerCase();
+  const cf = document.getElementById('catFilter').value;
+  const pf = document.getElementById('prioFilter').value;
+  const rows = tickets.filter(t=>{
+    if(cf && t.cat!==cf) return false;
+    if(pf && t.prio!==pf) return false;
+    if(q && !(t.subj.toLowerCase().includes(q)||t.name.toLowerCase().includes(q)||t.id.toLowerCase().includes(q)||t.co.toLowerCase().includes(q))) return false;
+    return true;
+  });
+  const tb = document.getElementById('ticketRows');
+  tb.innerHTML = rows.map(t=>`
+    <tr data-id="${t.id}">
+      <td><span class="tid">${t.id}</span></td>
+      <td><div class="tsubj">${esc(t.subj)}</div></td>
+      <td><div class="tcust">${esc(t.name)}${t.co&&t.co!=='—'?` <span class="co">&middot; ${esc(t.co)}</span>`:''}</div></td>
+      <td><span class="cat">${t.cat}</span></td>
+      <td><span class="pill ${prioClass[t.prio]}">${t.prio}</span></td>
+      <td><span class="pill ${statusClass[t.status]}">${t.status}</span></td>
+      <td><span class="sla ${t.slaState}">${t.sla}</span></td>
+      <td><span class="senti"><span class="bar"><i style="width:${t.senti}%;background:${sentiColor(t.senti)}"></i></span><span class="num" style="font-size:11px;color:var(--textMuted)">${t.senti}</span></span></td>
+    </tr>`).join('');
+  document.getElementById('tbCount').textContent = rows.length+' of '+tickets.length+' tickets';
+  tb.querySelectorAll('tr').forEach(tr=>tr.addEventListener('click',()=>openTicket(tr.dataset.id)));
 }
 
-let filter="all", selected=TICKETS[0].id;
-
-function visible(){return filter==="all"?TICKETS:TICKETS.filter(t=>t.status===filter);}
-
-function renderList(){
-  const list=document.getElementById("tlist");
-  const v=visible();
-  document.getElementById("qcount").textContent=v.length+" shown";
-  list.innerHTML=v.map((t,i)=>{
-    const col=AV_COLORS[t.cust.length%AV_COLORS.length];
-    return `<div class="ticket ${t.id===selected?'sel':''}" data-id="${t.id}">
-      <div class="r1"><span class="id">${t.id}</span>${statusPill(t.status)}<span class="subj">${t.subj}</span></div>
-      <div class="r2">
-        <span class="who"><span class="av" style="background:${col}">${initials(t.cust)}</span>${t.cust}</span>
-        ${prioPill(t.prio)}
-        <span class="time">${t.time} ago</span>
-      </div>
-    </div>`;
-  }).join("");
-  list.querySelectorAll(".ticket").forEach(el=>el.onclick=()=>{selected=el.dataset.id;renderList();renderDetail();});
-  lucide.createIcons();
-}
-
-function renderDetail(){
-  const t=TICKETS.find(x=>x.id===selected);
-  const col=AV_COLORS[t.cust.length%AV_COLORS.length];
-  const d=document.getElementById("detail");
-  d.innerHTML=`
-    <div class="d-head">
-      <div class="top">${statusPill(t.status)}${prioPill(t.prio)}<span class="pill" style="background:#EEEDFE;color:#3C3489;">${t.cat}</span><span class="id" style="margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--textMuted);">${t.id}</span></div>
-      <h3>${t.subj}</h3>
-      <div class="d-meta"><span><b>${t.cust}</b></span><span>Opened <b>${t.time} ago</b></span><span>Channel <b>Email</b></span></div>
-    </div>
-    <div class="d-body">
-      <div class="msg cust">
-        <div class="av" style="background:${col}">${initials(t.cust)}</div>
-        <div class="bubble">
-          <div class="name">${t.cust}<span>customer</span></div>
-          <div class="txt">${t.msg}</div>
+/* ---------------- RENDER TICKET DETAIL ---------------- */
+function openTicket(id){
+  selectedId = id;
+  const t = tickets.find(x=>x.id===id);
+  const d = draftsA[id] || fallbackDraft(t);
+  currentVariant[id] = 'A';
+  const reply = draftsA[id] ? draftsA[id].reply : d.reply;
+  const initials = t.name.split(' ').map(w=>w[0]).slice(0,2).join('');
+  document.getElementById('ticketDetail').innerHTML = `
+    <div class="tk-grid">
+      <div>
+        <div class="panel">
+          <h2 class="tk-subject">${esc(t.subj)}</h2>
+          <div class="tk-meta">
+            <span class="tid" style="font-size:12.5px">${t.id}</span>
+            <span class="cat">${t.cat}</span>
+            <span class="pill ${prioClass[t.prio]}">${t.prio}</span>
+            <span class="pill ${statusClass[t.status]}">${t.status}</span>
+            <span class="sla ${t.slaState}" style="font-size:12px">SLA: ${t.sla}</span>
+          </div>
+          <div class="msg">
+            <div class="from">
+              <span class="avatar">${esc(initials)}</span>
+              <div><div class="fn">${esc(t.name)}</div><div class="fe">${esc(t.email)}</div></div>
+              <span class="ft">via Google Sheet &middot; row synced</span>
+            </div>
+            ${t.body.split('\n').map(p=>`<div style="margin-bottom:8px">${esc(p)}</div>`).join('')}
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><i data-lucide="clipboard-list"></i> AI Triage Output</div>
+          <div class="triage-row">
+            <div class="tr"><div class="trl">Category</div><div class="trv">${d.cat}</div></div>
+            <div class="tr"><div class="trl">Priority</div><div class="trv"><span class="pill ${prioClass[d.prio]}">${d.prio}</span></div></div>
+            <div class="tr"><div class="trl">Suggested Routing</div><div class="trv">${d.route}</div></div>
+            <div class="tr"><div class="trl">Customer</div><div class="trv">${t.co&&t.co!=='—'?esc(t.co):esc(t.name)}</div></div>
+          </div>
+          <div class="summ"><b>One-line summary:</b> ${esc(d.summary)}</div>
         </div>
       </div>
 
-      <div class="ai">
-        <div class="ai-h"><i data-lucide="sparkles"></i><span class="t">AI-suggested reply</span><span class="demo">Demo</span></div>
-        <div class="ai-body">
-          <div class="conf"><i data-lucide="shield-check" style="width:13px;height:13px;color:var(--green);"></i> Confidence 92% · grounded in <span class="cite">${t.cite}</span></div>
-          <div class="reply">${t.reply}</div>
+      <div class="panel ai-panel">
+        <div class="ai-head">
+          <div class="ai-ic"><i data-lucide="sparkles"></i></div>
+          <div><div class="ai-t">AI-Suggested Reply</div><div class="ai-s">Grounded in your KB docs</div></div>
+          <span class="ai-badge"><i data-lucide="flask-conical"></i> AI Draft &middot; Demo</span>
         </div>
+        <div class="kb-cite"><i data-lucide="book-open"></i> Grounded in KB: &ldquo;${esc(d.kb)}&rdquo;</div>
+        <div class="reply-box" id="replyBox">${esc(reply)}</div>
         <div class="ai-actions">
-          <button class="btn pri" onclick="toast('Reply sent to ${t.cust}')"><i data-lucide="send"></i> Send reply</button>
-          <button class="btn" onclick="toast('Draft saved for editing')"><i data-lucide="pencil"></i> Edit</button>
-          <button class="btn" onclick="toast('Regenerating suggestion…')"><i data-lucide="refresh-cw"></i> Regenerate</button>
+          <button class="btn btn-primary" id="sendBtn"><i data-lucide="mail"></i> Send via Gmail</button>
+          <button class="btn btn-ghost" id="regenBtn"><i data-lucide="refresh-cw"></i> Regenerate</button>
         </div>
+        <div class="grounded-note"><i data-lucide="info"></i> <span>This draft is canned demo content, not a live model call. In your hands-on build, Claude writes it grounded in your uploaded KB docs and sends it through Gmail via OAuth.</span></div>
       </div>
     </div>`;
   lucide.createIcons();
+  document.getElementById('sendBtn').addEventListener('click',sendReply);
+  document.getElementById('regenBtn').addEventListener('click',regen);
+  switchTab('ticket');
 }
 
-// ---- inline SVG trends chart ----
-function renderChart(){
-  const created=[38,52,44,61,47,29,22,41,55,48,63,50,34,26];
-  const resolved=[30,41,48,50,52,35,28,36,49,53,58,55,40,33];
-  const days=["","","","","","","","","","","","","",""];
-  const W=560,H=190,pl=34,pr=10,pt=12,pb=24;
-  const iw=W-pl-pr, ih=H-pt-pb;
-  const maxV=70, n=created.length;
-  const x=i=>pl+(iw*i/(n-1));
-  const y=v=>pt+ih-(ih*v/maxV);
-  const line=(arr,c)=>{
-    const pts=arr.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
-    const area=`${pl},${pt+ih} ${pts} ${pl+iw},${pt+ih}`;
-    return `<polygon points="${area}" fill="${c}" opacity="0.07"/>
-      <polyline points="${pts}" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
-      ${arr.map((v,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(v).toFixed(1)}" r="2.6" fill="#fff" stroke="${c}" stroke-width="1.8"/>`).join("")}`;
-  };
-  const gy=[0,17.5,35,52.5,70];
-  const grid=gy.map(v=>`<line x1="${pl}" y1="${y(v).toFixed(1)}" x2="${pl+iw}" y2="${y(v).toFixed(1)}" stroke="#E5E5E0" stroke-width="1"/>
-    <text x="${pl-8}" y="${(y(v)+3).toFixed(1)}" text-anchor="end" font-family="DM Mono,monospace" font-size="9" fill="#999">${v}</text>`).join("");
-  const xlab=["14d","","","","10d","","","","6d","","","","2d","now"].map((l,i)=>l?`<text x="${x(i).toFixed(1)}" y="${H-6}" text-anchor="middle" font-family="DM Mono,monospace" font-size="9" fill="#999">${l}</text>`:"").join("");
-  document.getElementById("chart").innerHTML=
-    `<svg viewBox="0 0 ${W} ${H}" width="100%" preserveAspectRatio="xMidYMid meet" style="display:block;">
-      ${grid}${xlab}
-      ${line(created,"#dc2626")}
-      ${line(resolved,"#0F6E56")}
-    </svg>`;
+function sendReply(){
+  const btn = document.getElementById('sendBtn');
+  btn.classList.remove('btn-primary'); btn.classList.add('btn-sent');
+  btn.innerHTML = '<i data-lucide="check-circle-2"></i> Sent via Gmail &middot; draft logged';
+  lucide.createIcons();
+  showToast('Sent via Gmail &middot; draft logged to your Sheet');
 }
 
-let toastT;
-function toast(m){
-  const el=document.getElementById("toast");
-  document.getElementById("toastMsg").textContent=m;
-  el.classList.add("show");
-  clearTimeout(toastT);
-  toastT=setTimeout(()=>el.classList.remove("show"),2200);
+function regen(){
+  const id = selectedId;
+  const box = document.getElementById('replyBox');
+  const alt = draftsB[id];
+  if(alt && currentVariant[id]==='A'){
+    box.textContent = alt; currentVariant[id]='B';
+  } else if(draftsA[id]){
+    box.textContent = draftsA[id].reply; currentVariant[id]='A';
+  } else {
+    box.textContent = fallbackDraft(tickets.find(x=>x.id===id)).reply.replace('Thanks for reaching out','Thanks so much for getting in touch');
+  }
+  showToast('Regenerated an alternate AI draft');
 }
 
-// filters
-document.getElementById("filters").querySelectorAll(".fchip").forEach(c=>{
-  c.onclick=()=>{
-    document.querySelectorAll(".fchip").forEach(x=>x.classList.remove("active"));
-    c.classList.add("active");
-    filter=c.dataset.f;
-    const v=visible();
-    if(!v.find(t=>t.id===selected)&&v.length)selected=v[0].id;
-    renderList();renderDetail();
-  };
+/* ---------------- TABS ---------------- */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===name));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    if(tab.dataset.tab==='ticket' && !selectedId){ openTicket(tickets[0].id); return; }
+    switchTab(tab.dataset.tab);
+  });
 });
+document.getElementById('tkBack').addEventListener('click',()=>switchTab('queue'));
 
-// KPI open count from data
-document.getElementById("kpiOpen").textContent=TICKETS.filter(t=>t.status==="open").length;
+/* ---------------- FILTERS ---------------- */
+document.getElementById('searchBox').addEventListener('input',renderRows);
+document.getElementById('catFilter').addEventListener('change',renderRows);
+document.getElementById('prioFilter').addEventListener('change',renderRows);
 
-renderList();
-renderDetail();
-renderChart();
+/* ---------------- TOAST ---------------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').innerHTML = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+/* ---------------- TRENDS CHARTS (inline SVG) ---------------- */
+function renderTrends(){
+  const vol = [{d:'Mon',v:18},{d:'Tue',v:22},{d:'Wed',v:27},{d:'Thu',v:24},{d:'Fri',v:31},{d:'Sat',v:16},{d:'Sun',v:17}];
+  const W=440,H=180,pad=28,maxV=35;
+  const x=i=>pad+ i*((W-pad*2)/(vol.length-1));
+  const y=v=>H-pad-(v/maxV)*(H-pad*1.4);
+  const pts=vol.map((p,i)=>[x(i),y(p.v)]);
+  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  const area=`M${pts[0][0].toFixed(1)} ${H-pad} `+pts.map(p=>'L'+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ')+` L${pts[pts.length-1][0].toFixed(1)} ${H-pad} Z`;
+  let grid='';
+  for(let g=0;g<=3;g++){const gy=pad+g*((H-pad*1.4)/3); grid+=`<line x1="${pad}" y1="${gy.toFixed(1)}" x2="${W-pad}" y2="${gy.toFixed(1)}" stroke="#F0EFEA" stroke-width="1"/>`;}
+  const dots=pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="#fff" stroke="#dc2626" stroke-width="2"/><text x="${p[0].toFixed(1)}" y="${(p[1]-10).toFixed(1)}" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#6B7280">${vol[i].v}</text>`).join('');
+  const labels=vol.map((p,i)=>`<text x="${x(i).toFixed(1)}" y="${H-8}" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#999">${p.d}</text>`).join('');
+  document.getElementById('volChart').innerHTML=`
+    <svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" preserveAspectRatio="xMidYMid meet">
+      <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dc2626" stop-opacity=".16"/><stop offset="1" stop-color="#dc2626" stop-opacity="0"/></linearGradient></defs>
+      ${grid}<path d="${area}" fill="url(#ag)"/><path d="${line}" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>${dots}${labels}
+    </svg>`;
+
+  const cats=[{n:'Billing',v:53,c:'#dc2626'},{n:'Technical',v:38,c:'#534AB7'},{n:'Account',v:29,c:'#854F0B'},{n:'Returns',v:21,c:'#0F6E56'},{n:'General',v:14,c:'#1d4ed8'}];
+  const maxC=Math.max(...cats.map(c=>c.v));
+  document.getElementById('catBars').innerHTML=cats.map(c=>`
+    <div class="bar-row"><span class="bl">${c.n}</span>
+      <span class="btrack"><span class="bfill" style="width:${(c.v/maxC*100).toFixed(0)}%;background:${c.c}">${c.v}</span></span>
+    </div>`).join('');
+
+  const prio=[{n:'Critical',v:9,c:'#dc2626'},{n:'High',v:34,c:'#854F0B'},{n:'Medium',v:71,c:'#1d4ed8'},{n:'Low',v:41,c:'#5b6b66'}];
+  const totP=prio.reduce((a,b)=>a+b.v,0);
+  document.getElementById('prioDist').innerHTML=prio.map(p=>`
+    <div class="prio-item"><span class="dot" style="background:${p.c}"></span>
+      <span class="pn">${p.n}</span><span class="pv">${p.v}</span><span class="pp">${(p.v/totP*100).toFixed(0)}%</span></div>`).join('')+
+    `<div style="height:10px;border-radius:6px;overflow:hidden;display:flex;margin-top:6px">${prio.map(p=>`<span style="width:${(p.v/totP*100).toFixed(1)}%;background:${p.c}"></span>`).join('')}</div>`;
+}
+
+/* ---------------- INIT ---------------- */
+renderRows();
+renderTrends();
 lucide.createIcons();
 </script>
 </body>
