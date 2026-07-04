@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sales Intelligence Platform — Live Preview | HO16 Sample 02</title>
+<title>AI Sales Intelligence — Live Preview | HO16 Sample 02</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
@@ -20,107 +20,176 @@
   body{font-family:var(--font);background:var(--pageBg);color:var(--text);}
   a{color:inherit;}
   header{height:56px;background:var(--headerBg);color:var(--headerText);display:flex;align-items:center;
-    padding:0 20px;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--headerBorder);}
+    padding:0 20px;position:sticky;top:0;z-index:30;border-bottom:1px solid var(--headerBorder);}
   .wordmark{font-weight:900;font-size:16px;letter-spacing:.02em;display:flex;align-items:center;gap:2px;}
   .wordmark .badge{background:var(--primary);color:#fff;padding:1px 6px;border-radius:5px;margin-left:2px;font-weight:800;}
   .header-right{margin-left:auto;color:var(--headerMuted);font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;}
-  .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);}
+  .header-right .dot{width:6px;height:6px;border-radius:99px;background:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.18);}
   .demo-banner{background:#FDF6F6;border-bottom:1px solid #F3C6C6;color:var(--primary);font-size:12.5px;font-weight:500;
     padding:9px 48px;display:flex;align-items:center;gap:9px;font-family:var(--mono);}
   .demo-banner .back{margin-left:auto;color:var(--textSec);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:5px;}
   .demo-banner .back:hover{color:var(--primary);}
-  .wrap{max-width:none;margin:0;padding:26px 48px 64px;}
-  .top{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:22px;}
+
+  /* App shell: sidebar + main */
+  .shell{display:flex;min-height:calc(100vh - 56px - 37px);}
+  .sidebar{width:230px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);padding:22px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:56px;align-self:flex-start;height:calc(100vh - 56px);}
+  .side-brand{padding:0 8px 16px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+  .side-brand .nm{font-size:14.5px;font-weight:700;display:flex;align-items:center;gap:7px;}
+  .side-brand .nm svg{width:18px;height:18px;color:var(--primary);}
+  .side-brand .sb{font-family:var(--mono);font-size:10.5px;color:var(--textMuted);margin-top:4px;letter-spacing:.02em;}
+  .side-lab{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--textMuted);padding:8px 10px 4px;}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:8px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--textSec);transition:all .12s;border:1px solid transparent;}
+  .nav-item svg{width:17px;height:17px;flex-shrink:0;}
+  .nav-item:hover{background:var(--hover);color:var(--text);}
+  .nav-item.on{background:#FDF6F6;border-color:#F3C6C6;color:var(--primary);font-weight:600;}
+  .nav-item .badge2{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:600;background:#F1F0EA;color:var(--textSec);border-radius:99px;padding:1px 7px;}
+  .nav-item.on .badge2{background:#FCEBEB;color:var(--primary);}
+  .side-conn{margin-top:auto;padding-top:14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px;}
+  .conn-chip{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--textSec);padding:7px 9px;border:1px solid var(--border);border-radius:7px;background:#FBFBF9;}
+  .conn-chip svg{width:14px;height:14px;color:var(--textSec);}
+  .conn-chip .cd{width:6px;height:6px;border-radius:99px;background:var(--green);margin-left:auto;box-shadow:0 0 0 3px rgba(15,110,86,.15);}
+  .conn-chip b{color:var(--text);font-weight:600;}
+
+  .main{flex:1;min-width:0;padding:24px 34px 60px;}
+  .top{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:16px;}
   .eyebrow{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--primary);}
-  h1{font-size:26px;font-weight:700;margin:6px 0 2px;letter-spacing:-.01em;}
+  h1{font-size:24px;font-weight:700;margin:6px 0 2px;letter-spacing:-.01em;}
   .co{font-size:13px;color:var(--textSec);}
   .co b{color:var(--text);font-weight:600;}
   .refreshed{font-family:var(--mono);font-size:11.5px;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
   .refreshed .g{width:7px;height:7px;border-radius:99px;background:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.15);}
-  /* KPI */
-  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
-  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:16px 18px;}
+
+  /* connected chips row (top of content) */
+  .chips-row{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:18px;}
+  .chip{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;color:var(--textSec);
+    padding:6px 12px;border:1px solid var(--border);border-radius:99px;background:#fff;box-shadow:var(--shadowSm);}
+  .chip svg{width:14px;height:14px;color:var(--textSec);}
+  .chip b{color:var(--text);font-weight:600;}
+  .chip .cd{width:6px;height:6px;border-radius:99px;background:var(--green);box-shadow:0 0 0 3px rgba(15,110,86,.15);}
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+  .kpi{background:var(--cardBg);border:1px solid var(--border);border-radius:9px;box-shadow:var(--shadowSm);padding:15px 17px;}
   .kpi .lab{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
   .kpi .lab svg{width:14px;height:14px;}
-  .kpi .val{font-family:var(--mono);font-size:26px;font-weight:500;margin-top:9px;letter-spacing:-.02em;}
+  .kpi .val{font-family:var(--mono);font-size:25px;font-weight:500;margin-top:9px;letter-spacing:-.02em;}
   .kpi .delta{font-size:11.5px;font-weight:600;margin-top:5px;display:flex;align-items:center;gap:4px;font-family:var(--mono);}
   .kpi .delta.up{color:var(--green);} .kpi .delta.down{color:var(--primary);}
   .kpi .delta svg{width:13px;height:13px;}
-  .card{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);padding:18px 20px;margin-bottom:18px;}
+
+  .card{background:var(--cardBg);border:1px solid var(--border);border-radius:9px;box-shadow:var(--shadowSm);padding:18px 20px;margin-bottom:18px;}
   .card-h{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;margin-bottom:2px;}
   .card-h svg{color:var(--primary);width:17px;height:17px;}
   .card-h .r{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--textMuted);font-weight:400;}
   .card-sub{font-size:12.5px;color:var(--textSec);margin-bottom:14px;}
-  /* pipeline */
-  .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
-  .stage{background:#FBFBF9;border:1px solid var(--border);border-radius:8px;padding:10px;min-height:120px;}
-  .stage-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;padding:0 2px;}
-  .stage-h .nm{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text);}
+
+  /* chart */
+  .chartcard{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:stretch;}
+  .svgwrap{width:100%;overflow-x:auto;}
+
+  /* kanban */
+  .pipe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:11px;}
+  .stage{background:#FBFBF9;border:1px solid var(--border);border-radius:9px;padding:10px;min-height:140px;}
+  .stage-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 2px;}
+  .stage-h .nm{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text);}
   .stage-h .ct{font-family:var(--mono);font-size:10px;color:#fff;background:var(--textMuted);border-radius:99px;padding:1px 7px;}
   .stage.s0 .ct{background:#8791A0;} .stage.s1 .ct{background:#1877F2;} .stage.s2 .ct{background:var(--purple);}
-  .stage.s3 .ct{background:var(--amber);} .stage.s4 .ct{background:var(--green);}
-  .stage .total{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--textSec);margin-bottom:9px;padding:0 2px;}
-  .deal{background:#fff;border:1px solid var(--border);border-radius:7px;padding:9px 10px;margin-bottom:8px;cursor:pointer;transition:all .12s;}
+  .stage.s3 .ct{background:var(--amber);} .stage.s4 .ct{background:var(--green);} .stage.s5 .ct{background:#B4443A;}
+  .stage .total{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--textSec);margin-bottom:9px;padding:0 2px;}
+  .deal{background:#fff;border:1px solid var(--border);border-radius:7px;padding:9px 10px;margin-bottom:8px;transition:all .12s;}
   .deal:hover{box-shadow:var(--shadowMd);transform:translateY(-1px);border-color:#d4d4cc;}
-  .deal .dn{font-size:12.5px;font-weight:600;line-height:1.3;}
-  .deal .dm{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
+  .deal .dn{font-size:12px;font-weight:600;line-height:1.3;}
+  .deal .drow{display:flex;align-items:center;justify-content:space-between;margin-top:6px;}
   .deal .dv{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green);}
-  .deal .score{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:1px 6px;border-radius:99px;}
-  .score.hot{background:#FCEBEB;color:var(--primary);} .score.warm{background:#FBF0DC;color:var(--amber);} .score.cold{background:#EEF0F2;color:#6B7280;}
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
-  /* leaderboard */
-  .lb-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-  .lb-row:last-child{border-bottom:none;}
-  .lb-rank{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--textMuted);width:20px;text-align:center;}
-  .lb-row.top .lb-rank{color:var(--primary);}
-  .lb-av{width:32px;height:32px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;}
-  .lb-body{flex:1;min-width:0;}
-  .lb-nm{font-size:13.5px;font-weight:600;}
-  .lb-meta{font-size:11.5px;color:var(--textSec);font-family:var(--mono);margin-top:1px;}
-  .lb-bar{height:6px;background:#EEF0F2;border-radius:99px;margin-top:5px;overflow:hidden;}
-  .lb-bar span{display:block;height:100%;background:var(--green);border-radius:99px;}
-  .lb-val{font-family:var(--mono);font-size:13px;font-weight:600;text-align:right;white-space:nowrap;}
-  .lb-val small{display:block;font-size:10px;color:var(--textMuted);font-weight:400;margin-top:1px;}
-  /* leads table */
-  .filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-  .filters button{font-family:var(--mono);font-size:10.5px;font-weight:500;padding:4px 10px;border-radius:99px;border:1px solid var(--border);
-    background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
-  .filters button.on{background:#111;border-color:#111;color:#fff;}
-  .lead{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border);}
-  .lead:last-child{border-bottom:none;}
-  .lead .lav{width:34px;height:34px;border-radius:8px;background:#F1F0EA;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--textSec);flex-shrink:0;}
-  .lead .lb2{flex:1;min-width:0;}
-  .lead .lnm{font-size:13px;font-weight:600;}
-  .lead .lco{font-size:11.5px;color:var(--textSec);}
-  .lead .lright{text-align:right;flex-shrink:0;}
-  .lead .lval{font-family:var(--mono);font-size:12.5px;font-weight:600;}
-  /* AI panel */
-  .ai-panel{background:var(--cardBg);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadowSm);overflow:hidden;}
-  .ai-head{background:#0F0F10;color:#fff;padding:14px 18px;display:flex;align-items:center;gap:9px;}
-  .ai-head .av{width:30px;height:30px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;}
-  .ai-head .av svg{width:17px;height:17px;color:#fff;}
+  .deal .owner{font-family:var(--mono);font-size:9.5px;color:var(--textMuted);margin-top:5px;display:flex;align-items:center;gap:5px;}
+  .deal .ow-av{width:15px;height:15px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;}
+  .scorebadge{font-family:var(--mono);font-size:10px;font-weight:600;padding:1px 7px;border-radius:99px;display:inline-flex;align-items:center;gap:3px;}
+  .scorebadge.hi{background:#E1F5EE;color:var(--green);} .scorebadge.mid{background:#FBF0DC;color:var(--amber);} .scorebadge.lo{background:#FCEBEB;color:var(--primary);}
+  .deal .reason{font-size:9.5px;color:var(--textMuted);margin-top:6px;line-height:1.35;font-style:italic;}
+
+  /* leads spreadsheet */
+  .lead-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+  .searchbox{display:flex;align-items:center;gap:8px;border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:#fff;flex:1;min-width:220px;max-width:340px;}
+  .searchbox svg{width:15px;height:15px;color:var(--textMuted);}
+  .searchbox input{border:none;outline:none;font-family:var(--font);font-size:13px;flex:1;background:transparent;color:var(--text);}
+  select.stagesel{font-family:var(--font);font-size:12.5px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);cursor:pointer;}
+  .sheet-meta{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--textMuted);display:flex;align-items:center;gap:6px;}
+  .sheet-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:8px;}
+  table.sheet{border-collapse:collapse;width:100%;font-size:12.5px;min-width:840px;}
+  table.sheet thead .cols th{background:#F1F0EA;color:var(--textMuted);font-family:var(--mono);font-size:10px;font-weight:600;
+    text-align:center;padding:3px 8px;border:1px solid #E0DFD8;height:22px;}
+  table.sheet thead .hdr th{background:#FBFBF9;color:var(--text);font-weight:600;font-size:11px;text-align:left;padding:8px 10px;border:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;}
+  table.sheet thead .hdr th:first-child{text-align:center;color:var(--textMuted);width:34px;}
+  table.sheet tbody td{padding:8px 10px;border:1px solid var(--border);white-space:nowrap;}
+  table.sheet tbody td.rownum{background:#F1F0EA;color:var(--textMuted);font-family:var(--mono);font-size:10px;text-align:center;width:34px;}
+  table.sheet tbody tr:hover td{background:#FBFAF4;}
+  table.sheet tbody tr:hover td.rownum{background:#EAE9E1;}
+  td .val-mono{font-family:var(--mono);font-weight:600;}
+  .stage-pill{font-family:var(--mono);font-size:9.5px;font-weight:600;padding:2px 8px;border-radius:99px;}
+  .sp0{background:#EEF0F2;color:#6B7280;} .sp1{background:#E7F0FE;color:#1877F2;} .sp2{background:#EEEDFE;color:var(--purple);}
+  .sp3{background:#FBF0DC;color:var(--amber);} .sp4{background:#E1F5EE;color:var(--green);} .sp5{background:#FCEBEB;color:var(--primary);}
+  .noresult{padding:20px;text-align:center;color:var(--textMuted);font-size:13px;}
+
+  /* AI Outreach */
+  .outreach{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start;}
+  .deal-list{background:#fff;border:1px solid var(--border);border-radius:9px;box-shadow:var(--shadowSm);overflow:hidden;}
+  .dl-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--textMuted);font-family:var(--mono);}
+  .dl-item{padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:all .12s;}
+  .dl-item:last-child{border-bottom:none;}
+  .dl-item:hover{background:var(--hover);}
+  .dl-item.on{background:#FDF6F6;border-left:3px solid var(--primary);padding-left:11px;}
+  .dl-item .co2{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;}
+  .dl-item .meta2{font-size:11px;color:var(--textSec);font-family:var(--mono);margin-top:3px;display:flex;align-items:center;gap:6px;}
+  .dl-item .qpill{font-family:var(--mono);font-size:8.5px;font-weight:600;background:#E1F5EE;color:var(--green);padding:1px 6px;border-radius:99px;text-transform:uppercase;letter-spacing:.04em;}
+
+  .ai-panel{background:var(--cardBg);border:1px solid var(--border);border-radius:9px;box-shadow:var(--shadowSm);overflow:hidden;}
+  .ai-head{background:#0F0F10;color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px;}
+  .ai-head .av{width:32px;height:32px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ai-head .av svg{width:18px;height:18px;color:#fff;}
   .ai-head .nm{font-size:14px;font-weight:600;}
-  .ai-head .st{font-size:11px;color:#8BE0C4;font-family:var(--mono);display:flex;align-items:center;gap:5px;margin-top:1px;}
+  .ai-head .st{font-size:11px;color:#8BE0C4;font-family:var(--mono);display:flex;align-items:center;gap:5px;margin-top:2px;}
   .ai-head .st .d{width:6px;height:6px;border-radius:99px;background:#22c55e;}
-  .ai-body{padding:16px 18px;}
-  .ai-pick{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--textMuted);margin-bottom:8px;}
-  .lead-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-  .lead-tabs button{font-size:12px;font-weight:600;padding:6px 11px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--textSec);cursor:pointer;transition:all .12s;}
-  .lead-tabs button.on{background:#FDF6F6;border-color:var(--primary);color:var(--primary);}
-  .draft{background:#FBFBF9;border:1px solid var(--border);border-radius:8px;padding:15px 16px;font-size:13px;line-height:1.65;}
-  .draft .subj{font-weight:700;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-  .draft .subj span{font-family:var(--mono);font-size:10px;color:var(--textMuted);font-weight:400;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:3px;}
-  .draft p{margin:0 0 9px;}
-  .canned-tag{font-family:var(--mono);font-size:9px;font-weight:600;background:#FBF0DC;color:var(--amber);padding:2px 7px;border-radius:4px;text-transform:uppercase;letter-spacing:.05em;}
-  .draft-foot{display:flex;align-items:center;gap:8px;margin-top:12px;}
-  .draft-foot button{font-size:11.5px;font-weight:600;padding:7px 13px;border-radius:7px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
-  .draft-foot button.primary{background:var(--primary);border-color:var(--primary);color:#fff;}
-  .draft-foot button svg{width:13px;height:13px;}
-  .draft-foot .cite{margin-left:auto;font-family:var(--mono);font-size:10.5px;color:var(--green);display:flex;align-items:center;gap:5px;}
-  .draft-foot .cite svg{width:12px;height:12px;}
-  footer{border-top:1px solid var(--border);margin-top:30px;padding-top:18px;font-size:12px;color:var(--textMuted);font-family:var(--mono);text-align:center;}
-  @media(max-width:1050px){.kpis{grid-template-columns:repeat(2,1fr);}.pipe{grid-template-columns:1fr 1fr;}.cols{grid-template-columns:1fr;}}
-  @media(max-width:680px){.wrap,.demo-banner{padding-left:20px;padding-right:20px;}.kpis{grid-template-columns:1fr 1fr;}.pipe{grid-template-columns:1fr;}}
+  .ai-head .genbtn{margin-left:auto;}
+  .ai-body{padding:18px;}
+  .gmail-card{border:1px solid var(--border);border-radius:9px;overflow:hidden;}
+  .gmail-top{background:#FBFBF9;padding:10px 15px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;}
+  .gmail-top svg{width:16px;height:16px;color:var(--primary);}
+  .gmail-top .gt{font-size:12.5px;font-weight:600;}
+  .gmail-tag{margin-left:auto;font-family:var(--mono);font-size:9px;font-weight:600;background:#FBF0DC;color:var(--amber);padding:2px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.05em;display:inline-flex;align-items:center;gap:4px;}
+  .gmail-tag svg{width:10px;height:10px;color:var(--amber);}
+  .gmail-field{display:flex;gap:12px;padding:9px 15px;border-bottom:1px solid var(--border);font-size:13px;align-items:baseline;}
+  .gmail-field .k{font-family:var(--mono);font-size:10.5px;color:var(--textMuted);text-transform:uppercase;letter-spacing:.06em;width:56px;flex-shrink:0;}
+  .gmail-field .v{font-weight:500;}
+  .gmail-field.subj .v{font-weight:700;}
+  .gmail-body{padding:15px;font-size:13px;line-height:1.68;color:var(--text);}
+  .gmail-body p{margin:0 0 10px;}
+  .gmail-foot{padding:12px 15px;border-top:1px solid var(--border);display:flex;align-items:center;gap:9px;background:#FBFBF9;}
+  .btn{font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all .12s;}
+  .btn svg{width:14px;height:14px;}
+  .btn:hover{background:var(--hover);}
+  .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;}
+  .btn.primary:hover{background:var(--primaryHover);}
+  .btn:disabled{opacity:.6;cursor:default;}
+  .gmail-foot .cite{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--green);display:flex;align-items:center;gap:5px;text-align:right;}
+  .gmail-foot .cite svg{width:12px;height:12px;flex-shrink:0;}
+  .thinking{padding:26px 18px;text-align:center;color:var(--textSec);font-size:13px;font-family:var(--mono);display:flex;align-items:center;justify-content:center;gap:10px;}
+  .spinner{width:16px;height:16px;border:2px solid #E5E5E0;border-top-color:var(--primary);border-radius:99px;animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* toast */
+  #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#0F0F10;color:#fff;
+    font-size:13px;font-weight:500;padding:12px 20px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.28);
+    display:flex;align-items:center;gap:9px;opacity:0;pointer-events:none;transition:all .3s;z-index:60;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  #toast svg{width:16px;height:16px;color:#22c55e;}
+
+  .panel{display:none;} .panel.active{display:block;}
+
+  footer{border-top:1px solid var(--border);padding:11px 34px;font-size:11.5px;color:var(--textMuted);font-family:var(--mono);text-align:center;background:#fff;}
+
+  @media(max-width:1200px){.pipe{grid-template-columns:repeat(3,1fr);}.chartcard{grid-template-columns:1fr;}.outreach{grid-template-columns:1fr;}}
+  @media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr);}.sidebar{display:none;}.main{padding:22px 20px 50px;}.demo-banner{padding-left:20px;padding-right:20px;}}
+  @media(max-width:640px){.pipe{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -130,226 +199,368 @@
   </header>
   <div class="demo-banner">
     <i data-lucide="flask-conical" style="width:15px;height:15px;"></i>
-    Front-end preview · demo data · the real full-stack + AI backend is your build
+    Front-end preview · demo data · the real Google connection is your hands-on build (Claude Code)
     <a class="back" href="index.html"><i data-lucide="arrow-left" style="width:13px;height:13px;"></i> Back to build guide</a>
   </div>
 
-  <div class="wrap">
-    <div class="top">
-      <div>
-        <div class="eyebrow">HO16 · Sample 02 · Live Dashboard Preview</div>
-        <h1>Sales Intelligence Platform</h1>
-        <div class="co"><b>Meridian SaaS</b> · B2B revenue platform · Q3 pipeline · demo workspace</div>
+  <div class="shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="nm"><i data-lucide="radar"></i> SalesSignal</div>
+        <div class="sb">AI Sales Intelligence</div>
       </div>
-      <div class="refreshed"><span class="g"></span>Live · synced 5 min ago</div>
-    </div>
+      <div class="side-lab">Workspace</div>
+      <div class="nav-item on" data-tab="pipeline"><i data-lucide="kanban"></i> Pipeline <span class="badge2" id="nvPipe">24</span></div>
+      <div class="nav-item" data-tab="leads"><i data-lucide="sheet"></i> Leads <span class="badge2" id="nvLeads">24</span></div>
+      <div class="nav-item" data-tab="outreach"><i data-lucide="mail-plus"></i> AI Outreach <span class="badge2" id="nvOut">6</span></div>
 
-    <div class="kpis" id="kpis"></div>
-
-    <div class="card">
-      <div class="card-h"><i data-lucide="kanban"></i> Pipeline by Stage <span class="r">18 open deals · click a card</span></div>
-      <div class="card-sub">Enriched and scored automatically by the lead agent. Hot = fit score 80+, engaged in last 7 days.</div>
-      <div class="pipe" id="pipe"></div>
-    </div>
-
-    <div class="cols">
-      <div class="card">
-        <div class="card-h"><i data-lucide="trophy"></i> Rep Leaderboard <span class="r">closed this quarter</span></div>
-        <div id="leaderboard"></div>
+      <div class="side-conn">
+        <div class="side-lab" style="padding:0 2px 4px">Connected to</div>
+        <div class="conn-chip"><i data-lucide="sheet"></i> <b>CRM-Pipeline</b> <span class="cd"></span></div>
+        <div class="conn-chip"><i data-lucide="mail"></i> Gmail <span style="color:var(--textMuted)">· Demo</span> <span class="cd"></span></div>
       </div>
-      <div class="card">
-        <div class="card-h"><i data-lucide="sparkles"></i> Fresh Leads <span class="r">enriched by MCP</span></div>
-        <div class="filters" id="leadFilters"></div>
-        <div id="leads"></div>
-      </div>
-    </div>
+    </aside>
 
-    <div class="ai-panel">
-      <div class="ai-head">
-        <div class="av"><i data-lucide="bot"></i></div>
+    <!-- MAIN -->
+    <div class="main">
+      <div class="top">
         <div>
-          <div class="nm">AI Outreach Assistant</div>
-          <div class="st"><span class="d"></span>Grounded on ICP, case studies &amp; deal notes</div>
+          <div class="eyebrow">HO16 · Sample 02 · Live Dashboard Preview</div>
+          <h1 id="pageTitle">Pipeline Intelligence</h1>
+          <div class="co"><b>Meridian SaaS</b> · reading your Google Sheet CRM, scoring deals with Claude &amp; drafting Gmail follow-ups</div>
+        </div>
+        <div class="refreshed"><span class="g"></span>Synced from Sheet · 4 min ago</div>
+      </div>
+
+      <div class="chips-row">
+        <span class="chip"><i data-lucide="sheet"></i> Sheet: <b>CRM-Pipeline</b> <span class="cd"></span> connected</span>
+        <span class="chip"><i data-lucide="mail"></i> Gmail <b>Demo</b> label <span class="cd"></span> connected</span>
+        <span class="chip"><i data-lucide="sparkles"></i> Scoring by <b>Claude</b></span>
+      </div>
+
+      <!-- ===== PIPELINE ===== -->
+      <div class="panel active" id="panel-pipeline">
+        <div class="kpis" id="kpis"></div>
+
+        <div class="card">
+          <div class="card-h"><i data-lucide="bar-chart-3"></i> Pipeline value by stage <span class="r">weighted forecast overlaid</span></div>
+          <div class="card-sub">Every deal in <b>CRM-Pipeline</b> is read live and scored by Claude. Hover a bar for the stage total.</div>
+          <div class="svgwrap" id="chart"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><i data-lucide="kanban"></i> Deal board <span class="r" id="boardCount"></span></div>
+          <div class="card-sub">Cards render from the Google Sheet. AI deal score is 0–100 — <span style="color:var(--green);font-weight:600">green</span> warm, <span style="color:var(--amber);font-weight:600">amber</span> mid, <span style="color:var(--primary);font-weight:600">red</span> cold.</div>
+          <div class="pipe" id="pipe"></div>
         </div>
       </div>
-      <div class="ai-body">
-        <div class="ai-pick">Pick a lead — the assistant drafts a grounded first-touch email</div>
-        <div class="lead-tabs" id="draftTabs"></div>
-        <div id="draft"></div>
-      </div>
-    </div>
 
-    <footer>HO16 · Sample 02 · Front-end preview with demo data — the deployed full-stack + AI backend is your capstone build</footer>
+      <!-- ===== LEADS ===== -->
+      <div class="panel" id="panel-leads">
+        <div class="card">
+          <div class="card-h"><i data-lucide="sheet"></i> CRM-Pipeline <span class="r">Google Sheet · read-only mirror</span></div>
+          <div class="card-sub">The raw sheet, exactly as your team maintains it — plus the AI score column Claude writes back.</div>
+          <div class="lead-controls">
+            <div class="searchbox">
+              <i data-lucide="search"></i>
+              <input type="text" id="search" placeholder="Search company, contact, owner…">
+            </div>
+            <select class="stagesel" id="stageFilter">
+              <option value="all">All stages</option>
+              <option value="New">New</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Proposal">Proposal</option>
+              <option value="Negotiation">Negotiation</option>
+              <option value="Won">Won</option>
+              <option value="Lost">Lost</option>
+            </select>
+            <div class="sheet-meta"><i data-lucide="rows-3" style="width:13px;height:13px"></i><span id="rowCount"></span></div>
+          </div>
+          <div class="sheet-scroll">
+            <table class="sheet">
+              <thead>
+                <tr class="cols">
+                  <th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th>
+                </tr>
+                <tr class="hdr">
+                  <th>#</th><th>Deal</th><th>Company</th><th>Contact</th><th>Value</th><th>Stage</th><th>Owner</th><th>Last touch</th><th>Source</th><th>AI score</th>
+                </tr>
+              </thead>
+              <tbody id="sheetBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== AI OUTREACH ===== -->
+      <div class="panel" id="panel-outreach">
+        <div class="outreach">
+          <div class="deal-list">
+            <div class="dl-head">Pick a deal</div>
+            <div id="dealList"></div>
+          </div>
+          <div class="ai-panel">
+            <div class="ai-head">
+              <div class="av"><i data-lucide="bot"></i></div>
+              <div>
+                <div class="nm">AI Outreach Assistant</div>
+                <div class="st"><span class="d"></span>Claude · grounded on deal history &amp; Sheet</div>
+              </div>
+              <button class="btn primary genbtn" id="genBtn"><i data-lucide="sparkles"></i> Generate follow-up</button>
+            </div>
+            <div class="ai-body" id="draftArea"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
+  <footer>HO16 · Sample 02 · Front-end preview with demo data — the deployed Google Workspace + Claude build is your capstone</footer>
+  <div id="toast"><i data-lucide="check-circle-2"></i><span id="toastMsg"></span></div>
+
 <script>
-// ---------- KPIs ----------
+/* ============ SAMPLE CRM SHEET (baked-in) ============ */
+const OWNERS = {
+  PN:{nm:"Priya Nair", c:"#dc2626"}, DC:{nm:"Daniel Cho", c:"#534AB7"},
+  AK:{nm:"Ayesha Khan", c:"#0F6E56"}, MR:{nm:"Marco Ruiz", c:"#1877F2"},
+  LF:{nm:"Lena Ford", c:"#854F0B"}, TW:{nm:"Tom Weller", c:"#8791A0"},
+};
+// score 0-100; reason string; last touch days ago
+const DEALS = [
+  {id:"D-1042", co:"Kestrel Bank", ct:"Raj Patel · CFO", v:320, stage:"Negotiation", own:"PN", touch:"2d ago", src:"Referral", score:91, why:"warm — replied 2d ago, pricing sent"},
+  {id:"D-1039", co:"Nimbus Retail", ct:"Sarah Lindqvist · VP Eng", v:210, stage:"Proposal", own:"DC", touch:"3d ago", src:"Inbound", score:88, why:"warm — opened proposal 3×"},
+  {id:"D-1051", co:"Solace Energy", ct:"Elena Vas · Head of Ops", v:203, stage:"New", own:"AK", touch:"1d ago", src:"Event", score:86, why:"strong ICP fit, engaged fast"},
+  {id:"D-1033", co:"Vantage Cloud", ct:"Mark True · Dir IT", v:154, stage:"Qualified", own:"MR", touch:"5d ago", src:"Outbound", score:84, why:"budget confirmed, champion found"},
+  {id:"D-1028", co:"Aperture Data", ct:"Nina Roy · CTO", v:145, stage:"Negotiation", own:"PN", touch:"1d ago", src:"Referral", score:82, why:"warm — legal review underway"},
+  {id:"D-1047", co:"Orbit Health", ct:"Jill Somner · COO", v:126, stage:"Proposal", own:"AK", touch:"4d ago", src:"Inbound", score:74, why:"mid — needs security sign-off"},
+  {id:"D-1024", co:"Ironwood Mfg", ct:"Kai Mensah · Founder", v:112, stage:"New", own:"LF", touch:"6d ago", src:"Outbound", score:66, why:"mid — early, no meeting yet"},
+  {id:"D-1019", co:"Halcyon Labs", ct:"Dev Rao · VP Product", v:98, stage:"Proposal", own:"DC", touch:"2d ago", src:"Event", score:79, why:"warm — demo went well"},
+  {id:"D-1015", co:"Volt Robotics", ct:"Ana Frei · COO", v:88, stage:"Negotiation", own:"MR", touch:"7d ago", src:"Referral", score:71, why:"mid — quiet for a week"},
+  {id:"D-1058", co:"Redwood Ins", ct:"Nadia Bloom · VP Sales", v:180, stage:"Qualified", own:"AK", touch:"3d ago", src:"Inbound", score:69, why:"mid — comparing 2 vendors"},
+  {id:"D-1061", co:"Beacon Freight", ct:"Owen Reed · Proc Lead", v:66, stage:"Qualified", own:"LF", touch:"8d ago", src:"Outbound", score:58, why:"mid — slow procurement"},
+  {id:"D-1009", co:"Tidewater Co", ct:"Sam Vale · Ops Dir", v:72, stage:"Proposal", own:"TW", touch:"5d ago", src:"Event", score:63, why:"mid — awaiting budget cycle"},
+  {id:"D-1065", co:"Pine & Cedar", ct:"Mia Cole · GM", v:41, stage:"New", own:"TW", touch:"9d ago", src:"Outbound", score:44, why:"cold — no reply to 3 touches"},
+  {id:"D-1067", co:"Sunder Foods", ct:"Greg Hollis · Buyer", v:35, stage:"Qualified", own:"LF", touch:"11d ago", src:"Outbound", score:39, why:"cold — went dark"},
+  {id:"D-1070", co:"Quill & Co", ct:"Petra Vogel · Analyst", v:29, stage:"New", own:"TW", touch:"12d ago", src:"Inbound", score:36, why:"cold — low fit, tiny team"},
+  {id:"D-1072", co:"Marlow Group", ct:"Sam Okoro · Ops Mgr", v:48, stage:"New", own:"MR", touch:"7d ago", src:"Outbound", score:47, why:"cold — unclear need"},
+  {id:"D-1074", co:"Bright Ledger", ct:"Dana Frost · CTO", v:57, stage:"Qualified", own:"DC", touch:"4d ago", src:"Referral", score:72, why:"mid — technical fit strong"},
+  {id:"D-1003", co:"Apex Logistics", ct:"Leo Marsh · VP Ops", v:134, stage:"Won", own:"PN", touch:"14d ago", src:"Referral", score:96, why:"closed-won — signed 2 wks ago"},
+  {id:"D-1001", co:"Cobalt Media", ct:"Ivy Shah · CMO", v:76, stage:"Won", own:"DC", touch:"18d ago", src:"Inbound", score:94, why:"closed-won — expansion likely"},
+  {id:"D-0998", co:"Northwind Air", ct:"Ray Bell · Dir", v:52, stage:"Won", own:"AK", touch:"21d ago", src:"Event", score:90, why:"closed-won — reference account"},
+  {id:"D-1080", co:"Ferrous Steel", ct:"Ola Berg · COO", v:64, stage:"Lost", own:"MR", touch:"16d ago", src:"Outbound", score:22, why:"lost — chose incumbent"},
+  {id:"D-1082", co:"Cirrus Travel", ct:"Nils Aune · CEO", v:31, stage:"Lost", own:"TW", touch:"19d ago", src:"Inbound", score:18, why:"lost — no budget this year"},
+  {id:"D-1035", co:"Meadowlark Ed", ct:"Tara Iyer · Dean", v:44, stage:"Proposal", own:"AK", touch:"6d ago", src:"Event", score:61, why:"mid — grant-funded, slow"},
+  {id:"D-1044", co:"Zephyr Gaming", ct:"Cy Wong · Producer", v:82, stage:"Negotiation", own:"DC", touch:"3d ago", src:"Referral", score:77, why:"warm — verbal yes, papering"},
+];
+
+const STAGE_CLS = {New:"sp0", Qualified:"sp1", Proposal:"sp2", Negotiation:"sp3", Won:"sp4", Lost:"sp5"};
+function money(k){ return k>=1000 ? "$"+(k/1000).toFixed(2)+"M" : "$"+k+"K"; }
+function scoreClass(s){ return s>=80?"hi":s>=55?"mid":"lo"; }
+function avatar(o,size){ const ow=OWNERS[o]; return `<span class="ow-av" style="background:${ow.c};width:${size}px;height:${size}px;font-size:${size*0.46}px">${o}</span>`; }
+
+/* ============ KPIs ============ */
+const openDeals = DEALS.filter(d=>!["Won","Lost"].includes(d.stage));
+const pipeVal = openDeals.reduce((a,b)=>a+b.v,0);
+const stageWeight = {New:.10, Qualified:.25, Proposal:.45, Negotiation:.70};
+const weighted = openDeals.reduce((a,b)=>a + b.v*(stageWeight[b.stage]||0), 0);
+const won = DEALS.filter(d=>d.stage==="Won").length;
+const lost = DEALS.filter(d=>d.stage==="Lost").length;
+const winRate = Math.round(won/(won+lost)*100);
+const avgScore = Math.round(DEALS.reduce((a,b)=>a+b.score,0)/DEALS.length);
 const KPIS = [
-  {lab:"Pipeline Value", icon:"dollar-sign", val:"$1.84M", delta:"+14%", dir:"up"},
-  {lab:"Open Deals", icon:"kanban", val:"18", delta:"+3", dir:"up"},
-  {lab:"Win Rate", icon:"target", val:"27%", delta:"+4pt", dir:"up"},
-  {lab:"Avg Deal Size", icon:"receipt", val:"$102K", delta:"-6%", dir:"down"},
-  {lab:"New Leads / wk", icon:"user-plus", val:"46", delta:"+11", dir:"up"},
+  {lab:"Pipeline Value", icon:"dollar-sign", val:money(pipeVal), delta:"+14%", dir:"up"},
+  {lab:"Weighted Forecast", icon:"trending-up", val:money(Math.round(weighted)), delta:"+9%", dir:"up"},
+  {lab:"Win Rate", icon:"target", val:winRate+"%", delta:"+5pt", dir:"up"},
+  {lab:"Avg Deal Score", icon:"gauge", val:avgScore+"/100", delta:"AI", dir:"up"},
 ];
 document.getElementById('kpis').innerHTML = KPIS.map(k=>`
   <div class="kpi">
     <div class="lab"><i data-lucide="${k.icon}"></i>${k.lab}</div>
     <div class="val">${k.val}</div>
-    <div class="delta ${k.dir}"><i data-lucide="${k.dir==='up'?'arrow-up-right':'arrow-down-right'}"></i>${k.delta}</div>
+    <div class="delta ${k.dir}"><i data-lucide="${k.dir==='up'?'arrow-up-right':'arrow-down-right'}"></i>${k.delta} vs last month</div>
   </div>`).join('');
 
-// ---------- Pipeline ----------
-const STAGES = [
-  {key:"new", nm:"New", cls:"s0"},
-  {key:"qualified", nm:"Qualified", cls:"s1"},
-  {key:"demo", nm:"Demo", cls:"s2"},
-  {key:"proposal", nm:"Proposal", cls:"s3"},
-  {key:"closing", nm:"Closing", cls:"s4"},
+/* ============ CHART (inline SVG) ============ */
+(function(){
+  const stages = ["New","Qualified","Proposal","Negotiation","Won"];
+  const colors = {New:"#8791A0",Qualified:"#1877F2",Proposal:"#534AB7",Negotiation:"#854F0B",Won:"#0F6E56"};
+  const data = stages.map(s=>({s, total:DEALS.filter(d=>d.stage===s).reduce((a,b)=>a+b.v,0)}));
+  const W=560, H=240, padL=44, padB=34, padT=14, padR=10;
+  const maxV = Math.max(...data.map(d=>d.total));
+  const bw = (W-padL-padR)/data.length;
+  const y = v => (H-padB) - (v/maxV)*(H-padB-padT);
+  let bars="", labels="", grid="";
+  for(let i=0;i<=4;i++){ const gv=maxV*i/4; const gy=y(gv);
+    grid+=`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#EEEDE7" stroke-width="1"/>`;
+    grid+=`<text x="${padL-8}" y="${gy+3}" text-anchor="end" font-family="DM Mono,monospace" font-size="9" fill="#999">$${Math.round(gv)}K</text>`;
+  }
+  data.forEach((d,i)=>{
+    const bx = padL + i*bw + bw*0.18, w = bw*0.64, by=y(d.total), h=(H-padB)-by;
+    bars+=`<rect x="${bx}" y="${by}" width="${w}" height="${h}" rx="4" fill="${colors[d.s]}"><title>${d.s}: ${money(d.total)}</title></rect>`;
+    bars+=`<text x="${bx+w/2}" y="${by-6}" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" font-weight="600" fill="#111">${money(d.total)}</text>`;
+    labels+=`<text x="${bx+w/2}" y="${H-padB+16}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10.5" font-weight="600" fill="#6B7280">${d.s}</text>`;
+  });
+  document.getElementById('chart').innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" width="100%" height="240" preserveAspectRatio="xMidYMid meet" style="min-width:520px">${grid}${bars}${labels}</svg>`;
+})();
+
+/* ============ KANBAN ============ */
+const BOARD = [
+  {key:"New", cls:"s0"}, {key:"Qualified", cls:"s1"}, {key:"Proposal", cls:"s2"},
+  {key:"Negotiation", cls:"s3"}, {key:"Won", cls:"s4"}, {key:"Lost", cls:"s5"},
 ];
-const DEALS = [
-  {co:"Aperture Data", v:145, stage:"closing", score:"hot"},
-  {co:"Volt Robotics", v:88, stage:"closing", score:"warm"},
-  {co:"Nimbus Retail", v:210, stage:"proposal", score:"hot"},
-  {co:"Kestrel Bank", v:320, stage:"proposal", score:"hot"},
-  {co:"Fable Media", v:54, stage:"proposal", score:"cold"},
-  {co:"Orbit Health", v:126, stage:"demo", score:"warm"},
-  {co:"Tidewater Co", v:72, stage:"demo", score:"warm"},
-  {co:"Pine & Cedar", v:41, stage:"demo", score:"cold"},
-  {co:"Halcyon Labs", v:98, stage:"demo", score:"hot"},
-  {co:"Redwood Ins", v:180, stage:"qualified", score:"warm"},
-  {co:"Beacon Freight", v:66, stage:"qualified", score:"warm"},
-  {co:"Sunder Foods", v:35, stage:"qualified", score:"cold"},
-  {co:"Vantage Cloud", v:154, stage:"qualified", score:"hot"},
-  {co:"Marlow Group", v:48, stage:"new", score:"cold"},
-  {co:"Ironwood Mfg", v:112, stage:"new", score:"warm"},
-  {co:"Quill & Co", v:29, stage:"new", score:"cold"},
-  {co:"Solace Energy", v:203, stage:"new", score:"hot"},
-  {co:"Bright Ledger", v:57, stage:"new", score:"warm"},
-];
-function money(k){ return k>=1000?"$"+(k/1000).toFixed(1)+"M":"$"+k+"K"; }
-document.getElementById('pipe').innerHTML = STAGES.map(s=>{
+document.getElementById('boardCount').textContent = DEALS.length + " deals · from CRM-Pipeline";
+document.getElementById('pipe').innerHTML = BOARD.map(s=>{
   const d = DEALS.filter(x=>x.stage===s.key);
   const total = d.reduce((a,b)=>a+b.v,0);
   return `<div class="stage ${s.cls}">
-    <div class="stage-h"><span class="nm">${s.nm}</span><span class="ct">${d.length}</span></div>
+    <div class="stage-h"><span class="nm">${s.key}</span><span class="ct">${d.length}</span></div>
     <div class="total">${money(total)}</div>
     ${d.map(x=>`<div class="deal">
       <div class="dn">${x.co}</div>
-      <div class="dm"><span class="dv">${money(x.v)}</span><span class="score ${x.score}">${x.score}</span></div>
-    </div>`).join('')}
+      <div class="drow"><span class="dv">${money(x.v)}</span><span class="scorebadge ${scoreClass(x.score)}"><i data-lucide="gauge" style="width:9px;height:9px"></i>${x.score}</span></div>
+      <div class="owner">${avatar(x.own,15)} ${OWNERS[x.own].nm}</div>
+      <div class="reason">AI: ${x.why}</div>
+    </div>`).join('') || `<div class="reason" style="padding:6px 2px">No deals.</div>`}
   </div>`;
 }).join('');
-// click a deal card -> load its draft
-document.querySelectorAll('.deal').forEach(el=>el.onclick=()=>{
-  const co = el.querySelector('.dn').textContent;
-  const idx = DRAFTS.findIndex(d=>d.co===co);
-  loadDraft(idx>=0?idx:0);
-  document.querySelector('.ai-panel').scrollIntoView({behavior:'smooth',block:'center'});
-});
 
-// ---------- Leaderboard ----------
-const REPS = [
-  {nm:"Priya Nair", closed:6, val:512, deals:6, color:"#dc2626", ini:"PN"},
-  {nm:"Daniel Cho", closed:5, val:438, deals:5, color:"#534AB7", ini:"DC"},
-  {nm:"Ayesha Khan", closed:4, val:361, deals:4, color:"#0F6E56", ini:"AK"},
-  {nm:"Marco Ruiz", closed:4, val:298, deals:4, color:"#1877F2", ini:"MR"},
-  {nm:"Lena Ford", closed:3, val:214, deals:3, color:"#854F0B", ini:"LF"},
-  {nm:"Tom Weller", closed:2, val:151, deals:2, color:"#8791A0", ini:"TW"},
-];
-const maxV = Math.max(...REPS.map(r=>r.val));
-document.getElementById('leaderboard').innerHTML = REPS.map((r,i)=>`
-  <div class="lb-row ${i===0?'top':''}">
-    <div class="lb-rank">${i+1}</div>
-    <div class="lb-av" style="background:${r.color}">${r.ini}</div>
-    <div class="lb-body">
-      <div class="lb-nm">${r.nm}</div>
-      <div class="lb-meta">${r.deals} deals · ${r.closed} won</div>
-      <div class="lb-bar"><span style="width:${(r.val/maxV*100).toFixed(0)}%"></span></div>
-    </div>
-    <div class="lb-val">${money(r.val)}<small>closed</small></div>
-  </div>`).join('');
-
-// ---------- Leads ----------
-const LEADS = [
-  {nm:"Sarah Lindqvist", role:"VP Eng", co:"Nimbus Retail", tier:"hot", fit:91, ini:"NR"},
-  {nm:"Raj Patel", role:"CFO", co:"Kestrel Bank", tier:"hot", fit:88, ini:"KB"},
-  {nm:"Elena Vas", role:"Head of Ops", co:"Solace Energy", tier:"hot", fit:86, ini:"SE"},
-  {nm:"Mark True", role:"Director IT", co:"Vantage Cloud", tier:"hot", fit:84, ini:"VC"},
-  {nm:"Jill Somner", role:"COO", co:"Orbit Health", tier:"warm", fit:74, ini:"OH"},
-  {nm:"Owen Reed", role:"Proc Lead", co:"Beacon Freight", tier:"warm", fit:71, ini:"BF"},
-  {nm:"Nadia Bloom", role:"VP Sales", co:"Redwood Ins", tier:"warm", fit:69, ini:"RI"},
-  {nm:"Kai Mensah", role:"Founder", co:"Ironwood Mfg", tier:"warm", fit:66, ini:"IM"},
-  {nm:"Greg Hollis", role:"Buyer", co:"Sunder Foods", tier:"cold", fit:52, ini:"SF"},
-  {nm:"Petra Vogel", role:"Analyst", co:"Quill & Co", tier:"cold", fit:47, ini:"QC"},
-  {nm:"Sam Okoro", role:"Ops Mgr", co:"Marlow Group", tier:"cold", fit:44, ini:"MG"},
-  {nm:"Dana Frost", role:"CTO", co:"Bright Ledger", tier:"warm", fit:72, ini:"BL"},
-];
-let leadFilter="all";
-const LF = [["all","All"],["hot","Hot"],["warm","Warm"],["cold","Cold"]];
-function renderLeadFilters(){
-  document.getElementById('leadFilters').innerHTML = LF.map(([k,l])=>
-    `<button data-f="${k}" class="${leadFilter===k?'on':''}">${l}</button>`).join('');
-  document.querySelectorAll('#leadFilters button').forEach(b=>b.onclick=()=>{leadFilter=b.dataset.f;renderLeads();});
-}
-function renderLeads(){
-  renderLeadFilters();
-  const rows = LEADS.filter(l=>leadFilter==="all"||l.tier===leadFilter);
-  document.getElementById('leads').innerHTML = rows.map(l=>`
-    <div class="lead">
-      <div class="lav">${l.ini}</div>
-      <div class="lb2"><div class="lnm">${l.nm}</div><div class="lco">${l.role} · ${l.co}</div></div>
-      <div class="lright">
-        <div class="lval">Fit ${l.fit}</div>
-        <span class="score ${l.tier}" style="font-size:9px">${l.tier}</span>
-      </div>
-    </div>`).join('') || `<div class="lco" style="padding:14px 0;color:var(--textMuted)">No leads in this tier.</div>`;
+/* ============ LEADS SHEET ============ */
+function renderSheet(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const sf = document.getElementById('stageFilter').value;
+  const rows = DEALS.filter(d=>{
+    const okStage = sf==="all" || d.stage===sf;
+    const okQ = !q || (d.co+" "+d.ct+" "+OWNERS[d.own].nm+" "+d.id).toLowerCase().includes(q);
+    return okStage && okQ;
+  });
+  const body = document.getElementById('sheetBody');
+  document.getElementById('rowCount').textContent = rows.length + " of " + DEALS.length + " rows";
+  if(!rows.length){ body.innerHTML = `<tr><td class="rownum">–</td><td colspan="9" class="noresult">No matching rows in CRM-Pipeline.</td></tr>`; return; }
+  body.innerHTML = rows.map((d,i)=>`
+    <tr>
+      <td class="rownum">${i+2}</td>
+      <td><span class="val-mono">${d.id}</span></td>
+      <td style="font-weight:600">${d.co}</td>
+      <td>${d.ct}</td>
+      <td><span class="val-mono" style="color:var(--green)">${money(d.v)}</span></td>
+      <td><span class="stage-pill ${STAGE_CLS[d.stage]}">${d.stage}</span></td>
+      <td>${avatar(d.own,16)} <span style="font-size:11.5px">${OWNERS[d.own].nm}</span></td>
+      <td style="font-family:var(--mono);font-size:11px;color:var(--textSec)">${d.touch}</td>
+      <td style="font-size:11.5px;color:var(--textSec)">${d.src}</td>
+      <td><span class="scorebadge ${scoreClass(d.score)}">${d.score}</span></td>
+    </tr>`).join('');
   lucide.createIcons();
 }
+document.getElementById('search').addEventListener('input', renderSheet);
+document.getElementById('stageFilter').addEventListener('change', renderSheet);
 
-// ---------- AI Outreach drafts (canned) ----------
-const DRAFTS = [
-  {co:"Kestrel Bank", to:"Raj Patel, CFO",
-   subj:"Cutting Kestrel's reconciliation close from 9 days to 3",
-   body:`<p>Hi Raj,</p><p>Noticed Kestrel Bank is scaling into three new regions this year — usually that's when month-end close starts to strain. We helped <b>Redwood Insurance</b> (similar size, regulated) shrink their reconciliation cycle from <b>9 days to 3</b> and cut manual review by 60%.</p><p>Worth a 20-minute look at whether the same fits Kestrel's Q3 plan?</p><p>— Priya, Meridian SaaS</p>`,
-   cite:"Grounded on: ICP.md, Redwood case study, Kestrel enrichment"},
-  {co:"Nimbus Retail", to:"Sarah Lindqvist, VP Eng",
-   subj:"How Nimbus can ship personalisation without a data team",
-   body:`<p>Hi Sarah,</p><p>Your recent hiring spree in platform eng caught my eye — you're clearly investing in real-time customer data. Retailers like <b>Tidewater</b> hit the same wall and used Meridian to launch personalisation in <b>6 weeks, no new data hires</b>.</p><p>Open to swapping notes on what that stack looked like?</p><p>— Priya, Meridian SaaS</p>`,
-   cite:"Grounded on: ICP.md, Tidewater case study, Nimbus enrichment"},
-  {co:"Solace Energy", to:"Elena Vas, Head of Ops",
-   subj:"A faster path to Solace's field-ops reporting goals",
-   body:`<p>Hi Elena,</p><p>Congrats on the new field-service rollout. Ops leaders at <b>Orbit Health</b> told us the hardest part was unifying reporting across regions — Meridian gave them a single live view in under a month.</p><p>Happy to share the exact playbook if it's useful for Solace this quarter.</p><p>— Priya, Meridian SaaS</p>`,
-   cite:"Grounded on: ICP.md, Orbit Health notes, Solace enrichment"},
-];
-function loadDraft(i){
-  const d = DRAFTS[i];
-  document.querySelectorAll('#draftTabs button').forEach((b,j)=>b.classList.toggle('on',j===i));
-  const el = document.getElementById('draft');
-  el.innerHTML = `<div class="draft" style="opacity:.4">Drafting…</div>`;
-  setTimeout(()=>{
-    el.innerHTML = `
-      <div class="draft">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-          <span class="canned-tag">demo draft</span>
-          <span style="font-family:var(--mono);font-size:11px;color:var(--textSec)">To: ${d.to}</span>
-        </div>
-        <div class="subj"><span>Subject</span>${d.subj}</div>
-        ${d.body}
-        <div class="draft-foot">
-          <button class="primary"><i data-lucide="send"></i> Send</button>
-          <button><i data-lucide="refresh-cw"></i> Regenerate</button>
-          <span class="cite"><i data-lucide="book-open"></i>${d.cite}</span>
-        </div>
-      </div>`;
-    lucide.createIcons();
-  }, 400);
+/* ============ AI OUTREACH ============ */
+const queued = {};        // dealId -> true
+let selectedId = null;
+const NEXT = {
+  Negotiation:"lock the redlines and get to signature this week",
+  Proposal:"walk through the proposal live and answer any open questions",
+  Qualified:"scope a 30-min technical deep-dive with your team",
+  New:"grab 20 minutes to see if there's a real fit",
+  Won:"kick off onboarding and map the first 30 days",
+  Lost:"keep the door open for next budget cycle",
+};
+function draftFor(d){
+  const owner = OWNERS[d.own].nm.split(" ")[0];
+  const firstName = d.ct.split(" ")[0];
+  const next = NEXT[d.stage] || "find a time to talk";
+  const subj = d.stage==="Won"
+    ? `Welcome aboard, ${d.co} — let's get you live`
+    : `${d.co} × Meridian — next step on ${money(d.v)}`;
+  const body = `<p>Hi ${firstName},</p>
+    <p>Following up on <b>${d.co}</b> — you're currently at the <b>${d.stage}</b> stage on a <b>${money(d.v)}</b> opportunity, and our last touch was <b>${d.touch}</b>. ${d.score>=80?"Momentum looks strong on our side and I'd hate to lose it.":d.score>=55?"I want to make sure we keep this moving at your pace.":"I know it's gone a little quiet, so no pressure at all."}</p>
+    <p>Proposed next step: let's <b>${next}</b>. Would Thursday or Friday work for a short call?</p>
+    <p>Best,<br>${owner} · Meridian SaaS</p>`;
+  return {to:d.ct.replace(/ · /," — "), subj, body};
 }
-document.getElementById('draftTabs').innerHTML = DRAFTS.map((d,i)=>
-  `<button data-i="${i}" class="${i===0?'on':''}">${d.co}</button>`).join('');
-document.querySelectorAll('#draftTabs button').forEach(b=>b.onclick=()=>loadDraft(+b.dataset.i));
+function renderDraft(){
+  const d = DEALS.find(x=>x.id===selectedId);
+  const area = document.getElementById('draftArea');
+  if(!d){ area.innerHTML = `<div class="thinking">Select a deal on the left to draft a follow-up.</div>`; return; }
+  const dr = draftFor(d);
+  area.innerHTML = `
+    <div class="gmail-card">
+      <div class="gmail-top">
+        <i data-lucide="mail"></i>
+        <span class="gt">New follow-up · ${d.co}</span>
+        <span class="gmail-tag"><i data-lucide="sparkles"></i> AI-generated · Demo</span>
+      </div>
+      <div class="gmail-field"><span class="k">To</span><span class="v">${dr.to}</span></div>
+      <div class="gmail-field subj"><span class="k">Subject</span><span class="v">${dr.subj}</span></div>
+      <div class="gmail-body">${dr.body}</div>
+      <div class="gmail-foot">
+        <button class="btn primary" id="genBtn2"><i data-lucide="sparkles"></i> Generate follow-up</button>
+        <button class="btn" id="queueBtn" ${queued[d.id]?'disabled':''}>
+          <i data-lucide="${queued[d.id]?'check':'inbox'}"></i> ${queued[d.id]?'Queued in Gmail':'Queue in Gmail'}
+        </button>
+        <span class="cite"><i data-lucide="book-open"></i>Grounded on CRM-Pipeline row ${d.id} + deal history</span>
+      </div>
+    </div>`;
+  lucide.createIcons();
+  document.getElementById('queueBtn').onclick = ()=>queueDeal(d.id);
+  document.getElementById('genBtn2').onclick = ()=>generate();
+}
+function renderDealList(){
+  document.getElementById('dealList').innerHTML = openDeals
+    .slice().sort((a,b)=>b.score-a.score).slice(0,10).map(d=>`
+    <div class="dl-item ${d.id===selectedId?'on':''}" data-id="${d.id}">
+      <div class="co2">${d.co} <span class="scorebadge ${scoreClass(d.score)}" style="font-size:9px">${d.score}</span></div>
+      <div class="meta2">${money(d.v)} · ${d.stage} ${queued[d.id]?'<span class="qpill">Queued</span>':''}</div>
+    </div>`).join('');
+  document.querySelectorAll('.dl-item').forEach(el=>el.onclick=()=>{
+    selectedId = el.dataset.id;
+    renderDealList(); renderDraft();
+  });
+}
+function generate(){
+  const area = document.getElementById('draftArea');
+  area.innerHTML = `<div class="thinking"><span class="spinner"></span> Claude is drafting a tailored follow-up…</div>`;
+  setTimeout(()=>{ renderDraft(); toast("Follow-up drafted by Claude"); }, 700);
+}
+function queueDeal(id){
+  queued[id] = true;
+  renderDealList(); renderDraft();
+  toast("Follow-up queued in Gmail (Demo)");
+}
+document.getElementById('genBtn').onclick = generate;
 
-renderLeads();
-loadDraft(0);
+/* ============ TOAST ============ */
+let toastT;
+function toast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ============ TABS ============ */
+const TITLES = {pipeline:"Pipeline Intelligence", leads:"CRM-Pipeline · Leads", outreach:"AI Outreach"};
+document.querySelectorAll('.nav-item').forEach(nav=>nav.onclick=()=>{
+  const tab = nav.dataset.tab;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('on', n===nav));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id==="panel-"+tab));
+  document.getElementById('pageTitle').textContent = TITLES[tab];
+  if(tab==="outreach" && !selectedId){ selectedId = openDeals[0].id; renderDealList(); renderDraft(); }
+  lucide.createIcons();
+});
+
+/* ============ INIT ============ */
+document.getElementById('nvPipe').textContent = DEALS.length;
+document.getElementById('nvLeads').textContent = DEALS.length;
+document.getElementById('nvOut').textContent = Math.min(10, openDeals.length);
+renderSheet();
+selectedId = openDeals[0].id;
+renderDealList();
+renderDraft();
 lucide.createIcons();
 </script>
 </body>
